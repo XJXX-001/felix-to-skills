@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>门店周例会 — 日期</title>
+    
+    <!-- 导航栏样式 -->
+    <link rel="stylesheet" href="components/navbar.css">
+    
+    <!-- Fonts -->
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&f[]=satoshi@400,500,700&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0d0d0d;
+            --bg-secondary: #1a1a1a;
+            --bg-card: #1f1f1f;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --accent: #ff6b00;
+            --accent-light: #ff8533;
+            --accent-glow: rgba(255, 107, 0, 0.4);
+            --danger: #ff4757;
+            --warning: #ffa502;
+            --success: #2ed573;
+            --info: #3498db;
+            --font-display: 'Clash Display', 'Noto Sans SC', sans-serif;
+            --font-body: 'Satoshi', 'Noto Sans SC', sans-serif;
+            --title-size: clamp(2rem, 5vw, 4rem);
+            --h2-size: clamp(1.5rem, 4vw, 3rem);
+            --h3-size: clamp(1.1rem, 2.5vw, 1.5rem);
+            --body-size: clamp(0.85rem, 1.5vw, 1.1rem);
+            --small-size: clamp(0.7rem, 1vw, 0.9rem);
+            --slide-padding: clamp(1.5rem, 5vw, 5rem);
+            --content-gap: clamp(0.75rem, 2vw, 2rem);
+            --element-gap: clamp(0.5rem, 1.5vw, 1.25rem);
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --duration-normal: 0.6s;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow-x: hidden; scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+        body { font-family: var(--font-body); background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; }
+        .slide { width: 100vw; height: 100vh; height: 100dvh; overflow: hidden; scroll-snap-align: start; display: flex; flex-direction: column; position: relative; background: var(--bg-primary); }
+        .slide-content { flex: 1; display: flex; flex-direction: column; justify-content: center; max-height: 100%; overflow: hidden; padding: var(--slide-padding); }
+        .progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); width: 0%; z-index: 1000; transition: width 0.3s ease; box-shadow: 0 0 10px var(--accent-glow); }
+        .nav-dots { position: fixed; right: clamp(1rem, 2vw, 2rem); top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 0.75rem; z-index: 1000; }
+        .nav-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255, 255, 255, 0.3); cursor: pointer; transition: all 0.3s ease; border: none; }
+        .nav-dot.active { background: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
+        .slide-number { position: absolute; bottom: clamp(1rem, 2vw, 2rem); right: clamp(1rem, 2vw, 2rem); font-size: var(--small-size); color: var(--text-secondary); font-family: var(--font-display); }
+        h1 { font-family: var(--font-display); font-size: var(--title-size); font-weight: 700; line-height: 1.1; margin-bottom: var(--content-gap); }
+        h2 { font-family: var(--font-display); font-size: var(--h2-size); font-weight: 600; line-height: 1.2; margin-bottom: var(--content-gap); }
+        h3 { font-family: var(--font-display); font-size: var(--h3-size); font-weight: 500; line-height: 1.3; }
+        p, li { font-size: var(--body-size); color: var(--text-secondary); }
+        .subtitle { font-size: clamp(1rem, 2vw, 1.5rem); color: var(--text-secondary); font-weight: 400; }
+        .slide-header { display: flex; align-items: center; gap: var(--element-gap); margin-bottom: var(--content-gap); }
+        .slide-icon { width: clamp(2.5rem, 5vw, 4rem); height: clamp(2.5rem, 5vw, 4rem); background: var(--accent); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: clamp(1.25rem, 2.5vw, 2rem); flex-shrink: 0; }
+        .slide-header-text { display: flex; flex-direction: column; gap: 0.25rem; }
+        .slide-header h2 { margin-bottom: 0; }
+        .slide-subtitle { font-size: var(--small-size); color: var(--text-secondary); }
+        .card { background: var(--bg-card); border-radius: 16px; padding: clamp(1rem, 2vw, 1.5rem); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .card-urgent { border-left: 4px solid var(--danger); background: linear-gradient(135deg, var(--bg-card) 0%, rgba(255, 71, 87, 0.1) 100%); }
+        .card-warning { border-left: 4px solid var(--warning); background: linear-gradient(135deg, var(--bg-card) 0%, rgba(255, 165, 2, 0.1) 100%); }
+        .callout { padding: clamp(0.75rem, 1.5vw, 1rem) clamp(1rem, 2vw, 1.5rem); border-radius: 10px; display: flex; align-items: flex-start; gap: 0.75rem; font-size: var(--body-size); }
+        .callout-danger { background: rgba(255, 71, 87, 0.15); border: 1px solid rgba(255, 71, 87, 0.3); color: var(--danger); }
+        .callout-warning { background: rgba(255, 165, 2, 0.15); border: 1px solid rgba(255, 165, 2, 0.3); color: var(--warning); }
+        .callout-info { background: rgba(52, 152, 219, 0.15); border: 1px solid rgba(52, 152, 219, 0.3); color: var(--info); }
+        .callout-success { background: rgba(46, 213, 115, 0.15); border: 1px solid rgba(46, 213, 115, 0.3); color: var(--success); }
+        .step-flow { display: flex; flex-direction: column; gap: var(--element-gap); }
+        .step { display: flex; align-items: flex-start; gap: var(--element-gap); }
+        .step-number { width: clamp(2rem, 4vw, 2.5rem); height: clamp(2rem, 4vw, 2.5rem); background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: var(--body-size); color: var(--bg-primary); flex-shrink: 0; }
+        .step-content { flex: 1; padding-top: 0.25rem; }
+        .step-content h4 { font-size: var(--body-size); font-weight: 600; margin-bottom: 0.25rem; }
+        .step-content p { font-size: var(--small-size); }
+        .pricing-table { width: 100%; border-collapse: collapse; font-size: var(--body-size); }
+        .pricing-table th, .pricing-table td { padding: clamp(0.5rem, 1vw, 0.75rem) clamp(0.75rem, 1.5vw, 1rem); text-align: left; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .pricing-table th { font-family: var(--font-display); font-weight: 600; color: var(--accent); font-size: var(--small-size); text-transform: uppercase; letter-spacing: 0.05em; }
+        .pricing-table td { color: var(--text-secondary); }
+        .price-down { color: var(--success); }
+        .stat-row { display: flex; gap: var(--content-gap); flex-wrap: wrap; }
+        .stat-item { flex: 1; min-width: clamp(120px, 20vw, 200px); text-align: center; padding: clamp(1rem, 2vw, 1.5rem); background: var(--bg-card); border-radius: 12px; }
+        .stat-value { font-family: var(--font-display); font-size: var(--h2-size); font-weight: 700; color: var(--accent); line-height: 1; margin-bottom: 0.5rem; }
+        .stat-label { font-size: var(--small-size); color: var(--text-secondary); }
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: var(--element-gap); }
+        .summary-item { display: flex; align-items: flex-start; gap: 0.75rem; padding: clamp(0.75rem, 1.5vw, 1rem); background: var(--bg-card); border-radius: 10px; border-left: 3px solid var(--accent); }
+        .summary-icon { width: 2rem; height: 2rem; background: rgba(255, 107, 0, 0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+        .summary-text { flex: 1; }
+        .summary-text h4 { font-size: var(--body-size); font-weight: 600; margin-bottom: 0.25rem; }
+        .summary-text p { font-size: var(--small-size); }
+        .bullet-list { display: flex; flex-direction: column; gap: var(--element-gap); list-style: none; }
+        .bullet-list li { display: flex; align-items: flex-start; gap: 0.75rem; padding-left: 0.5rem; }
+        .bullet-list li::before { content: ''; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; margin-top: 0.5rem; flex-shrink: 0; }
+        .reveal { opacity: 0; transform: translateY(30px); transition: opacity var(--duration-normal) var(--ease-out-expo), transform var(--duration-normal) var(--ease-out-expo); }
+        .slide.visible .reveal { opacity: 1; transform: translateY(0); }
+        .reveal:nth-child(1) { transition-delay: 0.05s; }
+        .reveal:nth-child(2) { transition-delay: 0.1s; }
+        .reveal:nth-child(3) { transition-delay: 0.15s; }
+        .reveal:nth-child(4) { transition-delay: 0.2s; }
+        .cover-slide { background: linear-gradient(135deg, var(--bg-primary) 0%, #1a0a00 100%); justify-content: center; align-items: center; text-align: center; }
+        .cover-slide::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at 30% 30%, rgba(255, 107, 0, 0.1) 0%, transparent 50%); animation: rotate 30s linear infinite; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .cover-content { position: relative; z-index: 1; }
+        .cover-badge { display: inline-block; padding: 0.5rem 1.5rem; background: var(--accent); border-radius: 50px; font-size: var(--small-size); font-weight: 600; color: var(--bg-primary); margin-bottom: var(--content-gap); }
+        .cover-slide h1 { font-size: clamp(2.5rem, 7vw, 5rem); background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-light) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .ending-slide { background: linear-gradient(135deg, #1a0a00 0%, var(--bg-primary) 100%); justify-content: center; align-items: center; text-align: center; }
+        .ending-slide::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at center, rgba(255, 107, 0, 0.15) 0%, transparent 60%); }
+        .ending-content { position: relative; z-index: 1; }
+        .keyboard-hint { position: fixed; bottom: clamp(1rem, 2vw, 2rem); left: 50%; transform: translateX(-50%); display: flex; gap: 1rem; font-size: var(--small-size); color: var(--text-secondary); opacity: 0.5; z-index: 100; }
+        .key { display: inline-flex; align-items: center; justify-content: center; min-width: 1.5rem; height: 1.5rem; padding: 0 0.4rem; background: var(--bg-card); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 4px; font-family: var(--font-display); font-size: 0.7rem; margin-right: 0.25rem; }
+        @media (max-height: 700px) { :root { --slide-padding: clamp(1rem, 3vw, 2.5rem); --content-gap: clamp(0.5rem, 1.5vw, 1.25rem); --element-gap: clamp(0.3rem, 1vw, 0.75rem); } .nav-dots { display: none; } .keyboard-hint { display: none; } }
+        @media (max-width: 600px) { .nav-dots { right: 0.5rem; } .nav-dot { width: 8px; height: 8px; } .summary-grid { grid-template-columns: 1fr; } .stat-row { flex-direction: column; } }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; } html { scroll-behavior: auto; } }
+    </style>
+</head>
+<body>
+    <!-- 导航栏容器 -->
+    <div id="navbar-container"></div>
+
+    <div class="progress-bar" id="progressBar"></div>
+    <nav class="nav-dots" id="navDots"></nav>
+    <div class="keyboard-hint"><span><span class="key">↑</span><span class="key">↓</span> 翻页</span><span><span class="key">Space</span> 下一页</span></div>
+
+    <!-- 封面页 -->
+    <section class="slide cover-slide" data-slide="1">
+        <div class="cover-content">
+            <div class="cover-badge reveal">门店周例会</div>
+            <h1 class="reveal">门店周例会</h1>
+            <p class="subtitle reveal">2026年4月19日 · 夏季运营推进</p>
+        </div>
+        <div class="slide-number">1 / 10</div>
+    </section>
+
+    <!-- 开票事项 -->
+    <section class="slide" data-slide="2">
+        <div class="slide-content">
+            <div class="slide-header">
+                <div class="slide-icon reveal">📋</div>
+                <div class="slide-header-text">
+                    <h2 class="reveal">开票事项</h2>
+                    <span class="slide-subtitle reveal">紧急 · 厂家无耐心 · 本月清零</span>
+                </div>
+            </div>
+            <div class="callout callout-danger reveal" style="margin-bottom: var(--content-gap);">
+                <span>⚠️</span>
+                <div><strong>底线目标：</strong>本月开票清零。厂家已经没有耐心了，财务+门店必须协同推进。</div>
+            </div>
+            <div class="card card-urgent reveal">
+                <h3>协同推进</h3>
+                <ul class="bullet-list" style="margin-top: var(--element-gap);">
+                    <li>门店整理待开票清单</li>
+                    <li>财务快速审核处理</li>
+                    <li>逐笔核销，确保账期前清零</li>
+                </ul>
+            </div>
+        </div>
+        <div class="slide-number">2 / 10</div>
+    </section>
+
+    <!-- 老库存清库 -->
+    <section class="slide" data-slide="3">
+        <div class="slide-content">
+            <div class="slide-header">
+                <div class="slide-icon reveal">📦</div>
+                <div class="slide-header-text">
+                    <h2 class="reveal">老库存清库</h2>
+                    <span class="slide-subtitle reveal">常态化宣导 · 激励清库人员</span>
+                </div>
+            </div>
+            <div class="summary-grid reveal" style="margin-top: var(--content-gap);">
+                <div class="summary-item">
+                    <div class="summary-icon">🔄</div>
+                    <div class="summary-text">
+                        <h4>例会宣导</h4>
+                        <p>不要懈怠，每次周例会通报进度</p>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-icon">💰</div>
+                    <div class="summary-text">
+                        <h4>鼓励清库人员</h4>
+                        <p>大方鼓励，提倡多拿清库激励</p>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-icon">📊</div>
+                    <div class="summary-text">
+                        <h4>目标导向</h4>
+                        <p>逐步降低老库存占比，提升周转率</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">3 / 10</div>
+    </section>
+
+    <!-- 夏季工服 -->
+    <section class="slide" data-slide="4">
+        <div class="slide-content">
+            <div class="slide-header">
+                <div class="slide-icon reveal">👕</div>
+                <div class="slide-header-text">
+                    <h2 class="reveal">夏季工服</h2>
+                    <span class="slide-subtitle reveal">沿用橙色短袖 · 新员工报尺码</span>
+                </div>
+            </div>
+            <div class="stat-row reveal" style="margin-top: var(--content-gap);">
+                <div class="stat-item">
+                    <div class="stat-value">2件</div>
+                    <div class="stat-label">每人配发</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">1件</div>
+                    <div class="stat-label">押金数量</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">橙色</div>
+                    <div class="stat-label">沿用配色</div>
+                </div>
+            </div>
+            <div class="card reveal" style="margin-top: var(--content-gap);">
+                <h3>发放规则</h3>
+                <ul class="bullet-list" style="margin-top: var(--element-gap);">
+                    <li>沿用现有橙色短袖款式，暂时不会变</li>
+                    <li>新入职员工需上报尺码</li>
+                    <li>每人配发2件，押金仅需支付1件费用</li>
+                </ul>
+            </div>
+        </div>
+        <div class="slide-number">4 / 10</div>
+    </section>
+
+    <!-- 业绩分析 -->
+    <section class="slide" data-slide="5">
+        <div class="slide-content">
+            <div class="slide-header">
+                <div class="slide-icon reveal">📈</div>
+                <div class="slide-header-text">
+                    <h2 class="reveal">业绩分析</h2>
+                    <span class="slide-subtitle reveal">Q3周销关键 · 影响新品分货权重</span>
+                </div>
+            </div>
+            <div class="callout callout-warning reveal" style="margin-bottom: var(--content-gap);">
+                <span>⚡</span>
+                <div><strong>重要：</strong>Q3季度的周销至关重要，直接影响新品分货权重，所以必须起量！</div>
+            </div>
+            <div class="summary-grid reveal">
+                <div class="summary-item">
+                    <div class="summary-icon">🎯</div>
+                    <div class="summary-text">
+                        <h4>Q3是关键节点</h4>
+                        <p>第三季度周销量直接影响全年业绩排名</p>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-icon">⚖️</div>
+                    <div class="summary-text">
+                        <h4>分货权重</h4>
+                        <p>销量高的门店在新品种获得更多配额</p>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-icon">🚀</div>
+                    <div class="summary-text">
+                        <h4>必须起量</h4>
+                        <p>抓住旺季窗口期，全力冲刺周销目标</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">5 / 10</div>
+    </section>
+
+    <!-- iPhone价格调整 -->
+    <section class="slide" data-slide="6">
+        <div class="slide-content">
+            <div class="slide-header">
+                <div class="slide-icon reveal">📱</div>
+                <div class="slide-header-text">
+                    <h2 class="reveal">iPhone 价格调整</h2>
+                    <span class="slide-subtitle reveal">成本下调 · 卖价优惠 · 激励不变</span>
+                </div>
+            </div>
+            <table class="pricing-table reveal" style="margin-top: var(--content-gap);">
+                <thead>
+                    <tr>
+                        <th>机型</th>
+                        <th>成本变化</th>
+                        <th>卖价变化</th>
+                        <th>备注</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>iPhone 17 Pro</td>
+                        <td class="price-down">↓200</td>
+                        <td class="price-down">↓300</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td>iPhone 17 Pro Max</td>
+                        <td class="price-down">↓200</td>
+                        <td class="price-down">↓300</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td>iPhone 16 128GB</td>
+                        <td>—</td>
+                        <td class="price-down">调至4799</td>
+                        <td>叠加国补+会员最低4199</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="callout callout-success reveal" style="margin-top: var(--content-gap);">
+                <span>✅</span>
+                <div><strong>激励政策不变：</strong>以上调整不影响现有销售激励，保持原有提成比例。</div>
+            </div>
+        </div>
+        <div class="slide-number">6 / 10</div>
+    </section>
+
+    <!-- 赠品充电头 -->
+    <section class="slide" data-slide="7">
+        <div class="slide-content">
+            <div class="slide-header">
+                <div class="slide-icon reveal">🔌</div>
+                <div class="slide-header-text">
+                    <h2 class="reveal">赠品充电头</h2>
+                    <span class="slide-subtitle reveal">成本下调 · 可低价引流 · 不可赠送</span>
+                </div>
+            </div>
+            <div class="stat-row reveal" style="margin-top: var(--content-gap);">
+                <div class="stat-item">
+                    <div class="stat-value">↓</div>
+                    <div class="stat-label">成本下调至采购价</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">可</div>
+                    <div class="stat-label">低价引流</div>
+                </div>
+                <div class="stat-item" style="border: 2px solid var(--danger);">
+                    <div class="stat-value" style="color: var(--danger);">✗</div>
+                    <div class="stat-label">不可赠送</div>
+                </div>
+            </div>
+            <div class="summary-grid reveal" style="margin-top: var(--content-gap);">
+                <div class="summary-item">
+                    <div class="summary-icon">💵</div>
+                    <div class="summary-text">
+                        <h4>成本调整</h4>
+                        <p>成本下调至实际采购价</p>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-icon">🏷️</div>
+                    <div class="summary-text">
+                        <h4>引流可用</h4>
+                        <p>门店可做低价引流产品</p>
+                    </div>
+                </div>
+                <div class="summary-item" style="border-left-color: var(--danger);">
+                    <div class="summary-icon" style="background: rgba(255, 71, 87, 0.2);">🚫</div>
+                    <div class="summary-text">
+                        <h4>严禁赠送</h4>
+                        <p>但是不可赠送</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">7 / 10</div>
+    </section>
+
+    <!-- 会员比例 -->
+    <section class="slide" data-slide="8">
+        <div class="slide-content">
+            <div class="slide-header">
+                <div class="slide-icon reveal">👥</div>
+                <div class="slide-header-text">
+                    <h2 class="reveal">会员比例</h2>
+                    <span class="slide-subtitle reveal">未达标门店 · 演练+闭环 · 每日跟进</span>
+                </div>
+            </div>
+            <div class="step-flow reveal" style="margin-top: var(--content-gap);">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>识别未达标门店</h4>
+                        <p>统计各门店会员转化比例</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>安排演练工作</h4>
+                        <p>对未达标门店进行专项培训和演练</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>每日闭环</h4>
+                        <p>每日跟进进度，确保改进措施落地</p>
+                    </div>
+                </div>
+            </div>
+            <div class="callout callout-info reveal" style="margin-top: var(--content-gap);">
+                <span>📊</span>
+                <div>目标：提升整体会员转化率，增强客户粘性。</div>
+            </div>
+        </div>
+        <div class="slide-number">8 / 10</div>
+    </section>
+
+    <!-- 汇总页 -->
+    <section class="slide" data-slide="9">
+        <div class="slide-content">
+            <div class="slide-header">
+                <div class="slide-icon reveal">✅</div>
+                <div class="slide-header-text">
+                    <h2 class="reveal">本周待办汇总</h2>
+                    <span class="slide-subtitle reveal">7项重点任务</span>
+                </div>
+            </div>
+            <div class="summary-grid reveal" style="margin-top: var(--content-gap);">
+                <div class="summary-item" style="border-left-color: var(--danger);">
+                    <div class="summary-icon" style="background: rgba(255, 71, 87, 0.2);">1</div>
+                    <div class="summary-text">
+                        <h4>开票清零</h4>
+                        <p>紧急 · 本月必须完成</p>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-icon">2</div>
+                    <div class="summary-text">
+                        <h4>老库存清库</h4>
+                        <p>常态化推进</p>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-icon">3</div>
+                    <div class="summary-text">
+                        <h4>夏季工服</h4>
+                        <p>新员工报尺码</p>
+                    </div>
+                </div>
+                <div class="summary-item" style="border-left-color: var(--warning);">
+                    <div class="summary-icon" style="background: rgba(255, 165, 2, 0.2);">4</div>
+                    <div class="summary-text">
+                        <h4>业绩起量</h4>
+                        <p>Q3关键期</p>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-icon">5</div>
+                    <div class="summary-text">
+                        <h4>iPhone调价</h4>
+                        <p>执行新价格体系</p>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-icon">6</div>
+                    <div class="summary-text">
+                        <h4>充电头管控</h4>
+                        <p>可低价·不可赠送</p>
+                    </div>
+                </div>
+                <div class="summary-item" style="border-left-color: var(--info);">
+                    <div class="summary-icon" style="background: rgba(52, 152, 219, 0.2);">7</div>
+                    <div class="summary-text">
+                        <h4>会员比例</h4>
+                        <p>未达标门店演练</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">9 / 10</div>
+    </section>
+
+    <!-- 结束页 -->
+    <section class="slide ending-slide" data-slide="10">
+        <div class="ending-content">
+            <h2 class="reveal" style="font-size: var(--h2-size);">👋 感谢各位</h2>
+            <p class="subtitle reveal" style="margin-top: var(--element-gap);">门店周例会 · 2026年4月19日</p>
+            <p class="reveal" style="color: var(--accent); margin-top: var(--content-gap); font-family: var(--font-display); font-weight: 600;">
+                协同推进 · 共创佳绩
+            </p>
+        </div>
+        <div class="slide-number">10 / 10</div>
+    </section>
+
+    <script>
+        class SlidePresentation {
+            constructor() {
+                this.slides = document.querySelectorAll('.slide');
+                this.totalSlides = this.slides.length;
+                this.currentSlide = 0;
+                this.isScrolling = false;
+                this.scrollTimeout = null;
+                this.init();
+            }
+            init() {
+                this.setupIntersectionObserver();
+                this.setupKeyboardNav();
+                this.setupTouchNav();
+                this.setupProgressBar();
+                this.setupNavDots();
+                this.setupWheelNav();
+                this.updateActiveSlide(0);
+            }
+            setupIntersectionObserver() {
+                const options = { root: null, rootMargin: '0px', threshold: 0.5 };
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            const slideIndex = parseInt(entry.target.dataset.slide) - 1;
+                            this.currentSlide = slideIndex;
+                            this.updateProgressBar();
+                            this.updateNavDots();
+                        }
+                    });
+                }, options);
+                this.slides.forEach(slide => observer.observe(slide));
+            }
+            setupKeyboardNav() {
+                document.addEventListener('keydown', (e) => {
+                    switch(e.key) {
+                        case 'ArrowDown': case 'ArrowRight': case ' ': case 'PageDown':
+                            e.preventDefault(); this.nextSlide(); break;
+                        case 'ArrowUp': case 'ArrowLeft': case 'PageUp':
+                            e.preventDefault(); this.prevSlide(); break;
+                        case 'Home':
+                            e.preventDefault(); this.goToSlide(0); break;
+                        case 'End':
+                            e.preventDefault(); this.goToSlide(this.totalSlides - 1); break;
+                    }
+                });
+            }
+            setupWheelNav() {
+                document.addEventListener('wheel', (e) => {
+                    if (this.isScrolling) return;
+                    const delta = e.deltaY;
+                    if (Math.abs(delta) > 50) {
+                        this.isScrolling = true;
+                        if (delta > 0) this.nextSlide();
+                        else this.prevSlide();
+                        clearTimeout(this.scrollTimeout);
+                        this.scrollTimeout = setTimeout(() => { this.isScrolling = false; }, 800);
+                    }
+                }, { passive: true });
+            }
+            setupTouchNav() {
+                let touchStartY = 0;
+                document.addEventListener('touchstart', (e) => { touchStartY = e.changedTouches[0].screenY; }, { passive: true });
+                document.addEventListener('touchend', (e) => {
+                    const touchEndY = e.changedTouches[0].screenY;
+                    const diff = touchStartY - touchEndY;
+                    if (Math.abs(diff) > 50) {
+                        if (diff > 0) this.nextSlide();
+                        else this.prevSlide();
+                    }
+                }, { passive: true });
+            }
+            setupProgressBar() {
+                this.progressBar = document.getElementById('progressBar');
+                this.updateProgressBar();
+            }
+            updateProgressBar() {
+                const progress = ((this.currentSlide + 1) / this.totalSlides) * 100;
+                this.progressBar.style.width = progress + '%';
+            }
+            setupNavDots() {
+                this.navDots = document.getElementById('navDots');
+                for (let i = 0; i < this.totalSlides; i++) {
+                    const dot = document.createElement('button');
+                    dot.className = 'nav-dot';
+                    dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+                    dot.addEventListener('click', () => this.goToSlide(i));
+                    this.navDots.appendChild(dot);
+                }
+                this.updateNavDots();
+            }
+            updateNavDots() {
+                const dots = this.navDots.querySelectorAll('.nav-dot');
+                dots.forEach((dot, index) => { dot.classList.toggle('active', index === this.currentSlide); });
+            }
+            updateActiveSlide(index) {
+                this.currentSlide = index;
+                this.updateProgressBar();
+                this.updateNavDots();
+                if (this.slides[index]) this.slides[index].classList.add('visible');
+            }
+            nextSlide() { if (this.currentSlide < this.totalSlides - 1) this.goToSlide(this.currentSlide + 1); }
+            prevSlide() { if (this.currentSlide > 0) this.goToSlide(this.currentSlide - 1); }
+            goToSlide(index) {
+                if (index < 0 || index >= this.totalSlides) return;
+                this.slides[index].scrollIntoView({ behavior: 'smooth' });
+                this.updateActiveSlide(index);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', () => { new SlidePresentation(); });
+    </script>
+</body>
+</html>

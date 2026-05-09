@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>手绘水彩报告</title>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=ZCOOL+KuaiLe&family=Ma+Shan+Zheng&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* ========== 纸张与水彩基底 ========== */
+  :root {
+    --paper: #faf8f3;
+    --paper-texture: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+
+    --ink: #2d2d2d;
+    --ink-light: #5a5a5a;
+
+    /* 水彩蓝 */
+    --wc-blue: #7eb8da;
+    --wc-blue-deep: #5a9fd4;
+    --wc-blue-light: #b8d9f0;
+
+    /* 水彩橙 */
+    --wc-orange: #f4a261;
+    --wc-orange-deep: #e76f51;
+    --wc-orange-light: #fcd5b5;
+
+    /* 水彩绿 */
+    --wc-green: #90c6a1;
+    --wc-green-light: #c4e6cb;
+
+    /* 马克笔黄 */
+    --marker-yellow: rgba(255, 234, 150, 0.45);
+
+    --hand-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+    --hand-radius-sm: 225px 12px 195px 12px / 12px 195px 12px 225px;
+
+    /* 字号系统 */
+    --fs-display: clamp(2rem, 4vw, 2.8rem);
+    --fs-h1: clamp(1.6rem, 3vw, 2.2rem);
+    --fs-h2: clamp(1.25rem, 2.5vw, 1.6rem);
+    --fs-h3: clamp(1rem, 2vw, 1.25rem);
+    --fs-body: clamp(0.95rem, 1.5vw, 1.1rem);
+    --fs-small: clamp(0.8rem, 1.2vw, 0.9rem);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--paper);
+    background-image: var(--paper-texture);
+    font-family: 'ZCOOL KuaiLe', 'Noto Sans SC', 'Patrick Hand', 'PingFang SC', 'Microsoft YaHei', cursive;
+    color: var(--ink);
+    line-height: 1.7;
+    padding: 40px 20px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ========== 手绘卡片核心 ========== */
+  .sketch-card {
+    background: #fffef9;
+    border: 2.5px solid var(--ink);
+    border-radius: var(--hand-radius);
+    padding: clamp(16px, 3vw, 28px);
+    position: relative;
+    box-shadow:
+      3px 4px 0 rgba(45,45,45,0.08),
+      6px 8px 0 rgba(45,45,45,0.04);
+    transition: transform 0.2s ease;
+  }
+
+  .sketch-card:hover {
+    transform: rotate(-0.5deg) translateY(-2px);
+  }
+
+  /* 水彩晕染背景变体 */
+  .sketch-card.blue-wash {
+    background: linear-gradient(135deg, #fffef9 0%, #eef6fc 60%, #dceefb 100%);
+    border-color: var(--wc-blue-deep);
+  }
+
+  .sketch-card.orange-wash {
+    background: linear-gradient(135deg, #fffef9 0%, #fff5eb 60%, #fce8d5 100%);
+    border-color: var(--wc-orange-deep);
+  }
+
+  .sketch-card.green-wash {
+    background: linear-gradient(135deg, #fffef9 0%, #f0f9f2 60%, #e0f2e5 100%);
+    border-color: var(--wc-green);
+  }
+
+  /* 马克笔高亮标题 */
+  .marker-title {
+    display: inline;
+    background: linear-gradient(180deg, transparent 55%, var(--marker-yellow) 55%, var(--marker-yellow) 95%, transparent 95%);
+    padding: 0 4px;
+    font-size: var(--fs-display);
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .marker-sub {
+    color: var(--ink-light);
+    font-size: var(--fs-h3);
+    margin-top: 8px;
+    font-family: 'Patrick Hand', 'Ma Shan Zheng', cursive;
+  }
+
+  /* ========== 手绘节点（带序号） ========== */
+  .sketch-node {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(40px, 6vw, 52px);
+    height: clamp(40px, 6vw, 52px);
+    background: var(--wc-blue);
+    border: 2.5px solid var(--ink);
+    border-radius: 50%;
+    font-size: var(--fs-h3);
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+    box-shadow: 2px 3px 0 rgba(0,0,0,0.1);
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .sketch-node::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border: 1.5px solid var(--wc-blue-light);
+    border-radius: 50%;
+    opacity: 0.6;
+    transform: rotate(12deg) scale(1.05);
+  }
+
+  .sketch-node.orange { background: var(--wc-orange); }
+  .sketch-node.orange::after { border-color: var(--wc-orange-light); }
+  .sketch-node.green { background: var(--wc-green); }
+  .sketch-node.green::after { border-color: var(--wc-green-light); }
+
+  /* ========== 手绘箭头与连接线 ========== */
+  .sketch-arrow-down {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px 0;
+  }
+
+  .sketch-arrow-down .line {
+    width: 2.5px;
+    height: clamp(28px, 4vw, 40px);
+    background: linear-gradient(90deg, var(--ink) 30%, var(--ink-light) 50%, var(--ink) 70%);
+    border-radius: 2px;
+  }
+
+  .sketch-arrow-down .head {
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 12px solid var(--ink);
+    margin-top: -4px;
+    transform: rotate(1deg);
+  }
+
+  /* ========== 纸张便签小卡片 ========== */
+  .sketch-note {
+    background: #fff;
+    border: 2px solid var(--ink);
+    border-radius: 2px 18px 4px 22px;
+    padding: clamp(10px, 2vw, 16px);
+    box-shadow: 2px 3px 0 rgba(0,0,0,0.06);
+    position: relative;
+  }
+
+  .sketch-note::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 16px;
+    background: rgba(255, 234, 150, 0.6);
+    border-radius: 2px;
+    border: 1px solid rgba(0,0,0,0.1);
+  }
+
+  /* ========== 修复点标签（手绘胶带感） ========== */
+  .sketch-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #fff9db 0%, #fff3bf 100%);
+    border: 2px solid var(--wc-orange-deep);
+    border-radius: 4px 16px 8px 18px;
+    padding: 4px 12px;
+    font-size: var(--fs-small);
+    font-weight: 700;
+    color: #8b4513;
+    transform: rotate(-1.5deg);
+    box-shadow: 1px 2px 0 rgba(0,0,0,0.06);
+  }
+
+  /* ========== 结论横幅 ========== */
+  .sketch-conclusion {
+    background: linear-gradient(135deg, #3d3d3d 0%, #525252 100%);
+    color: #fffef9;
+    padding: clamp(14px, 3vw, 20px) clamp(20px, 4vw, 32px);
+    border-radius: var(--hand-radius-sm);
+    font-size: var(--fs-h3);
+    font-weight: 700;
+    position: relative;
+    border: 2.5px solid var(--ink);
+    box-shadow: 3px 4px 0 rgba(0,0,0,0.15);
+    margin-top: 28px;
+  }
+
+  .sketch-conclusion::before {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 60%;
+    background: var(--wc-orange);
+    border-radius: 10px;
+    opacity: 0.9;
+  }
+
+  .sketch-conclusion .highlight { color: var(--wc-orange); }
+
+  /* ========== 水彩分隔线 ========== */
+  .sketch-divider {
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--wc-blue), var(--wc-orange), transparent);
+    border-radius: 50%;
+    margin: 32px 0;
+    opacity: 0.5;
+    border: none;
+  }
+
+  /* ========== 布局工具类 ========== */
+  .flex-center { display: flex; align-items: center; justify-content: center; }
+  .flex-col { display: flex; flex-direction: column; }
+  .flex-wrap { flex-wrap: wrap; }
+  .gap-3 { gap: 12px; }
+  .gap-4 { gap: 16px; }
+  .gap-6 { gap: 24px; }
+  .text-center { text-align: center; }
+  .mx-auto { margin-left: auto; margin-right: auto; }
+  .max-w-3xl { max-width: 768px; }
+  .max-w-4xl { max-width: 896px; }
+  .max-w-5xl { max-width: 1024px; }
+  .w-full { width: 100%; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+  .font-bold { font-weight: 700; }
+  .text-sm { font-size: var(--fs-small); }
+  .text-base { font-size: var(--fs-body); }
+  .text-lg { font-size: var(--fs-h3); }
+  .text-xl { font-size: var(--fs-h2); }
+  .opacity-70 { opacity: 0.7; }
+  .opacity-80 { opacity: 0.8; }
+  .mt-2 { margin-top: 8px; }
+  .mt-4 { margin-top: 16px; }
+  .mt-6 { margin-top: 24px; }
+  .mt-8 { margin-top: 32px; }
+  .mb-2 { margin-bottom: 8px; }
+  .mb-4 { margin-bottom: 16px; }
+  .mb-6 { margin-bottom: 24px; }
+  .mb-8 { margin-bottom: 32px; }
+  .mb-10 { margin-bottom: 40px; }
+  .p-3 { padding: 12px; }
+  .p-4 { padding: 16px; }
+  .leading-relaxed { line-height: 1.8; }
+
+  /* ========== 响应式 ========== */
+  @media (max-width: 768px) {
+    .grid-3, .grid-2, .grid-4 { grid-template-columns: 1fr; }
+    .marker-title { font-size: clamp(1.3rem, 4vw, 1.8rem); }
+    body { padding: 20px 14px; }
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+<base target="_blank">
+</head>
+<body>
+
+<!-- ============================================================
+     手绘水彩报告模板 · Sketch Watercolor Report Template
+     替换下方占位内容即可复用
+     ============================================================ -->
+
+
+<!-- === COVER === -->
+<section class="max-w-4xl mx-auto text-center mb-10">
+  <div class="sketch-card green-wash" style="padding: clamp(32px, 6vw, 56px);">
+    <h1 class="marker-title" style="font-size: var(--fs-display);">项目名称 / 报告标题</h1>
+    <p class="marker-sub" style="font-size: var(--fs-h3);">Project Name · Subtitle or Date Range</p>
+    <div class="mt-6" style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+      <span class="sketch-badge">2026 年度</span>
+      <span class="sketch-badge" style="transform: rotate(1deg); background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%); border-color: var(--wc-green); color: #155724;">进行中</span>
+      <span class="sketch-badge" style="transform: rotate(-2deg);">v2.1</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- === OVERVIEW / 概述 === -->
+<section class="max-w-4xl mx-auto mb-8">
+  <div class="sketch-card blue-wash">
+    <div class="flex-center gap-4 items-start" style="flex-wrap: wrap;">
+      <div class="sketch-node" style="background: var(--wc-blue-deep);">?</div>
+      <div style="flex: 1; min-width: 200px;">
+        <h2 class="marker-title" style="font-size: var(--fs-h2);">报告概述</h2>
+        <p class="marker-sub">Executive Summary</p>
+        <p class="text-base leading-relaxed mt-4 opacity-80">
+          在此填写报告的核心摘要。用 2-3 句话概括本报告的主题、关键发现或主要结论。
+          读者通过这一段即可了解报告全貌。
+        </p>
+        <div class="flex gap-3 mt-4 flex-wrap">
+          <span class="sketch-badge" style="background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%); border-color: var(--wc-blue-deep); color: #0c5460;">关键词 A</span>
+          <span class="sketch-badge" style="background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%); border-color: var(--wc-blue-deep); color: #0c5460; transform: rotate(0.8deg);">关键词 B</span>
+          <span class="sketch-badge" style="background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%); border-color: var(--wc-blue-deep); color: #0c5460; transform: rotate(-1.2deg);">关键词 C</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="sketch-divider max-w-4xl mx-auto">
+
+
+<!-- === KPI / 数据卡片网格 === -->
+<section class="max-w-5xl mx-auto mb-8">
+  <div class="text-center mb-8">
+    <h2 class="marker-title">核心指标</h2>
+    <p class="marker-sub">Key Metrics · 用数字说话</p>
+  </div>
+
+  <div class="grid-4">
+    <!-- 卡片 1 -->
+    <div class="sketch-card text-center">
+      <div class="text-3xl mb-2">🚀</div>
+      <div style="font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 700; color: var(--wc-blue-deep);">1,234</div>
+      <div class="text-sm font-bold mt-2">指标名称</div>
+      <div class="text-sm opacity-70">较上期 +12%</div>
+    </div>
+    <!-- 卡片 2 -->
+    <div class="sketch-card orange-wash text-center">
+      <div class="text-3xl mb-2">📊</div>
+      <div style="font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 700; color: var(--wc-orange-deep);">87.5%</div>
+      <div class="text-sm font-bold mt-2">完成率</div>
+      <div class="text-sm opacity-70">目标 90%</div>
+    </div>
+    <!-- 卡片 3 -->
+    <div class="sketch-card green-wash text-center">
+      <div class="text-3xl mb-2">✅</div>
+      <div style="font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 700; color: #2d7a4f;">56</div>
+      <div class="text-sm font-bold mt-2">已完成项</div>
+      <div class="text-sm opacity-70">总计 64 项</div>
+    </div>
+    <!-- 卡片 4 -->
+    <div class="sketch-card text-center">
+      <div class="text-3xl mb-2">⏱️</div>
+      <div style="font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 700;">3.2s</div>
+      <div class="text-sm font-bold mt-2">平均响应</div>
+      <div class="text-sm opacity-70">较上期 -0.8s</div>
+    </div>
+  </div>
+</section>
+
+<hr class="sketch-divider max-w-4xl mx-auto">
+
+
+<!-- === 三列矩阵布局 === -->
+<section class="max-w-5xl mx-auto mb-8">
+  <div class="text-center mb-8">
+    <h2 class="marker-title">能力矩阵</h2>
+    <p class="marker-sub">Capability Matrix · 特性对比 / 模块拆解</p>
+  </div>
+
+  <div class="grid-3">
+    <!-- 列 A -->
+    <div class="sketch-card blue-wash">
+      <h3 class="font-bold text-lg mb-4" style="display: flex; align-items: center; gap: 8px;">
+        <span class="sketch-node" style="width: 36px; height: 36px; font-size: 0.9rem;">A</span>
+        模块名称一
+      </h3>
+      <div class="flex-col gap-3">
+        <div class="sketch-note">
+          <div class="font-bold text-sm">功能点 1</div>
+          <div class="text-sm opacity-70 mt-2">在此描述该功能点的具体内容与价值</div>
+        </div>
+        <div class="sketch-note">
+          <div class="font-bold text-sm">功能点 2</div>
+          <div class="text-sm opacity-70 mt-2">在此描述该功能点的具体内容与价值</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 列 B -->
+    <div class="sketch-card orange-wash">
+      <h3 class="font-bold text-lg mb-4" style="display: flex; align-items: center; gap: 8px;">
+        <span class="sketch-node orange" style="width: 36px; height: 36px; font-size: 0.9rem;">B</span>
+        模块名称二
+      </h3>
+      <div class="sketch-note">
+        <div class="font-bold text-sm">功能点 1</div>
+        <div class="text-sm opacity-70 mt-2">在此描述该功能点的具体内容与价值</div>
+      </div>
+    </div>
+
+    <!-- 列 C -->
+    <div class="sketch-card green-wash">
+      <h3 class="font-bold text-lg mb-4" style="display: flex; align-items: center; gap: 8px;">
+        <span class="sketch-node green" style="width: 36px; height: 36px; font-size: 0.9rem;">C</span>
+        模块名称三
+      </h3>
+      <div class="flex-col gap-3">
+        <div class="sketch-note">
+          <div class="font-bold text-sm">功能点 1</div>
+          <div class="text-sm opacity-70 mt-2">在此描述该功能点的具体内容与价值</div>
+        </div>
+        <div class="sketch-note">
+          <div class="font-bold text-sm">功能点 2</div>
+          <div class="text-sm opacity-70 mt-2">在此描述该功能点的具体内容与价值</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sketch-conclusion">
+    <span class="highlight">结论：</span>在此填写对能力矩阵的总结性判断
+  </div>
+</section>
+
+<hr class="sketch-divider max-w-4xl mx-auto">
+
+
+<!-- === 流程步骤区 === -->
+<section class="max-w-3xl mx-auto mb-8">
+  <div class="text-center mb-8">
+    <h2 class="marker-title">执行流程</h2>
+    <p class="marker-sub">Step-by-Step · 关键路径 / 实施步骤</p>
+  </div>
+
+  <!-- Step 1 -->
+  <div class="sketch-card blue-wash">
+    <div class="flex gap-4 items-start">
+      <div class="sketch-node">1</div>
+      <div>
+        <h3 class="text-lg font-bold">需求分析与规划</h3>
+        <p class="text-sm opacity-80 leading-relaxed mt-2">
+          在此描述第一步的具体内容，包括目标、涉及的角色、输入输出物。
+        </p>
+        <div class="flex gap-2 mt-4 flex-wrap">
+          <span class="sketch-badge" style="background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%); border-color: var(--wc-blue-deep); color: #0c5460;">输入：文档</span>
+          <span class="sketch-badge" style="background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%); border-color: var(--wc-blue-deep); color: #0c5460; transform: rotate(0.8deg);">输出：方案</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sketch-arrow-down mx-auto" style="width: 30px;">
+    <div class="line"></div>
+    <div class="head"></div>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="sketch-card">
+    <div class="flex gap-4 items-start">
+      <div class="sketch-node orange">2</div>
+      <div>
+        <h3 class="text-lg font-bold">开发与集成</h3>
+        <p class="text-sm opacity-80 leading-relaxed mt-2">
+          在此描述第二步的具体内容，包括技术选型、关键决策、依赖关系。
+        </p>
+        <div class="grid-2 gap-3 mt-4">
+          <div class="sketch-note">
+            <div class="text-sm font-bold" style="color: var(--wc-orange-deep);">子任务 A</div>
+            <div class="text-sm opacity-70 mt-2">描述子任务内容</div>
+          </div>
+          <div class="sketch-note">
+            <div class="text-sm font-bold" style="color: var(--wc-orange-deep);">子任务 B</div>
+            <div class="text-sm opacity-70 mt-2">描述子任务内容</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sketch-arrow-down mx-auto" style="width: 30px;">
+    <div class="line"></div>
+    <div class="head"></div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="sketch-card green-wash">
+    <div class="flex gap-4 items-start">
+      <div class="sketch-node green">3</div>
+      <div>
+        <h3 class="text-lg font-bold">测试与上线</h3>
+        <p class="text-sm opacity-80 leading-relaxed mt-2">
+          在此描述第三步的具体内容，包括验收标准、风险点、上线策略。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sketch-conclusion">
+    <span class="highlight">关键发现：</span>在此填写流程执行中的核心洞察或经验总结
+  </div>
+</section>
+
+<hr class="sketch-divider max-w-4xl mx-auto">
+
+
+<!-- === 双栏详情区 === -->
+<section class="max-w-5xl mx-auto mb-8">
+  <div class="text-center mb-8">
+    <h2 class="marker-title">详细分析</h2>
+    <p class="marker-sub">Deep Dive · 问题与对策</p>
+  </div>
+
+  <div class="grid-2">
+    <!-- 左栏：问题 -->
+    <div class="sketch-card orange-wash">
+      <h3 class="font-bold text-lg mb-4" style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 1.4rem;">⚠️</span>
+        待解决问题
+      </h3>
+      <div class="flex-col gap-3">
+        <div class="sketch-note" style="transform: rotate(-0.5deg);">
+          <div class="font-bold text-sm">问题 1</div>
+          <div class="text-sm opacity-70 mt-2">描述问题现象、影响范围和优先级</div>
+          <div class="mt-2">
+            <span class="sketch-badge" style="transform: none; font-size: 0.7rem;">高优先级</span>
+          </div>
+        </div>
+        <div class="sketch-note" style="transform: rotate(0.8deg);">
+          <div class="font-bold text-sm">问题 2</div>
+          <div class="text-sm opacity-70 mt-2">描述问题现象、影响范围和优先级</div>
+          <div class="mt-2">
+            <span class="sketch-badge" style="transform: none; font-size: 0.7rem;">中优先级</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右栏：方案 -->
+    <div class="sketch-card blue-wash">
+      <h3 class="font-bold text-lg mb-4" style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 1.4rem;">💡</span>
+        解决方案
+      </h3>
+      <div class="flex-col gap-3">
+        <div class="sketch-note" style="transform: rotate(0.3deg);">
+          <div class="font-bold text-sm">方案 1</div>
+          <div class="text-sm opacity-70 mt-2">描述方案思路、预期效果和所需资源</div>
+        </div>
+        <div class="sketch-note" style="transform: rotate(-0.6deg);">
+          <div class="font-bold text-sm">方案 2</div>
+          <div class="text-sm opacity-70 mt-2">描述方案思路、预期效果和所需资源</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="sketch-divider max-w-4xl mx-auto">
+
+
+<!-- === 时间线 / 里程碑 === -->
+<section class="max-w-3xl mx-auto mb-8">
+  <div class="text-center mb-8">
+    <h2 class="marker-title">里程碑</h2>
+    <p class="marker-sub">Timeline · 关键节点</p>
+  </div>
+
+  <div class="flex-col gap-4" style="position: relative; padding-left: 36px;">
+    <!-- 时间线竖线 -->
+    <div style="position: absolute; left: 14px; top: 8px; bottom: 8px; width: 2.5px; background: linear-gradient(180deg, var(--wc-blue), var(--wc-orange), var(--wc-green)); border-radius: 2px; opacity: 0.4;"></div>
+
+    <!-- 里程碑 1 -->
+    <div class="sketch-card blue-wash" style="position: relative;">
+      <div style="position: absolute; left: -30px; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; background: var(--wc-blue); border: 2px solid var(--ink); border-radius: 50%;"></div>
+      <div class="flex gap-3 items-start" style="flex-wrap: wrap;">
+        <span class="sketch-badge" style="transform: none;">Q1</span>
+        <div>
+          <div class="font-bold">里程碑名称</div>
+          <div class="text-sm opacity-70 mt-2">描述该里程碑的具体内容和完成状态</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 里程碑 2 -->
+    <div class="sketch-card orange-wash" style="position: relative;">
+      <div style="position: absolute; left: -30px; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; background: var(--wc-orange); border: 2px solid var(--ink); border-radius: 50%;"></div>
+      <div class="flex gap-3 items-start" style="flex-wrap: wrap;">
+        <span class="sketch-badge" style="transform: rotate(0.5deg);">Q2</span>
+        <div>
+          <div class="font-bold">里程碑名称</div>
+          <div class="text-sm opacity-70 mt-2">描述该里程碑的具体内容和完成状态</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 里程碑 3 -->
+    <div class="sketch-card green-wash" style="position: relative;">
+      <div style="position: absolute; left: -30px; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; background: var(--wc-green); border: 2px solid var(--ink); border-radius: 50%;"></div>
+      <div class="flex gap-3 items-start" style="flex-wrap: wrap;">
+        <span class="sketch-badge" style="transform: rotate(-0.8deg); background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%); border-color: var(--wc-green); color: #155724;">Q3</span>
+        <div>
+          <div class="font-bold">里程碑名称</div>
+          <div class="text-sm opacity-70 mt-2">描述该里程碑的具体内容和完成状态</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="sketch-divider max-w-4xl mx-auto">
+
+
+<!-- === 结论横幅 === -->
+<section class="max-w-4xl mx-auto mb-8">
+  <div class="sketch-conclusion" style="margin-top: 0;">
+    <span class="highlight">总结：</span>在此填写报告的核心结论。用一句话概括最重要的发现或建议，让读者即使只看这一行也能抓住重点。
+  </div>
+</section>
+
+
+<!-- === 附录 / 下一步 === -->
+<section class="max-w-4xl mx-auto mb-8">
+  <div class="sketch-card">
+    <h2 class="marker-title" style="font-size: var(--fs-h2);">下一步行动</h2>
+    <p class="marker-sub">Next Steps</p>
+    <div class="grid-2 gap-3 mt-6">
+      <div class="sketch-note" style="transform: rotate(-0.3deg);">
+        <div class="font-bold text-sm">行动项 1</div>
+        <div class="text-sm opacity-70 mt-2">负责人 · 截止日期 · 预期产出</div>
+      </div>
+      <div class="sketch-note" style="transform: rotate(0.5deg);">
+        <div class="font-bold text-sm">行动项 2</div>
+        <div class="text-sm opacity-70 mt-2">负责人 · 截止日期 · 预期产出</div>
+      </div>
+      <div class="sketch-note" style="transform: rotate(0.2deg);">
+        <div class="font-bold text-sm">行动项 3</div>
+        <div class="text-sm opacity-70 mt-2">负责人 · 截止日期 · 预期产出</div>
+      </div>
+      <div class="sketch-note" style="transform: rotate(-0.4deg);">
+        <div class="font-bold text-sm">行动项 4</div>
+        <div class="text-sm opacity-70 mt-2">负责人 · 截止日期 · 预期产出</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<footer class="text-center text-sm opacity-50 mt-16 pb-8">
+  <p>手绘水彩报告模板 · 替换占位内容即可使用</p>
+</footer>
+
+</body>
+</html>

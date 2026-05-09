@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>年度回顾与展望</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f0f0f;
+            --bg-secondary: #1a1a1a;
+            --bg-card: #1a1a1a;
+            --text-primary: #e8e4df;
+            --text-secondary: #9a9590;
+            --accent: #d4a574;
+            --accent-light: #e0bc94;
+            --accent-glow: rgba(212, 165, 116, 0.4);
+            --danger: #ff4757;
+            --warning: #ffa502;
+            --success: #2ed573;
+            --info: #3498db;
+            --font-display: 'Cormorant', 'Noto Serif SC', serif;
+            --font-body: 'IBM Plex Sans', 'Noto Sans SC', sans-serif;
+            --title-size: clamp(2rem, 5vw, 4rem);
+            --h2-size: clamp(1.5rem, 4vw, 3rem);
+            --h3-size: clamp(1.1rem, 2.5vw, 1.5rem);
+            --body-size: clamp(0.85rem, 1.5vw, 1.1rem);
+            --small-size: clamp(0.7rem, 1vw, 0.9rem);
+            --slide-padding: clamp(1.5rem, 5vw, 5rem);
+            --content-gap: clamp(0.75rem, 2vw, 2rem);
+            --element-gap: clamp(0.5rem, 1.5vw, 1.25rem);
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --duration-normal: 0.6s;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow-x: hidden; scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+        body { font-family: var(--font-body); background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; }
+        .slide { width: 100vw; height: 100vh; height: 100dvh; overflow: hidden; scroll-snap-align: start; display: flex; flex-direction: column; position: relative; background: var(--bg-primary); }
+        .slide-content { flex: 1; display: flex; flex-direction: column; justify-content: center; max-height: 100%; overflow: hidden; padding: var(--slide-padding); }
+        .progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); width: 0%; z-index: 1000; transition: width 0.3s ease; box-shadow: 0 0 10px var(--accent-glow); }
+        .nav-dots { position: fixed; right: clamp(1rem, 2vw, 2rem); top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 0.75rem; z-index: 1000; }
+        .nav-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255, 255, 255, 0.3); cursor: pointer; transition: all 0.3s ease; border: none; }
+        .nav-dot.active { background: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
+        .slide-number { position: absolute; bottom: clamp(1rem, 2vw, 2rem); right: clamp(1rem, 2vw, 2rem); font-size: var(--small-size); color: var(--text-secondary); font-family: var(--font-display); }
+        h1 { font-family: var(--font-display); font-size: var(--title-size); font-weight: 700; line-height: 1.1; margin-bottom: var(--content-gap); }
+        h2 { font-family: var(--font-display); font-size: var(--h2-size); font-weight: 600; line-height: 1.2; margin-bottom: var(--content-gap); }
+        h3 { font-family: var(--font-display); font-size: var(--h3-size); font-weight: 500; line-height: 1.3; }
+        p, li { font-size: var(--body-size); color: var(--text-secondary); }
+        .subtitle { font-size: clamp(1rem, 2vw, 1.5rem); color: var(--text-secondary); font-weight: 400; }
+        .slide-header { display: flex; align-items: center; gap: var(--element-gap); margin-bottom: var(--content-gap); }
+        .slide-icon { width: clamp(2.5rem, 5vw, 4rem); height: clamp(2.5rem, 5vw, 4rem); background: var(--accent); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: clamp(1.25rem, 2.5vw, 2rem); flex-shrink: 0; }
+        .slide-header-text { display: flex; flex-direction: column; gap: 0.25rem; }
+        .slide-header h2 { margin-bottom: 0; }
+        .slide-subtitle { font-size: var(--small-size); color: var(--text-secondary); }
+        .card { background: var(--bg-card); border-radius: 16px; padding: clamp(1rem, 2vw, 1.5rem); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .card-urgent { border-left: 4px solid var(--danger); background: linear-gradient(135deg, var(--bg-card) 0%, rgba(255, 71, 87, 0.1) 100%); }
+        .card-warning { border-left: 4px solid var(--warning); background: linear-gradient(135deg, var(--bg-card) 0%, rgba(255, 165, 2, 0.1) 100%); }
+        .callout { padding: clamp(0.75rem, 1.5vw, 1rem) clamp(1rem, 2vw, 1.5rem); border-radius: 10px; display: flex; align-items: flex-start; gap: 0.75rem; font-size: var(--body-size); }
+        .callout-danger { background: rgba(255, 71, 87, 0.15); border: 1px solid rgba(255, 71, 87, 0.3); color: var(--danger); }
+        .callout-warning { background: rgba(255, 165, 2, 0.15); border: 1px solid rgba(255, 165, 2, 0.3); color: var(--warning); }
+        .callout-info { background: rgba(52, 152, 219, 0.15); border: 1px solid rgba(52, 152, 219, 0.3); color: var(--info); }
+        .callout-success { background: rgba(46, 213, 115, 0.15); border: 1px solid rgba(46, 213, 115, 0.3); color: var(--success); }
+        .step-flow { display: flex; flex-direction: column; gap: var(--element-gap); }
+        .step { display: flex; align-items: flex-start; gap: var(--element-gap); }
+        .step-number { width: clamp(2rem, 4vw, 2.5rem); height: clamp(2rem, 4vw, 2.5rem); background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: var(--body-size); color: var(--bg-primary); flex-shrink: 0; }
+        .step-content { flex: 1; padding-top: 0.25rem; }
+        .step-content h4 { font-size: var(--body-size); font-weight: 600; margin-bottom: 0.25rem; }
+        .step-content p { font-size: var(--small-size); }
+        .pricing-table { width: 100%; border-collapse: collapse; font-size: var(--body-size); }
+        .pricing-table th, .pricing-table td { padding: clamp(0.5rem, 1vw, 0.75rem) clamp(0.75rem, 1.5vw, 1rem); text-align: left; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .pricing-table th { font-family: var(--font-display); font-weight: 600; color: var(--accent); font-size: var(--small-size); text-transform: uppercase; letter-spacing: 0.05em; }
+        .pricing-table td { color: var(--text-secondary); }
+        .price-down { color: var(--success); }
+        .stat-row { display: flex; gap: var(--content-gap); flex-wrap: wrap; }
+        .stat-item { flex: 1; min-width: clamp(120px, 20vw, 200px); text-align: center; padding: clamp(1rem, 2vw, 1.5rem); background: var(--bg-card); border-radius: 12px; }
+        .stat-value { font-family: var(--font-display); font-size: var(--h2-size); font-weight: 700; color: var(--accent); line-height: 1; margin-bottom: 0.5rem; }
+        .stat-label { font-size: var(--small-size); color: var(--text-secondary); }
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: var(--element-gap); }
+        .summary-item { display: flex; align-items: flex-start; gap: 0.75rem; padding: clamp(0.75rem, 1.5vw, 1rem); background: var(--bg-card); border-radius: 10px; border-left: 3px solid var(--accent); }
+        .summary-icon { width: 2rem; height: 2rem; background: rgba(212, 165, 116, 0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+        .summary-text { flex: 1; }
+        .summary-text h4 { font-size: var(--body-size); font-weight: 600; margin-bottom: 0.25rem; }
+        .summary-text p { font-size: var(--small-size); }
+        .bullet-list { display: flex; flex-direction: column; gap: var(--element-gap); list-style: none; }
+        .bullet-list li { display: flex; align-items: flex-start; gap: 0.75rem; padding-left: 0.5rem; }
+        .bullet-list li::before { content: ''; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; margin-top: 0.5rem; flex-shrink: 0; }
+        .reveal { opacity: 0; transform: translateY(30px); transition: opacity var(--duration-normal) var(--ease-out-expo), transform var(--duration-normal) var(--ease-out-expo); }
+        .slide.visible .reveal { opacity: 1; transform: translateY(0); }
+        .reveal:nth-child(1) { transition-delay: 0.05s; }
+        .reveal:nth-child(2) { transition-delay: 0.1s; }
+        .reveal:nth-child(3) { transition-delay: 0.15s; }
+        .reveal:nth-child(4) { transition-delay: 0.2s; }
+        .cover-slide { background: linear-gradient(135deg, var(--bg-primary) 0%, #1a1208 100%); justify-content: center; align-items: center; text-align: center; }
+        .cover-slide::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at 30% 30%, rgba(212, 165, 116, 0.1) 0%, transparent 50%); animation: rotate 30s linear infinite; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .cover-content { position: relative; z-index: 1; }
+        .cover-badge { display: inline-block; padding: 0.5rem 1.5rem; background: var(--accent); border-radius: 50px; font-size: var(--small-size); font-weight: 600; color: var(--bg-primary); margin-bottom: var(--content-gap); }
+        .cover-slide h1 { color: var(--text-primary); }
+        .cover-slide h1.accent { color: var(--accent); }
+        .ending-slide { background: linear-gradient(135deg, #1a1208 0%, var(--bg-primary) 100%); justify-content: center; align-items: center; text-align: center; }
+        .ending-slide::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at center, rgba(212, 165, 116, 0.15) 0%, transparent 60%); }
+        .ending-content { position: relative; z-index: 1; }
+        .keyboard-hint { position: fixed; bottom: clamp(1rem, 2vw, 2rem); left: 50%; transform: translateX(-50%); display: flex; gap: 1rem; font-size: var(--small-size); color: var(--text-secondary); opacity: 0.5; z-index: 100; }
+        .key { display: inline-flex; align-items: center; justify-content: center; min-width: 1.5rem; height: 1.5rem; padding: 0 0.4rem; background: var(--bg-card); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 4px; font-family: var(--font-display); font-size: 0.7rem; margin-right: 0.25rem; }
+        @media (max-height: 700px) { :root { --slide-padding: clamp(1rem, 3vw, 2.5rem); --content-gap: clamp(0.5rem, 1.5vw, 1.25rem); --element-gap: clamp(0.3rem, 1vw, 0.75rem); } .nav-dots { display: none; } .keyboard-hint { display: none; } }
+        @media (max-width: 600px) { .nav-dots { right: 0.5rem; } .nav-dot { width: 8px; height: 8px; } .summary-grid { grid-template-columns: 1fr; } .stat-row { flex-direction: column; } }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; } html { scroll-behavior: auto; } }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <nav class="nav-dots" id="navDots"></nav>
+    <div class="keyboard-hint"><span><span class="key">↑</span><span class="key">↓</span> 翻页</span><span><span class="key">Space</span> 下一页</span></div>
+
+    <!-- 封面页 -->
+    <section class="slide cover-slide" data-slide="1">
+        <div class="cover-content">
+            <div class="cover-badge reveal">年度回顾与展望</div>
+            <h1 class="reveal">年度回顾与展望</h1>
+            <p class="subtitle reveal">2026年 · 携手共进 再创辉煌</p>
+        </div>
+        <div class="slide-number">1 / 8</div>
+    </section>
+
+    <!-- 年度里程碑 -->
+    <section class="slide" data-slide="2">
+        <div class="slide-content">
+            <div class="slide-header">
+                <div class="slide-icon reveal">🏛️</div>
+                <div class="slide-header-text">
+                    <h2 class="reveal">年度里程碑</h2>
+                    <span class="slide-subtitle reveal">回顾 · 突破 · 成长</span>
+                </div>
+            </div>
+            <div class="step-flow reveal" style="margin-top: var(--content-gap);">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>第一季度：奠定基础</h4>
+                        <p>完善组织架构，明确战略方向</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>第二季度：加速增长</h4>
+                        <p>推出新产品线，市场份额稳步提升</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>第三季度：关键突破</h4>
+                        <p>核心指标超额完成，团队士气高涨</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h4>第四季度：收官冲刺</h4>
+                        <p>全力冲刺年度目标，为来年蓄力</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">2 / 8</div>
+    </section>
+
+    <!-- 核心数据 -->
+    <section class="slide" data-slide="3">
+        <div class="slide-content">
+            <div class="slide-header">
+                <div class="slide-icon reveal">📊</div>
+                <div class="slide-header-text">
+                    <h2 class="reveal">核心数据</h2>
+                    <span class="slide-subtitle reveal">数据驱动 · 精准决策</span>
+                </div>
+            </div>
+            <div class="stat-row reveal" style="margin-top: var(--content-gap);">
+                <div class="stat-item">
+                    <div class="stat-value">128%</div>
+                    <div class="stat-label">年度目标达成率</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">36+</div>
+                    <div class="stat-label">新拓展门店数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">95%</div>
+                    <div class="stat-label">客户满意度</div>
+                </div>
+            </div>
+            <div class="callout callout-success reveal" style="margin-top: var(--content-gap);">
+                <span>📈</span>
+                <div><strong>亮眼成绩：</strong>全年营收同比增长42%，团队规模扩大至150人，品牌影响力显著提升。</div>
+            </div>
+        </div>
+        <div class="slide-number">3 / 8</div>
+    </section>
+
+    <!-- 战略规划 -->
+    <section class="slide" data-slide="4">
+        <div class="slide-content">
+            <div class="slide-header">
+                <div class="slide-icon reveal">🗺️</div>
+                <div class="slide-header-text">
+                    <h2 class="reveal">战略规划</h2>
+                    <span class="slide-subtitle reveal">展望未来 · 擘画蓝图</span>
+                </div>
+            </div>
+            <div class="callout callout-info reveal" style="margin-bottom: var(--content-gap);">
+                <span>💡</span>
+                <div><strong>核心愿景：</strong>以数字化转型为引擎，打造行业领先的零售生态体系。</div>
+            </div>
+            <div class="summary-grid reveal">
+                <div class="summary-item">
+                    <div class="summary-icon">🎯</div>
+                    <div class="summary-text">
+                        <h4>市场深耕</h4>
+                        <p>聚焦核心区域，巩固市场领先地位</p>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-icon">🔬</div>
+                    <div class="summary-text">
+                        <h4>技术创新</h4>
+                        <p>加大研发投入，推动产品迭代升级</p>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-icon">🌱</div>
+                    <div class="summary-text">
+                        <h4>人才培育</h4>
+                        <p>构建人才梯队，激发组织活力</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">4 / 8</div>
+    </section>
+
+    <!-- 行业趋势 -->
+    <section class="slide" data-slide="5">
+        <div class="slide-content">
+            <div class="slide-header">
+                <div class="slide-icon reveal">🔭</div>
+                <div class="slide-header-text">
+                    <h2 class="reveal">行业趋势</h2>
+                    <span class="slide-subtitle reveal">洞察先机 · 把握机遇</span>
+                </div>
+            </div>
+            <div class="summary-grid reveal" style="margin-top: var(--content-gap);">
+                <div class="summary-item">
+                    <div class="summary-icon">🤖</div>
+                    <div class="summary-text">
+                        <h4>智能化升级</h4>
+                        <p>AI赋能运营，提升人效与坪效</p>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-icon">🌐</div>
+                    <div class="summary-text">
+                        <h4>全渠道融合</h4>
+                        <p>线上线下一体化，无缝衔接用户体验</p>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-icon">♻️</div>
+                    <div class="summary-text">
+                        <h4>可持续发展</h4>
+                        <p>绿色运营理念，践行企业社会责任</p>
+                    </div>
+                </div>
+            </div>
+            <div class="callout callout-warning reveal" style="margin-top: var(--content-gap);">
+                <span>⚡</span>
+                <div><strong>关键洞察：</strong>行业正经历深刻变革，唯有主动拥抱变化，方能立于不败之地。</div>
+            </div>
+        </div>
+        <div class="slide-number">5 / 8</div>
+    </section>
+
+    <!-- 资源配置 -->
+    <section class="slide" data-slide="6">
+        <div class="slide-content">
+            <div class="slide-header">
+                <div class="slide-icon reveal">⚙️</div>
+                <div class="slide-header-text">
+                    <h2 class="reveal">资源配置</h2>
+                    <span class="slide-subtitle reveal">精打细算 · 效率优先</span>
+                </div>
+            </div>
+            <table class="pricing-table reveal" style="margin-top: var(--content-gap);">
+                <thead>
+                    <tr>
+                        <th>领域</th>
+                        <th>预算增幅</th>
+                        <th>预期回报</th>
+                        <th>优先级</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>数字化建设</td>
+                        <td class="price-down">↑35%</td>
+                        <td>运营效率提升20%</td>
+                        <td>高</td>
+                    </tr>
+                    <tr>
+                        <td>人才引进</td>
+                        <td class="price-down">↑25%</td>
+                        <td>核心岗位到岗率98%</td>
+                        <td>高</td>
+                    </tr>
+                    <tr>
+                        <td>品牌营销</td>
+                        <td class="price-down">↑15%</td>
+                        <td>品牌知名度提升30%</td>
+                        <td>中</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="callout callout-success reveal" style="margin-top: var(--content-gap);">
+                <span>✅</span>
+                <div><strong>资源保障：</strong>合理配置资源，确保每一分投入都产生最大价值。</div>
+            </div>
+        </div>
+        <div class="slide-number">6 / 8</div>
+    </section>
+
+    <!-- 团队建设 -->
+    <section class="slide" data-slide="7">
+        <div class="slide-content">
+            <div class="slide-header">
+                <div class="slide-icon reveal">🤝</div>
+                <div class="slide-header-text">
+                    <h2 class="reveal">团队建设</h2>
+                    <span class="slide-subtitle reveal">凝聚力量 · 共同成长</span>
+                </div>
+            </div>
+            <div class="stat-row reveal" style="margin-top: var(--content-gap);">
+                <div class="stat-item">
+                    <div class="stat-value">150+</div>
+                    <div class="stat-label">团队规模</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">92%</div>
+                    <div class="stat-label">员工留存率</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">48</div>
+                    <div class="stat-label">培训场次</div>
+                </div>
+            </div>
+            <div class="card reveal" style="margin-top: var(--content-gap);">
+                <h3>人才发展计划</h3>
+                <ul class="bullet-list" style="margin-top: var(--element-gap);">
+                    <li>建立完善的导师制度，加速新人成长</li>
+                    <li>每季度开展领导力培训，储备管理人才</li>
+                    <li>推行轮岗机制，培养复合型人才</li>
+                </ul>
+            </div>
+        </div>
+        <div class="slide-number">7 / 8</div>
+    </section>
+
+    <!-- 结束页 -->
+    <section class="slide ending-slide" data-slide="8">
+        <div class="ending-content">
+            <h2 class="reveal" style="font-size: var(--h2-size);">携手共进 再创辉煌</h2>
+            <p class="subtitle reveal" style="margin-top: var(--element-gap);">年度回顾与展望 · 2026年</p>
+            <p class="reveal" style="color: var(--accent); margin-top: var(--content-gap); font-family: var(--font-display); font-weight: 600;">
+                以梦为马 不负韶华
+            </p>
+        </div>
+        <div class="slide-number">8 / 8</div>
+    </section>
+
+    <script>
+        class SlidePresentation {
+            constructor() {
+                this.slides = document.querySelectorAll('.slide');
+                this.totalSlides = this.slides.length;
+                this.currentSlide = 0;
+                this.isScrolling = false;
+                this.scrollTimeout = null;
+                this.init();
+            }
+            init() {
+                this.setupIntersectionObserver();
+                this.setupKeyboardNav();
+                this.setupTouchNav();
+                this.setupProgressBar();
+                this.setupNavDots();
+                this.setupWheelNav();
+                this.updateActiveSlide(0);
+            }
+            setupIntersectionObserver() {
+                const options = { root: null, rootMargin: '0px', threshold: 0.5 };
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            const slideIndex = parseInt(entry.target.dataset.slide) - 1;
+                            this.currentSlide = slideIndex;
+                            this.updateProgressBar();
+                            this.updateNavDots();
+                        }
+                    });
+                }, options);
+                this.slides.forEach(slide => observer.observe(slide));
+            }
+            setupKeyboardNav() {
+                document.addEventListener('keydown', (e) => {
+                    switch(e.key) {
+                        case 'ArrowDown': case 'ArrowRight': case ' ': case 'PageDown':
+                            e.preventDefault(); this.nextSlide(); break;
+                        case 'ArrowUp': case 'ArrowLeft': case 'PageUp':
+                            e.preventDefault(); this.prevSlide(); break;
+                        case 'Home':
+                            e.preventDefault(); this.goToSlide(0); break;
+                        case 'End':
+                            e.preventDefault(); this.goToSlide(this.totalSlides - 1); break;
+                    }
+                });
+            }
+            setupWheelNav() {
+                document.addEventListener('wheel', (e) => {
+                    if (this.isScrolling) return;
+                    const delta = e.deltaY;
+                    if (Math.abs(delta) > 50) {
+                        this.isScrolling = true;
+                        if (delta > 0) this.nextSlide();
+                        else this.prevSlide();
+                        clearTimeout(this.scrollTimeout);
+                        this.scrollTimeout = setTimeout(() => { this.isScrolling = false; }, 800);
+                    }
+                }, { passive: true });
+            }
+            setupTouchNav() {
+                let touchStartY = 0;
+                document.addEventListener('touchstart', (e) => { touchStartY = e.changedTouches[0].screenY; }, { passive: true });
+                document.addEventListener('touchend', (e) => {
+                    const touchEndY = e.changedTouches[0].screenY;
+                    const diff = touchStartY - touchEndY;
+                    if (Math.abs(diff) > 50) {
+                        if (diff > 0) this.nextSlide();
+                        else this.prevSlide();
+                    }
+                }, { passive: true });
+            }
+            setupProgressBar() {
+                this.progressBar = document.getElementById('progressBar');
+                this.updateProgressBar();
+            }
+            updateProgressBar() {
+                const progress = ((this.currentSlide + 1) / this.totalSlides) * 100;
+                this.progressBar.style.width = progress + '%';
+            }
+            setupNavDots() {
+                this.navDots = document.getElementById('navDots');
+                for (let i = 0; i < this.totalSlides; i++) {
+                    const dot = document.createElement('button');
+                    dot.className = 'nav-dot';
+                    dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+                    dot.addEventListener('click', () => this.goToSlide(i));
+                    this.navDots.appendChild(dot);
+                }
+                this.updateNavDots();
+            }
+            updateNavDots() {
+                const dots = this.navDots.querySelectorAll('.nav-dot');
+                dots.forEach((dot, index) => { dot.classList.toggle('active', index === this.currentSlide); });
+            }
+            updateActiveSlide(index) {
+                this.currentSlide = index;
+                this.updateProgressBar();
+                this.updateNavDots();
+                if (this.slides[index]) this.slides[index].classList.add('visible');
+            }
+            nextSlide() { if (this.currentSlide < this.totalSlides - 1) this.goToSlide(this.currentSlide + 1); }
+            prevSlide() { if (this.currentSlide > 0) this.goToSlide(this.currentSlide - 1); }
+            goToSlide(index) {
+                if (index < 0 || index >= this.totalSlides) return;
+                this.slides[index].scrollIntoView({ behavior: 'smooth' });
+                this.updateActiveSlide(index);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', () => { new SlidePresentation(); });
+    </script>
+</body>
+</html>

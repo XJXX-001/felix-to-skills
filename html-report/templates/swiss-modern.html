@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Swiss Modern Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   0. CSS VARIABLES — Swiss Modern Preset
+   ============================================================ */
+:root {
+    --bg-primary: #ffffff;
+    --bg-card: #f5f5f5;
+    --bg-section-alt: #fafafa;
+    --text-primary: #1a1a1a;
+    --text-secondary: #666666;
+    --accent: #ff3300;
+    --accent-glow: rgba(255, 51, 0, 0.15);
+    --success: #2ed573;
+    --warning: #ffa502;
+    --danger: #ff4757;
+    --info: #3498db;
+    --font-display: 'Archivo', 'Noto Sans SC', sans-serif;
+    --font-body: 'Nunito', 'Noto Sans SC', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --chart-1: var(--accent);
+    --chart-2: var(--info);
+    --chart-3: var(--warning);
+    --chart-4: var(--success);
+    --chart-5: #e056a0;
+    --chart-neutral: var(--bg-card);
+    --radius: 6px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 30px rgba(0,0,0,0.1);
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-2xl: 3rem;
+    --space-3xl: 4rem;
+}
+
+/* ============================================================
+   1. BASE RESET
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+    font-family: var(--font-body);
+    color: var(--text-primary);
+    background: var(--bg-primary);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+img, svg { max-width: 100%; display: block; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+table { border-collapse: collapse; width: 100%; }
+button { font: inherit; cursor: pointer; }
+
+/* ============================================================
+   2. CONTAINER
+   ============================================================ */
+.report-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 var(--space-xl);
+}
+
+/* ============================================================
+   3. TYPOGRAPHY SCALE (fluid with clamp)
+   ============================================================ */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+}
+h1 { font-size: clamp(2rem, 4vw, 3rem); }
+h2 { font-size: clamp(1.5rem, 3vw, 2.25rem); }
+h3 { font-size: clamp(1.25rem, 2.5vw, 1.75rem); }
+h4 { font-size: clamp(1.1rem, 2vw, 1.35rem); }
+h5 { font-size: clamp(1rem, 1.5vw, 1.15rem); }
+h6 { font-size: 1rem; }
+p { margin-bottom: var(--space-md); color: var(--text-secondary); }
+small { font-size: 0.85rem; color: var(--text-secondary); }
+strong { font-weight: 600; color: var(--text-primary); }
+code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    background: var(--bg-card);
+    padding: 0.15em 0.4em;
+    border-radius: var(--radius);
+}
+
+/* ============================================================
+   4. COVER SECTION
+   ============================================================ */
+.report-cover {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, var(--accent) 100%);
+    color: #ffffff;
+    padding: var(--space-3xl) 0;
+    position: relative;
+    overflow: hidden;
+}
+.report-cover::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: rgba(255, 51, 0, 0.08);
+    pointer-events: none;
+}
+.report-cover::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: -10%;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.03);
+    pointer-events: none;
+}
+.cover-inner {
+    position: relative;
+    z-index: 1;
+}
+.cover-tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    margin-bottom: var(--space-lg);
+}
+.cover-title {
+    color: #ffffff;
+    margin-bottom: var(--space-md);
+}
+.cover-subtitle {
+    font-size: clamp(1.05rem, 2vw, 1.3rem);
+    color: rgba(255,255,255,0.7);
+    max-width: 640px;
+    line-height: 1.6;
+    font-weight: 400;
+}
+.cover-meta {
+    margin-top: var(--space-xl);
+    display: flex;
+    gap: var(--space-xl);
+    flex-wrap: wrap;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.5);
+}
+.cover-meta span {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+.cover-accent-bar {
+    width: 60px;
+    height: 4px;
+    background: var(--accent);
+    margin-bottom: var(--space-lg);
+    border-radius: 2px;
+}
+
+/* ============================================================
+   5. SECTION
+   ============================================================ */
+.report-section {
+    padding: var(--space-3xl) 0;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.report-section:last-child { border-bottom: none; }
+.report-section.alt {
+    background: var(--bg-section-alt);
+}
+.section-heading {
+    margin-bottom: var(--space-2xl);
+}
+.section-heading h2 {
+    margin-bottom: var(--space-sm);
+}
+.section-heading p {
+    font-size: 1.05rem;
+    max-width: 640px;
+}
+.section-heading .accent-line {
+    width: 40px;
+    height: 3px;
+    background: var(--accent);
+    margin-bottom: var(--space-md);
+    border-radius: 2px;
+}
+
+/* ============================================================
+   6. CARDS & STAT CARDS
+   ============================================================ */
+.stat-card {
+    background: var(--bg-primary);
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: var(--radius);
+    padding: var(--space-xl);
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+.stat-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+.stat-card .stat-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-sm);
+}
+.stat-card .stat-value {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+    margin-bottom: var(--space-xs);
+}
+.stat-card .stat-change {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+.stat-card .stat-change.positive { color: var(--success); }
+.stat-card .stat-change.negative { color: var(--danger); }
+.stat-card .stat-change.neutral { color: var(--text-secondary); }
+
+/* ============================================================
+   7. SUMMARY GRID
+   ============================================================ */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-lg);
+}
+
+/* ============================================================
+   8. CALLOUT
+   ============================================================ */
+.callout {
+    padding: var(--space-lg) var(--space-xl);
+    border-radius: var(--radius);
+    border-left: 4px solid var(--info);
+    background: rgba(52, 152, 219, 0.06);
+    margin-bottom: var(--space-xl);
+}
+.callout.success { border-color: var(--success); background: rgba(46, 213, 115, 0.06); }
+.callout.warning { border-color: var(--warning); background: rgba(255, 165, 2, 0.06); }
+.callout.danger { border-color: var(--danger); background: rgba(255, 71, 87, 0.06); }
+.callout.accent { border-color: var(--accent); background: var(--accent-glow); }
+.callout strong { display: block; margin-bottom: var(--space-xs); }
+.callout p { margin-bottom: 0; }
+
+/* ============================================================
+   9. STEP FLOW
+   ============================================================ */
+.step-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+    margin: var(--space-xl) 0;
+}
+.step-flow::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 24px;
+    bottom: 24px;
+    width: 2px;
+    background: rgba(0,0,0,0.08);
+}
+.step-item {
+    display: flex;
+    gap: var(--space-lg);
+    padding: var(--space-lg) 0;
+    position: relative;
+}
+.step-number {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #ffffff;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+}
+.step-content h4 {
+    margin-bottom: var(--space-xs);
+}
+.step-content p {
+    margin-bottom: 0;
+    font-size: 0.95rem;
+}
+
+/* ============================================================
+   10. COMPARISON TABLE
+   ============================================================ */
+.comparison-table {
+    width: 100%;
+    overflow-x: auto;
+    margin: var(--space-xl) 0;
+}
+.comparison-table table {
+    min-width: 600px;
+}
+.comparison-table thead th {
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-secondary);
+    padding: var(--space-md) var(--space-lg);
+    text-align: left;
+    border-bottom: 2px solid var(--text-primary);
+}
+.comparison-table tbody td {
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
+.comparison-table tbody tr:hover {
+    background: var(--bg-section-alt);
+}
+
+/* ============================================================
+   11. BULLET LIST
+   ============================================================ */
+.bullet-list {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-lg) 0;
+}
+.bullet-list li {
+    padding: var(--space-sm) 0 var(--space-sm) var(--space-xl);
+    position: relative;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+.bullet-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.75em;
+    width: 8px;
+    height: 2px;
+    background: var(--accent);
+}
+
+/* ============================================================
+   12. STATUS BADGE
+   ============================================================ */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.25em 0.75em;
+    border-radius: 100px;
+    white-space: nowrap;
+}
+.status-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+.status-badge.success { background: rgba(46,213,115,0.12); color: #1a8a4a; }
+.status-badge.success::before { background: var(--success); }
+.status-badge.warning { background: rgba(255,165,2,0.12); color: #b37700; }
+.status-badge.warning::before { background: var(--warning); }
+.status-badge.danger { background: rgba(255,71,87,0.12); color: #c0392b; }
+.status-badge.danger::before { background: var(--danger); }
+.status-badge.info { background: rgba(52,152,219,0.12); color: #2471a3; }
+.status-badge.info::before { background: var(--info); }
+.status-badge.neutral { background: var(--bg-card); color: var(--text-secondary); }
+.status-badge.neutral::before { background: var(--text-secondary); }
+
+/* ============================================================
+   13. QUOTE BLOCK
+   ============================================================ */
+.quote-block {
+    padding: var(--space-xl) var(--space-2xl);
+    border-left: 4px solid var(--accent);
+    background: var(--accent-glow);
+    margin: var(--space-xl) 0;
+    border-radius: 0 var(--radius) var(--radius) 0;
+}
+.quote-block p {
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+}
+.quote-block cite {
+    font-size: 0.85rem;
+    font-style: normal;
+    color: var(--text-secondary);
+}
+
+/* ============================================================
+   14. CODE BLOCK
+   ============================================================ */
+.code-block {
+    background: #1a1a1a;
+    color: #e0e0e0;
+    padding: var(--space-xl);
+    border-radius: var(--radius);
+    overflow-x: auto;
+    margin: var(--space-xl) 0;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1.7;
+}
+.code-block .comment { color: #666; }
+.code-block .keyword { color: var(--accent); }
+.code-block .string { color: var(--success); }
+
+/* ============================================================
+   15. ENDING SECTION
+   ============================================================ */
+.ending-section {
+    text-align: center;
+    padding: var(--space-3xl) 0;
+    background: linear-gradient(135deg, var(--bg-section-alt) 0%, var(--bg-primary) 100%);
+}
+.ending-section h2 {
+    margin-bottom: var(--space-md);
+}
+.ending-section p {
+    max-width: 520px;
+    margin: 0 auto var(--space-xl);
+}
+.ending-accent {
+    width: 40px;
+    height: 3px;
+    background: var(--accent);
+    margin: 0 auto var(--space-xl);
+    border-radius: 2px;
+}
+
+/* ============================================================
+   16. HR
+   ============================================================ */
+hr {
+    border: none;
+    height: 1px;
+    background: rgba(0,0,0,0.08);
+    margin: var(--space-2xl) 0;
+}
+
+/* ============================================================
+   17. GRID UTILITIES
+   ============================================================ */
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-lg); }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-lg); }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-lg); }
+
+/* ============================================================
+   18. CHART CSS — Bar Horizontal
+   ============================================================ */
+.bar-horizontal { margin: var(--space-xl) 0; }
+.bar-horizontal .bar-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+.bar-horizontal .bar-label {
+    width: 100px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-align: right;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+}
+.bar-horizontal .bar-track {
+    flex: 1;
+    height: 28px;
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    overflow: hidden;
+    position: relative;
+}
+.bar-horizontal .bar-fill {
+    height: 100%;
+    border-radius: var(--radius);
+    transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
+    position: relative;
+}
+.bar-horizontal .bar-value {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    width: 50px;
+    flex-shrink: 0;
+}
+
+/* ============================================================
+   19. CHART CSS — Bar Vertical
+   ============================================================ */
+.bar-vertical {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-md);
+    height: 240px;
+    padding: var(--space-md) 0;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    margin: var(--space-xl) 0;
+}
+.bar-vertical .bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    height: 100%;
+    justify-content: flex-end;
+}
+.bar-vertical .bar-col .bar-fill {
+    width: 100%;
+    max-width: 48px;
+    border-radius: var(--radius) var(--radius) 0 0;
+    transition: height 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.bar-vertical .bar-col .bar-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    padding-top: var(--space-xs);
+}
+.bar-vertical .bar-col .bar-value {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* ============================================================
+   20. CHART CSS — Stacked Bar
+   ============================================================ */
+.stacked-bar { margin: var(--space-xl) 0; }
+.stacked-bar .bar-row {
+    margin-bottom: var(--space-lg);
+}
+.stacked-bar .bar-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--space-xs);
+}
+.stacked-bar .bar-header .label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+.stacked-bar .bar-header .total {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+.stacked-bar .bar-track {
+    height: 24px;
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    overflow: hidden;
+    display: flex;
+}
+.stacked-bar .bar-segment {
+    height: 100%;
+    transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.stacked-bar .bar-legend {
+    display: flex;
+    gap: var(--space-lg);
+    margin-top: var(--space-md);
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+.stacked-bar .bar-legend span::before {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    margin-right: 0.4em;
+    vertical-align: middle;
+}
+
+/* ============================================================
+   21. CHART CSS — Donut
+   ============================================================ */
+.donut-chart {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2xl);
+    margin: var(--space-xl) 0;
+}
+.donut-chart svg {
+    flex-shrink: 0;
+}
+.donut-chart .donut-legend {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+.donut-chart .legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+.donut-chart .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+.donut-chart .legend-value {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-left: auto;
+    padding-left: var(--space-lg);
+}
+
+/* ============================================================
+   22. CHART CSS — Progress Group
+   ============================================================ */
+.progress-group { margin: var(--space-xl) 0; }
+.progress-group .progress-item {
+    margin-bottom: var(--space-lg);
+}
+.progress-group .progress-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--space-xs);
+}
+.progress-group .progress-header .label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+.progress-group .progress-header .value {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+.progress-group .progress-track {
+    height: 8px;
+    background: var(--bg-card);
+    border-radius: 100px;
+    overflow: hidden;
+}
+.progress-group .progress-fill {
+    height: 100%;
+    border-radius: 100px;
+    transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ============================================================
+   23. CHART CSS — Sparkline
+   ============================================================ */
+.sparkline {
+    display: inline-block;
+    vertical-align: middle;
+}
+.sparkline svg { display: block; }
+
+/* ============================================================
+   24. CHART CSS — Timeline
+   ============================================================ */
+.timeline {
+    position: relative;
+    padding-left: 32px;
+    margin: var(--space-xl) 0;
+}
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 4px;
+    bottom: 4px;
+    width: 2px;
+    background: rgba(0,0,0,0.08);
+}
+.timeline .timeline-item {
+    position: relative;
+    padding-bottom: var(--space-xl);
+}
+.timeline .timeline-item:last-child { padding-bottom: 0; }
+.timeline .timeline-dot {
+    position: absolute;
+    left: -28px;
+    top: 4px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 3px solid var(--accent);
+    background: var(--bg-primary);
+    z-index: 1;
+}
+.timeline .timeline-date {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xs);
+}
+.timeline .timeline-title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-primary);
+    margin-bottom: var(--space-xs);
+}
+.timeline .timeline-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 0;
+}
+
+/* ============================================================
+   25. CHART CSS — Heatmap
+   ============================================================ */
+.heatmap { margin: var(--space-xl) 0; overflow-x: auto; }
+.heatmap-grid {
+    display: grid;
+    gap: 3px;
+}
+.heatmap-cell {
+    aspect-ratio: 1;
+    border-radius: 3px;
+    transition: transform 0.15s ease;
+    position: relative;
+}
+.heatmap-cell:hover { transform: scale(1.15); z-index: 1; }
+.heatmap-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--space-sm);
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+}
+
+/* ============================================================
+   26. CHART CSS — Bullet Chart
+   ============================================================ */
+.bullet-chart { margin: var(--space-xl) 0; }
+.bullet-chart .bullet-item {
+    margin-bottom: var(--space-xl);
+}
+.bullet-chart .bullet-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--space-sm);
+}
+.bullet-chart .bullet-header .label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+.bullet-chart .bullet-header .range {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+.bullet-chart .bullet-track {
+    height: 20px;
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    position: relative;
+    overflow: hidden;
+}
+.bullet-chart .bullet-marker {
+    position: absolute;
+    top: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--text-primary);
+    border-radius: 2px;
+    z-index: 2;
+}
+.bullet-chart .bullet-fill {
+    height: 100%;
+    border-radius: var(--radius);
+    transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ============================================================
+   27. CHART CSS — Score Card
+   ============================================================ */
+.score-card {
+    background: var(--bg-primary);
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: var(--radius);
+    padding: var(--space-xl);
+    text-align: center;
+}
+.score-card .score-ring {
+    margin: 0 auto var(--space-md);
+}
+.score-card .score-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xs);
+}
+.score-card .score-value {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* ============================================================
+   28. CHART CSS — Dashboard Grid
+   ============================================================ */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--space-lg);
+    margin: var(--space-xl) 0;
+}
+
+/* ============================================================
+   29. CHART CSS — Waterfall
+   ============================================================ */
+.waterfall-chart { margin: var(--space-xl) 0; }
+.waterfall-chart .waterfall-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+.waterfall-chart .waterfall-label {
+    width: 120px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-align: right;
+    flex-shrink: 0;
+}
+.waterfall-chart .waterfall-track {
+    flex: 1;
+    height: 28px;
+    position: relative;
+}
+.waterfall-chart .waterfall-bar {
+    position: absolute;
+    height: 100%;
+    border-radius: var(--radius);
+    transition: all 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.waterfall-chart .waterfall-value {
+    width: 60px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    flex-shrink: 0;
+}
+
+/* ============================================================
+   30. REVEAL ANIMATIONS
+   ============================================================ */
+.reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+.chart-reveal {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+    transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.chart-reveal.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* ============================================================
+   31. RESPONSIVE BREAKPOINTS
+   ============================================================ */
+@media (max-width: 768px) {
+    .report-container { padding: 0 var(--space-md); }
+    .report-section { padding: var(--space-2xl) 0; }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .summary-grid { grid-template-columns: 1fr; }
+    .cover-meta { flex-direction: column; gap: var(--space-sm); }
+    .donut-chart { flex-direction: column; align-items: flex-start; }
+    .step-flow::before { left: 18px; }
+    .bar-horizontal .bar-label { width: 70px; font-size: 0.75rem; }
+    .comparison-table { margin: var(--space-lg) calc(-1 * var(--space-md)); padding: 0 var(--space-md); }
+    .waterfall-chart .waterfall-label { width: 80px; font-size: 0.75rem; }
+    .dashboard-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+    html { font-size: 15px; }
+    .report-cover { padding: var(--space-2xl) 0; }
+    .stat-card .stat-value { font-size: 1.6rem; }
+    .bar-vertical { height: 180px; }
+}
+
+/* ============================================================
+   32. REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    .reveal, .chart-reveal {
+        opacity: 1;
+        transform: none;
+    }
+    html { scroll-behavior: auto; }
+}
+
+/* ============================================================
+   33. PRINT STYLES
+   ============================================================ */
+@media print {
+    body { background: #fff; color: #000; font-size: 11pt; }
+    .report-cover {
+        background: #fff !important;
+        color: #000 !important;
+        border-bottom: 3px solid #000;
+    }
+    .cover-title, .section-heading h2, h1, h2, h3, h4 { color: #000 !important; }
+    .cover-subtitle, .cover-meta { color: #333 !important; }
+    .report-section { padding: 1cm 0; border-bottom: 1px solid #ccc; }
+    .report-section.alt { background: none !important; }
+    .stat-card, .callout, .quote-block { border: 1px solid #ccc; }
+    .reveal, .chart-reveal { opacity: 1 !important; transform: none !important; }
+    .bar-horizontal .bar-fill, .bar-vertical .bar-col .bar-fill,
+    .progress-group .progress-fill, .stacked-bar .bar-segment,
+    .bullet-chart .bullet-fill {
+        transition: none !important;
+    }
+    a { color: #000; text-decoration: underline; }
+    .ending-section { background: none !important; }
+    .code-block { background: #eee; color: #000; border: 1px solid #ccc; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     COVER
+     ============================================================ -->
+<section class="report-cover">
+    <div class="report-container cover-inner">
+        <div class="cover-accent-bar"></div>
+        <span class="cover-tag">Swiss Modern Report</span>
+        <h1 class="cover-title">2026 年第一季度<br>业务分析报告</h1>
+        <p class="cover-subtitle">精准、简洁、高效 — 以瑞士现代主义设计理念，呈现关键业务洞察与战略方向。</p>
+        <div class="cover-meta">
+            <span>报告日期：2026 年 4 月 15 日</span>
+            <span>编制部门：战略分析部</span>
+            <span>文档版本：v2.1</span>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     EXECUTIVE SUMMARY — Stat Cards Dashboard
+     ============================================================ -->
+<section class="report-section">
+    <div class="report-container">
+        <div class="section-heading reveal">
+            <div class="accent-line"></div>
+            <h2>执行摘要</h2>
+            <p>本季度核心指标概览，数据截至 2026 年 3 月 31 日。</p>
+        </div>
+        <div class="dashboard-grid">
+            <div class="stat-card chart-reveal">
+                <div class="stat-label">总营收</div>
+                <div class="stat-value" data-target="2847" data-prefix="" data-suffix=" 万">0 万</div>
+                <div class="stat-change positive">+12.3% 同比增长</div>
+            </div>
+            <div class="stat-card chart-reveal reveal-delay-1">
+                <div class="stat-label">活跃用户</div>
+                <div class="stat-value" data-target="156800" data-prefix="" data-suffix="">0</div>
+                <div class="stat-change positive">+8.7% 环比增长</div>
+            </div>
+            <div class="stat-card chart-reveal reveal-delay-2">
+                <div class="stat-label">客户满意度</div>
+                <div class="stat-value" data-target="94.2" data-prefix="" data-suffix="%" data-decimal="1">0%</div>
+                <div class="stat-change positive">+2.1% 季度提升</div>
+            </div>
+            <div class="stat-card chart-reveal reveal-delay-3">
+                <div class="stat-label">项目交付率</div>
+                <div class="stat-value" data-target="97.8" data-prefix="" data-suffix="%" data-decimal="1">0%</div>
+                <div class="stat-change neutral">与上季度持平</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     CONTENT SECTION — Step Flow
+     ============================================================ -->
+<section class="report-section alt">
+    <div class="report-container">
+        <div class="section-heading reveal">
+            <div class="accent-line"></div>
+            <h2>战略实施路径</h2>
+            <p>基于本季度分析结果，我们制定以下四阶段行动计划。</p>
+        </div>
+
+        <div class="callout accent reveal">
+            <strong>核心洞察</strong>
+            <p>市场环境正经历结构性变化，数字化转型已从"可选项"变为"必选项"。我们需要在 90 天内完成关键基础设施升级。</p>
+        </div>
+
+        <div class="step-flow">
+            <div class="step-item reveal">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h4>诊断与评估</h4>
+                    <p>全面审查现有技术架构、团队能力与市场定位。识别关键瓶颈，量化改进空间，建立基准指标体系。</p>
+                </div>
+            </div>
+            <div class="step-item reveal reveal-delay-1">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h4>架构重构</h4>
+                    <p>采用微服务架构重构核心系统，引入容器化部署方案。预计降低运维成本 35%，提升系统可用性至 99.95%。</p>
+                </div>
+            </div>
+            <div class="step-item reveal reveal-delay-2">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h4>数据驱动运营</h4>
+                    <p>部署实时数据分析平台，建立 A/B 测试框架。通过数据洞察优化用户转化路径，目标提升转化率 20%。</p>
+                </div>
+            </div>
+            <div class="step-item reveal reveal-delay-3">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h4>规模化增长</h4>
+                    <p>在前三阶段基础上，启动市场扩张计划。重点布局东南亚与欧洲市场，预计新增用户 50 万，实现营收翻倍。</p>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="grid-2 reveal">
+            <div>
+                <h4>关键成果指标</h4>
+                <ul class="bullet-list">
+                    <li>系统响应时间从 2.3s 降至 0.8s 以下</li>
+                    <li>自动化测试覆盖率从 62% 提升至 90%</li>
+                    <li>客户支持响应时间缩短至 15 分钟内</li>
+                    <li>月度部署频率从 2 次提升至每日部署</li>
+                </ul>
+            </div>
+            <div>
+                <h4>风险评估</h4>
+                <ul class="bullet-list">
+                    <li><span class="status-badge danger">高风险</span> 核心人才流失可能影响项目进度</li>
+                    <li><span class="status-badge warning">中风险</span> 第三方 API 依赖存在稳定性隐患</li>
+                    <li><span class="status-badge info">低风险</span> 新市场法规合规要求需持续跟踪</li>
+                </ul>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="quote-block reveal">
+            <p>"简约不是缺少，而是恰到好处。" —— 阿尔伯特·爱因斯坦</p>
+            <cite>此理念贯穿我们本季度的每一个决策。</cite>
+        </div>
+
+        <div class="comparison-table reveal">
+            <table>
+                <thead>
+                    <tr>
+                        <th>维度</th>
+                        <th>当前状态</th>
+                        <th>目标状态</th>
+                        <th>优先级</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>基础设施</strong></td>
+                        <td>单体架构，手动部署</td>
+                        <td>微服务 + CI/CD 自动化</td>
+                        <td><span class="status-badge danger">紧急</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>数据能力</strong></td>
+                        <td>离线报表，T+1 数据</td>
+                        <td>实时仪表盘，流式处理</td>
+                        <td><span class="status-badge warning">重要</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>用户体验</strong></td>
+                        <td>基础交互，无个性化</td>
+                        <td>智能推荐，自适应界面</td>
+                        <td><span class="status-badge info">计划中</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>安全合规</strong></td>
+                        <td>基础防护，年度审计</td>
+                        <td>零信任架构，季度审计</td>
+                        <td><span class="status-badge warning">重要</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     ENDING SECTION
+     ============================================================ -->
+<section class="ending-section">
+    <div class="report-container reveal">
+        <div class="ending-accent"></div>
+        <h2>精准执行，持续迭代</h2>
+        <p>以上为本季度业务分析报告的核心内容。所有数据均经过交叉验证，确保决策依据的可靠性。</p>
+        <div class="callout" style="text-align: left; max-width: 480px; margin: 0 auto;">
+            <strong>联系方式</strong>
+            <p>如有疑问，请联系战略分析部：<code>strategy@example.com</code></p>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     JAVASCRIPT — Reveal + Chart Animations + AnimateValue
+     ============================================================ -->
+<script>
+(function() {
+    'use strict';
+
+    /* ---- IntersectionObserver: Reveal on scroll ---- */
+    function initRevealObserver() {
+        var revealElements = document.querySelectorAll('.reveal, .chart-reveal');
+        if (!revealElements.length) return;
+
+        if (!('IntersectionObserver' in window)) {
+            revealElements.forEach(function(el) { el.classList.add('visible'); });
+            return;
+        }
+
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+        revealElements.forEach(function(el) { observer.observe(el); });
+    }
+
+    /* ---- animateValue: count-up effect ---- */
+    function animateValue(el, start, end, duration, suffix, prefix, decimalPlaces) {
+        suffix = suffix || '';
+        prefix = prefix || '';
+        decimalPlaces = decimalPlaces || 0;
+        var startTime = null;
+
+        function step(timestamp) {
+            if (!startTime) startTime = timestamp;
+            var progress = Math.min((timestamp - startTime) / duration, 1);
+            var eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+            var current = start + (end - start) * eased;
+            if (decimalPlaces > 0) {
+                el.textContent = prefix + current.toFixed(decimalPlaces) + suffix;
+            } else {
+                el.textContent = prefix + Math.floor(current).toLocaleString('zh-CN') + suffix;
+            }
+            if (progress < 1) {
+                requestAnimationFrame(step);
+            }
+        }
+        requestAnimationFrame(step);
+    }
+
+    /* ---- Trigger number animations when stat cards are visible ---- */
+    function initStatAnimations() {
+        var statValues = document.querySelectorAll('.stat-value[data-target]');
+        if (!statValues.length) return;
+
+        if (!('IntersectionObserver' in window)) {
+            statValues.forEach(function(el) {
+                el.textContent = el.getAttribute('data-target') + (el.getAttribute('data-suffix') || '');
+            });
+            return;
+        }
+
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    var el = entry.target;
+                    var target = parseFloat(el.getAttribute('data-target'));
+                    var suffix = el.getAttribute('data-suffix') || '';
+                    var prefix = el.getAttribute('data-prefix') || '';
+                    var decimal = parseInt(el.getAttribute('data-decimal') || '0', 10);
+                    animateValue(el, 0, target, 1200, suffix, prefix, decimal);
+                    observer.unobserve(el);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        statValues.forEach(function(el) { observer.observe(el); });
+    }
+
+    /* ---- Animate chart fills (bar, progress, stacked, bullet) ---- */
+    function initChartEntrance() {
+        var animatedElements = document.querySelectorAll(
+            '.bar-horizontal .bar-fill, .bar-vertical .bar-col .bar-fill, ' +
+            '.progress-group .progress-fill, .stacked-bar .bar-segment, ' +
+            '.bullet-chart .bullet-fill'
+        );
+        if (!animatedElements.length) return;
+
+        // Store target widths and reset to 0
+        animatedElements.forEach(function(el) {
+            var targetWidth = el.style.width || el.getAttribute('width') || '0%';
+            el.setAttribute('data-target-width', targetWidth);
+            el.style.width = '0%';
+        });
+
+        if (!('IntersectionObserver' in window)) {
+            animatedElements.forEach(function(el) {
+                el.style.width = el.getAttribute('data-target-width');
+            });
+            return;
+        }
+
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    var parent = entry.target;
+                    var fills = parent.querySelectorAll(
+                        '.bar-fill, .progress-fill, .bar-segment, .bullet-fill'
+                    );
+                    fills.forEach(function(fill, i) {
+                        setTimeout(function() {
+                            fill.style.width = fill.getAttribute('data-target-width');
+                        }, i * 100);
+                    });
+                    observer.unobserve(parent);
+                }
+            });
+        }, { threshold: 0.2 });
+
+        // Observe the parent containers
+        var containers = new Set();
+        animatedElements.forEach(function(el) {
+            var parent = el.closest('.bar-horizontal, .bar-vertical, .progress-group, .stacked-bar, .bullet-chart');
+            if (parent) containers.add(parent);
+        });
+        containers.forEach(function(c) { observer.observe(c); });
+    }
+
+    /* ---- Init everything on DOM ready ---- */
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+
+    function init() {
+        initRevealObserver();
+        initStatAnimations();
+        initChartEntrance();
+    }
+})();
+</script>
+
+</body>
+</html>

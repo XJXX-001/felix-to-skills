@@ -1,0 +1,1843 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dark Botanical Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   PRESET VARIABLES — Dark Botanical
+   ============================================ */
+:root {
+    --bg-primary: #0f0f0f;
+    --bg-card: #1a1a1a;
+    --bg-section-alt: #141414;
+    --text-primary: #e8e4df;
+    --text-secondary: #9a9590;
+    --accent: #d4a574;
+    --accent-glow: rgba(212, 165, 116, 0.3);
+    --success: #2ed573;
+    --warning: #ffa502;
+    --danger: #ff4757;
+    --info: #3498db;
+    --font-display: 'Cormorant', 'Noto Serif SC', serif;
+    --font-body: 'IBM Plex Sans', 'Noto Sans SC', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+    --chart-1: var(--accent);
+    --chart-2: var(--info);
+    --chart-3: var(--warning);
+    --chart-4: var(--success);
+    --chart-5: #e056a0;
+    --chart-neutral: var(--bg-card);
+
+    /* Derived tokens */
+    --border-subtle: rgba(232, 228, 223, 0.06);
+    --shadow-card: 0 2px 16px rgba(0, 0, 0, 0.35);
+    --shadow-card-hover: 0 8px 32px rgba(0, 0, 0, 0.5);
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2.5rem;
+    --space-2xl: 4rem;
+    --transition-base: 0.2s ease;
+    --transition-slow: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ============================================
+   BASE — Reset & Typography
+   ============================================ */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: clamp(15px, 1vw + 12px, 17px);
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: var(--font-body);
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+    line-height: 1.7;
+    min-height: 100vh;
+}
+
+/* Typography Scale */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--text-primary);
+}
+
+h1 {
+    font-size: clamp(2rem, 4vw + 0.5rem, 3.2rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+h2 {
+    font-size: clamp(1.5rem, 3vw + 0.3rem, 2.2rem);
+    letter-spacing: -0.01em;
+}
+
+h3 {
+    font-size: clamp(1.2rem, 2vw + 0.2rem, 1.6rem);
+}
+
+h4 {
+    font-size: clamp(1.05rem, 1.5vw + 0.15rem, 1.25rem);
+}
+
+p {
+    margin-bottom: var(--space-md);
+    color: var(--text-secondary);
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color var(--transition-base);
+}
+
+a:hover {
+    color: var(--text-primary);
+}
+
+strong { font-weight: 600; color: var(--text-primary); }
+em { font-style: italic; }
+
+code {
+    font-family: var(--font-mono);
+    font-size: 0.88em;
+    background: var(--bg-card);
+    padding: 0.15em 0.4em;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-subtle);
+}
+
+img { max-width: 100%; height: auto; display: block; }
+table { border-collapse: collapse; width: 100%; }
+
+/* ============================================
+   BASE — Layout
+   ============================================ */
+.container {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 var(--space-lg);
+}
+
+.section {
+    padding: var(--space-2xl) 0;
+}
+
+.section-alt {
+    background: var(--bg-section-alt);
+}
+
+hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-subtle), var(--accent), var(--border-subtle), transparent);
+    margin: var(--space-xl) 0;
+}
+
+hr.section-divider {
+    margin: 0;
+}
+
+/* ============================================
+   COMPONENT — Cover
+   ============================================ */
+.cover {
+    position: relative;
+    min-height: 65vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+    padding: var(--space-2xl) var(--space-lg);
+}
+
+.cover-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background:
+        radial-gradient(ellipse 80% 60% at 20% 30%, rgba(212, 165, 116, 0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 70%, rgba(52, 152, 219, 0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 50% 50%, rgba(212, 165, 116, 0.05) 0%, transparent 50%),
+        linear-gradient(180deg, var(--bg-primary) 0%, #0c0c0c 100%);
+}
+
+.cover-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-conic-gradient(
+        rgba(232, 228, 223, 0.015) 0deg,
+        transparent 1deg,
+        transparent 3deg
+    );
+    opacity: 0.5;
+}
+
+.cover-bg::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40%;
+    background: linear-gradient(to top, var(--bg-primary), transparent);
+}
+
+.cover-content {
+    position: relative;
+    z-index: 1;
+    max-width: 750px;
+}
+
+.cover-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    color: var(--accent);
+    margin-bottom: var(--space-md);
+    opacity: 0.85;
+}
+
+.cover h1 {
+    margin-bottom: var(--space-lg);
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.cover-subtitle {
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 1.5vw + 0.2rem, 1.2rem);
+    color: var(--text-secondary);
+    max-width: 560px;
+    margin: 0 auto var(--space-lg);
+    line-height: 1.8;
+}
+
+.cover-meta {
+    display: flex;
+    gap: var(--space-lg);
+    justify-content: center;
+    flex-wrap: wrap;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.cover-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.35em;
+}
+
+.cover-divider {
+    width: 60px;
+    height: 2px;
+    background: var(--accent);
+    margin: var(--space-xl) auto;
+    border-radius: 1px;
+}
+
+/* ============================================
+   COMPONENT — Stat Card
+   ============================================ */
+.stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-xl);
+    transition: transform var(--transition-slow), box-shadow var(--transition-slow);
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-card-hover);
+}
+
+.stat-card-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-sm);
+}
+
+.stat-card-value {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 3vw + 0.5rem, 2.6rem);
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.1;
+    margin-bottom: var(--space-sm);
+}
+
+.stat-card-value .unit {
+    font-size: 0.5em;
+    color: var(--text-secondary);
+    font-weight: 400;
+    margin-left: 0.1em;
+}
+
+.stat-card-change {
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
+}
+
+.stat-card-change.up { color: var(--success); }
+.stat-card-change.down { color: var(--danger); }
+.stat-card-change.neutral { color: var(--text-secondary); }
+
+.stat-card-accent {
+    border-left: 3px solid var(--accent);
+}
+
+/* ============================================
+   COMPONENT — Summary Grid
+   ============================================ */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--space-lg);
+}
+
+/* ============================================
+   COMPONENT — Callout
+   ============================================ */
+.callout {
+    display: flex;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-card);
+    margin: var(--space-lg) 0;
+}
+
+.callout-icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    margin-top: 1px;
+}
+
+.callout-body {
+    flex: 1;
+}
+
+.callout-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--space-xs);
+}
+
+.callout-text {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.callout.callout-info { border-left: 3px solid var(--info); }
+.callout.callout-info .callout-icon { color: var(--info); }
+.callout.callout-success { border-left: 3px solid var(--success); }
+.callout.callout-success .callout-icon { color: var(--success); }
+.callout.callout-warning { border-left: 3px solid var(--warning); }
+.callout.callout-warning .callout-icon { color: var(--warning); }
+.callout.callout-danger { border-left: 3px solid var(--danger); }
+.callout.callout-danger .callout-icon { color: var(--danger); }
+
+/* ============================================
+   COMPONENT — Section Heading
+   ============================================ */
+.section-heading {
+    margin-bottom: var(--space-xl);
+}
+
+.section-heading h2 {
+    margin-bottom: var(--space-sm);
+    position: relative;
+    display: inline-block;
+}
+
+.section-heading h2::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 40px;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 1px;
+}
+
+.section-heading p {
+    margin-top: var(--space-md);
+    max-width: 600px;
+    font-size: 0.95rem;
+}
+
+/* ============================================
+   COMPONENT — Bullet List
+   ============================================ */
+.bullet-list {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-md) 0;
+}
+
+.bullet-list li {
+    position: relative;
+    padding-left: 1.6em;
+    margin-bottom: var(--space-sm);
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+.bullet-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.65em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+}
+
+.bullet-list li strong { color: var(--text-primary); }
+
+/* ============================================
+   COMPONENT — Status Badge
+   ============================================ */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    padding: 0.25em 0.7em;
+    border-radius: 20px;
+    text-transform: uppercase;
+}
+
+.status-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.status-badge.status-success { background: rgba(46, 213, 115, 0.12); color: var(--success); }
+.status-badge.status-success::before { background: var(--success); }
+.status-badge.status-warning { background: rgba(255, 165, 2, 0.12); color: var(--warning); }
+.status-badge.status-warning::before { background: var(--warning); }
+.status-badge.status-danger { background: rgba(255, 71, 87, 0.12); color: var(--danger); }
+.status-badge.status-danger::before { background: var(--danger); }
+.status-badge.status-info { background: rgba(52, 152, 219, 0.12); color: var(--info); }
+.status-badge.status-info::before { background: var(--info); }
+.status-badge.status-neutral { background: rgba(154, 149, 144, 0.12); color: var(--text-secondary); }
+.status-badge.status-neutral::before { background: var(--text-secondary); }
+
+/* ============================================
+   COMPONENT — Step Flow
+   ============================================ */
+.step-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: var(--space-lg) 0;
+}
+
+.step-flow-item {
+    display: flex;
+    gap: var(--space-lg);
+    position: relative;
+    padding-bottom: var(--space-xl);
+}
+
+.step-flow-item:last-child { padding-bottom: 0; }
+
+.step-flow-marker {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    border: 2px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent);
+    position: relative;
+    z-index: 1;
+}
+
+.step-flow-item:not(:last-child) .step-flow-marker::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: calc(100% + var(--space-xl) - 36px);
+    background: linear-gradient(to bottom, var(--accent), transparent);
+}
+
+.step-flow-body h4 {
+    margin-bottom: var(--space-xs);
+}
+
+.step-flow-body p {
+    font-size: 0.92rem;
+    margin: 0;
+}
+
+/* ============================================
+   COMPONENT — Comparison Table
+   ============================================ */
+.comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    margin: var(--space-lg) 0;
+}
+
+.comparison-table thead {
+    position: sticky;
+    top: 0;
+}
+
+.comparison-table th {
+    background: var(--bg-card);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: var(--space-md) var(--space-lg);
+    text-align: left;
+    border-bottom: 2px solid var(--accent);
+    white-space: nowrap;
+}
+
+.comparison-table td {
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    vertical-align: top;
+}
+
+.comparison-table tbody tr {
+    transition: background var(--transition-base);
+}
+
+.comparison-table tbody tr:hover {
+    background: rgba(212, 165, 116, 0.03);
+}
+
+.comparison-table td:first-child {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* ============================================
+   COMPONENT — Quote Block
+   ============================================ */
+.quote-block {
+    position: relative;
+    padding: var(--space-xl) var(--space-xl) var(--space-xl) var(--space-2xl);
+    margin: var(--space-xl) 0;
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--accent);
+}
+
+.quote-block::before {
+    content: '\201C';
+    position: absolute;
+    left: var(--space-md);
+    top: var(--space-md);
+    font-family: var(--font-display);
+    font-size: 3rem;
+    color: var(--accent);
+    opacity: 0.4;
+    line-height: 1;
+}
+
+.quote-block blockquote {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-style: italic;
+    color: var(--text-primary);
+    line-height: 1.8;
+}
+
+.quote-block cite {
+    display: block;
+    margin-top: var(--space-md);
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-style: normal;
+    color: var(--text-secondary);
+}
+
+/* ============================================
+   COMPONENT — Code Block
+   ============================================ */
+.code-block {
+    background: #111111;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    margin: var(--space-lg) 0;
+    overflow: hidden;
+}
+
+.code-block-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-sm) var(--space-md);
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.code-block-header span {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.code-block pre {
+    margin: 0;
+    padding: var(--space-lg);
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1.65;
+    color: var(--text-secondary);
+}
+
+.code-block pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: inherit;
+}
+
+/* ============================================
+   COMPONENT — Ending Section
+   ============================================ */
+.ending-section {
+    text-align: center;
+    padding: var(--space-2xl) var(--space-lg);
+    position: relative;
+}
+
+.ending-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 1px;
+    background: var(--accent);
+}
+
+.ending-section h2 {
+    margin-bottom: var(--space-md);
+}
+
+.ending-section p {
+    max-width: 500px;
+    margin: 0 auto;
+    font-size: 0.95rem;
+}
+
+.ending-footer {
+    margin-top: var(--space-xl);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+    opacity: 0.6;
+}
+
+/* ============================================
+   CHART — Bar Horizontal
+   ============================================ */
+.bar-horizontal {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    margin: var(--space-lg) 0;
+}
+
+.bar-horizontal-item {
+    display: grid;
+    grid-template-columns: 120px 1fr 50px;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.bar-horizontal-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bar-horizontal-track {
+    height: 24px;
+    background: var(--bg-card);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--border-subtle);
+}
+
+.bar-horizontal-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), rgba(212, 165, 116, 0.6));
+    border-radius: var(--radius-sm);
+    transition: width 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    width: 0;
+}
+
+.bar-horizontal-value {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* ============================================
+   CHART — Bar Vertical
+   ============================================ */
+.bar-vertical {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-sm);
+    height: 200px;
+    margin: var(--space-lg) 0;
+    padding: 0 var(--space-sm);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.bar-vertical-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+}
+
+.bar-vertical-bar {
+    width: 100%;
+    max-width: 48px;
+    background: linear-gradient(to top, var(--accent), rgba(212, 165, 116, 0.5));
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    transition: height 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    height: 0;
+    min-height: 2px;
+}
+
+.bar-vertical-label {
+    margin-top: var(--space-sm);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    text-align: center;
+    white-space: nowrap;
+}
+
+.bar-vertical-value {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-primary);
+    margin-bottom: var(--space-xs);
+    font-weight: 500;
+}
+
+/* ============================================
+   CHART — Stacked Bar
+   ============================================ */
+.stacked-bar-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    margin: var(--space-lg) 0;
+}
+
+.stacked-bar-item-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xs);
+}
+
+.stacked-bar-track {
+    height: 28px;
+    display: flex;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+}
+
+.stacked-bar-segment {
+    height: 100%;
+    transition: width 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+}
+
+.stacked-bar-segment:hover {
+    filter: brightness(1.2);
+}
+
+.stacked-bar-legend {
+    display: flex;
+    gap: var(--space-lg);
+    flex-wrap: wrap;
+    margin-top: var(--space-md);
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.stacked-bar-legend span {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+}
+
+.stacked-bar-legend span::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+}
+
+/* ============================================
+   CHART — Donut
+   ============================================ */
+.donut {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xl);
+    margin: var(--space-lg) 0;
+}
+
+.donut-chart {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    flex-shrink: 0;
+}
+
+.donut-chart svg {
+    transform: rotate(-90deg);
+    width: 100%;
+    height: 100%;
+}
+
+.donut-chart circle {
+    fill: none;
+    stroke-width: 24;
+}
+
+.donut-chart .donut-track {
+    stroke: var(--bg-card);
+}
+
+.donut-chart .donut-fill {
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.donut-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.donut-center-value {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+}
+
+.donut-center-label {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.donut-legend {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    font-size: 0.85rem;
+}
+
+.donut-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    color: var(--text-secondary);
+}
+
+.donut-legend-item::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+/* ============================================
+   CHART — Progress Group
+   ============================================ */
+.progress-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    margin: var(--space-lg) 0;
+}
+
+.progress-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.progress-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.progress-item-label {
+    font-size: 0.88rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.progress-item-value {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--accent);
+    font-weight: 500;
+}
+
+.progress-track {
+    height: 8px;
+    background: var(--bg-card);
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid var(--border-subtle);
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--accent), rgba(212, 165, 116, 0.5));
+    transition: width 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    width: 0;
+}
+
+/* ============================================
+   CHART — Sparkline
+   ============================================ */
+.sparkline-container {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.sparkline-container svg {
+    display: block;
+}
+
+/* ============================================
+   CHART — Timeline
+   ============================================ */
+.timeline {
+    position: relative;
+    margin: var(--space-lg) 0;
+    padding-left: var(--space-xl);
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 11px;
+    top: 8px;
+    bottom: 8px;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--accent), var(--border-subtle), transparent);
+}
+
+.timeline-item {
+    position: relative;
+    padding-bottom: var(--space-xl);
+}
+
+.timeline-item:last-child { padding-bottom: 0; }
+
+.timeline-dot {
+    position: absolute;
+    left: calc(-1 * var(--space-xl) + 5px);
+    top: 6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--bg-primary);
+    border: 2px solid var(--accent);
+    z-index: 1;
+}
+
+.timeline-dot.timeline-dot-filled {
+    background: var(--accent);
+}
+
+.timeline-date {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    margin-bottom: var(--space-xs);
+}
+
+.timeline-title {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--space-xs);
+}
+
+.timeline-desc {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin: 0;
+}
+
+/* ============================================
+   CHART — Heatmap
+   ============================================ */
+.heatmap {
+    display: grid;
+    gap: 3px;
+    margin: var(--space-lg) 0;
+}
+
+.heatmap-cell {
+    aspect-ratio: 1;
+    border-radius: 3px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    transition: transform var(--transition-base);
+    cursor: default;
+}
+
+.heatmap-cell:hover {
+    transform: scale(1.15);
+    z-index: 1;
+}
+
+.heatmap-cell[data-level="1"] { background: rgba(212, 165, 116, 0.15); }
+.heatmap-cell[data-level="2"] { background: rgba(212, 165, 116, 0.3); }
+.heatmap-cell[data-level="3"] { background: rgba(212, 165, 116, 0.5); }
+.heatmap-cell[data-level="4"] { background: rgba(212, 165, 116, 0.7); }
+.heatmap-cell[data-level="5"] { background: var(--accent); }
+
+/* ============================================
+   CHART — Bullet Chart
+   ============================================ */
+.bullet-chart-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    margin: var(--space-lg) 0;
+}
+
+.bullet-chart-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.bullet-chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.bullet-chart-label {
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.bullet-chart-values {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+}
+
+.bullet-chart-values strong {
+    color: var(--text-primary);
+}
+
+.bullet-chart-track {
+    position: relative;
+    height: 18px;
+    background: var(--bg-card);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--border-subtle);
+}
+
+.bullet-chart-range {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    background: rgba(212, 165, 116, 0.1);
+}
+
+.bullet-chart-fill {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    background: var(--accent);
+    border-radius: var(--radius-sm);
+    transition: width 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.bullet-chart-marker {
+    position: absolute;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    background: var(--text-primary);
+}
+
+/* ============================================
+   CHART — Score Card
+   ============================================ */
+.score-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    text-align: center;
+    transition: transform var(--transition-slow), box-shadow var(--transition-slow);
+}
+
+.score-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card-hover);
+}
+
+.score-card-ring {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto var(--space-md);
+}
+
+.score-card-ring svg {
+    transform: rotate(-90deg);
+    width: 100%;
+    height: 100%;
+}
+
+.score-card-ring circle {
+    fill: none;
+    stroke-width: 8;
+}
+
+.score-card-ring .ring-track {
+    stroke: var(--bg-section-alt);
+}
+
+.score-card-ring .ring-fill {
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.score-card-ring .ring-value {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.score-card-title {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: var(--space-xs);
+}
+
+.score-card-subtitle {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* ============================================
+   CHART — Dashboard Grid
+   ============================================ */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-lg);
+    margin: var(--space-lg) 0;
+}
+
+/* ============================================
+   CHART — Waterfall
+   ============================================ */
+.waterfall-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-sm);
+    height: 220px;
+    margin: var(--space-lg) 0;
+    padding: 0 var(--space-sm);
+    position: relative;
+}
+
+.waterfall-chart::before {
+    content: '';
+    position: absolute;
+    bottom: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--border-subtle);
+}
+
+.waterfall-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: center;
+    position: relative;
+}
+
+.waterfall-bar {
+    width: 80%;
+    max-width: 40px;
+    border-radius: 3px;
+    transition: height 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: absolute;
+}
+
+.waterfall-bar.positive {
+    background: var(--success);
+    bottom: 50%;
+    border-radius: 3px 3px 0 0;
+}
+
+.waterfall-bar.negative {
+    background: var(--danger);
+    top: 50%;
+    border-radius: 0 0 3px 3px;
+}
+
+.waterfall-bar.total {
+    background: var(--accent);
+    border-radius: 3px;
+}
+
+.waterfall-label {
+    position: absolute;
+    bottom: 0;
+    transform: translateY(calc(100% + 6px));
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    text-align: center;
+}
+
+/* ============================================
+   REVEAL ANIMATION
+   ============================================ */
+.reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-delay-5 { transition-delay: 0.5s; }
+
+/* ============================================
+   RESPONSIVE — Breakpoints
+   ============================================ */
+@media (max-width: 768px) {
+    .cover {
+        min-height: 55vh;
+        padding: var(--space-xl) var(--space-md);
+    }
+
+    .cover-meta {
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-sm);
+    }
+
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .bar-horizontal-item {
+        grid-template-columns: 80px 1fr 40px;
+    }
+
+    .bar-horizontal-label {
+        font-size: 0.78rem;
+    }
+
+    .donut {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .donut-chart {
+        margin: 0 auto;
+    }
+
+    .step-flow-item {
+        gap: var(--space-md);
+    }
+
+    .comparison-table {
+        font-size: 0.82rem;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+        padding: var(--space-sm) var(--space-md);
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .bar-vertical {
+        height: 150px;
+    }
+
+    .waterfall-chart {
+        height: 180px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 var(--space-md);
+    }
+
+    .section {
+        padding: var(--space-xl) 0;
+    }
+
+    .cover h1 {
+        font-size: 1.8rem;
+    }
+
+    .bar-horizontal-item {
+        grid-template-columns: 60px 1fr 36px;
+        gap: var(--space-sm);
+    }
+
+    .score-card-ring {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .reveal {
+        opacity: 1;
+        transform: none;
+    }
+
+    html {
+        scroll-behavior: auto;
+    }
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+@media print {
+    body {
+        background: #fff;
+        color: #222;
+    }
+
+    .cover {
+        min-height: auto;
+        padding: 2rem 0;
+        background: none !important;
+    }
+
+    .cover-bg {
+        display: none;
+    }
+
+    .cover h1 {
+        background: none;
+        -webkit-text-fill-color: #222;
+        color: #222;
+    }
+
+    .cover-subtitle { color: #555; }
+    .cover-meta { color: #555; }
+
+    .section {
+        padding: 1.5rem 0;
+    }
+
+    .stat-card,
+    .callout,
+    .score-card,
+    .quote-block,
+    .code-block {
+        background: #fafafa;
+        border-color: #ddd;
+        box-shadow: none;
+    }
+
+    .reveal {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+
+    h1, h2, h3, h4 {
+        color: #111;
+    }
+
+    p, .text-secondary, .stat-card-label, li {
+        color: #444;
+    }
+
+    a { color: #333; }
+
+    .bar-horizontal-fill,
+    .bar-vertical-bar,
+    .progress-fill,
+    .donut-fill,
+    .ring-fill,
+    .bullet-chart-fill,
+    .stacked-bar-segment {
+        transition: none !important;
+    }
+
+    .ending-section::before { background: #aaa; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================
+     COVER SECTION
+     ============================================ -->
+<section class="cover">
+    <div class="cover-bg"></div>
+    <div class="cover-content reveal">
+        <div class="cover-eyebrow">2025 年度报告</div>
+        <h1>暗夜花园</h1>
+        <p class="cover-subtitle">于静谧中汲取力量，在黑暗中绽放华彩。以匠心致初心，用数据讲述故事。</p>
+        <div class="cover-divider"></div>
+        <div class="cover-meta">
+            <span>📅 2025年1月 — 12月</span>
+            <span>📊 数据分析团队</span>
+            <span>🔒 内部文档</span>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     SUMMARY — Timeline Section
+     ============================================ -->
+<section class="section">
+    <div class="container">
+        <div class="section-heading reveal">
+            <h2>年度里程碑</h2>
+            <p>回顾这一年中的关键节点与重要成就，每一步都凝聚着团队的智慧与汗水。</p>
+        </div>
+
+        <div class="timeline reveal">
+            <div class="timeline-item">
+                <div class="timeline-dot timeline-dot-filled"></div>
+                <div class="timeline-date">2025 Q1</div>
+                <div class="timeline-title">项目启动与架构设计</div>
+                <p class="timeline-desc">完成技术选型与系统架构设计，搭建核心开发环境。组建跨部门协作团队，明确各阶段交付目标。</p>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot timeline-dot-filled"></div>
+                <div class="timeline-date">2025 Q2</div>
+                <div class="timeline-title">核心功能开发与内测</div>
+                <p class="timeline-desc">完成核心模块开发并通过内部测试验证。收集早期用户反馈，优化交互体验与系统性能。</p>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot timeline-dot-filled"></div>
+                <div class="timeline-date">2025 Q3</div>
+                <div class="timeline-title">公开发布与用户增长</div>
+                <p class="timeline-desc">正式发布 1.0 版本，启动市场推广计划。用户量实现爆发式增长，日活跃用户突破预期目标。</p>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-date">2025 Q4</div>
+                <div class="timeline-title">迭代优化与战略规划</div>
+                <p class="timeline-desc">根据用户数据分析持续迭代产品功能，制定下一年度发展战略与技术路线图。</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ============================================
+     CONTENT — Stat Cards Section
+     ============================================ -->
+<section class="section section-alt">
+    <div class="container">
+        <div class="section-heading reveal">
+            <h2>核心数据概览</h2>
+            <p>以下数据全面展示了本年度各项关键指标的完成情况与增长趋势。</p>
+        </div>
+
+        <div class="summary-grid">
+            <div class="stat-card stat-card-accent reveal reveal-delay-1">
+                <div class="stat-card-label">总营收</div>
+                <div class="stat-card-value">¥2,847<span class="unit">万</span></div>
+                <div class="stat-card-change up">↑ 34.2% 同比增长</div>
+            </div>
+            <div class="stat-card reveal reveal-delay-2">
+                <div class="stat-card-label">活跃用户</div>
+                <div class="stat-card-value">128<span class="unit">万</span></div>
+                <div class="stat-card-change up">↑ 56.8% 同比增长</div>
+            </div>
+            <div class="stat-card reveal reveal-delay-3">
+                <div class="stat-card-label">客户满意度</div>
+                <div class="stat-card-value">94.7<span class="unit">%</span></div>
+                <div class="stat-card-change up">↑ 2.3% 同比提升</div>
+            </div>
+            <div class="stat-card reveal reveal-delay-4">
+                <div class="stat-card-label">团队规模</div>
+                <div class="stat-card-value">86<span class="unit">人</span></div>
+                <div class="stat-card-change up">↑ 新增 23 人</div>
+            </div>
+        </div>
+
+        <div style="margin-top: var(--space-xl);">
+            <div class="callout callout-info reveal">
+                <div class="callout-icon">ℹ️</div>
+                <div class="callout-body">
+                    <div class="callout-title">数据说明</div>
+                    <p class="callout-text">以上数据截至 2025年12月31日，均经审计团队核实确认。部分指标采用国际通行统计口径，具体计算方法详见附录。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Group -->
+        <div style="margin-top: var(--space-xl);">
+            <h3 class="reveal" style="margin-bottom: var(--space-lg);">年度目标完成度</h3>
+            <div class="progress-group reveal">
+                <div class="progress-item">
+                    <div class="progress-item-header">
+                        <span class="progress-item-label">营收目标</span>
+                        <span class="progress-item-value">94.9%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" data-width="94.9"></div>
+                    </div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-item-header">
+                        <span class="progress-item-label">用户增长</span>
+                        <span class="progress-item-value">106.7%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" data-width="100"></div>
+                    </div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-item-header">
+                        <span class="progress-item-label">产品迭代</span>
+                        <span class="progress-item-value">88.0%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" data-width="88"></div>
+                    </div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-item-header">
+                        <span class="progress-item-label">团队建设</span>
+                        <span class="progress-item-value">92.0%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" data-width="92"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Donut Chart -->
+        <div style="margin-top: var(--space-xl);">
+            <h3 class="reveal" style="margin-bottom: var(--space-lg);">营收构成</h3>
+            <div class="donut reveal">
+                <div class="donut-chart" data-value="62">
+                    <svg viewBox="0 0 200 200">
+                        <circle class="donut-track" cx="100" cy="100" r="76" />
+                        <circle class="donut-fill" cx="100" cy="100" r="76"
+                                stroke="var(--accent)"
+                                stroke-dasharray="477.5"
+                                stroke-dashoffset="477.5"
+                                data-target="181.4" />
+                    </svg>
+                    <div class="donut-center">
+                        <span class="donut-center-value">62%</span>
+                        <span class="donut-center-label">核心业务</span>
+                    </div>
+                </div>
+                <div class="donut-legend">
+                    <div class="donut-legend-item" style="--legend-color: var(--accent);">核心业务 — 62%</div>
+                    <div class="donut-legend-item" style="--legend-color: var(--info);">增值服务 — 21%</div>
+                    <div class="donut-legend-item" style="--legend-color: var(--warning);">新兴业务 — 11%</div>
+                    <div class="donut-legend-item" style="--legend-color: var(--text-secondary);">其他收入 — 6%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quote -->
+        <div class="quote-block reveal" style="margin-top: var(--space-xl);">
+            <blockquote>真正的优雅不在于外表的华丽，而在于内在的从容与坚定。</blockquote>
+            <cite>—— 团队年度寄语</cite>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     ENDING SECTION
+     ============================================ -->
+<section class="ending-section section">
+    <div class="container">
+        <div class="reveal">
+            <h2>砥砺前行，未来可期</h2>
+            <p>感谢每一位同行者的付出与信任。让我们以更坚定的步伐，迈向更加辉煌的明天。</p>
+            <div class="cover-divider" style="margin-top: var(--space-xl);"></div>
+            <div class="ending-footer">
+                Dark Botanical Report &copy; 2025 &mdash; Confidential
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     JAVASCRIPT
+     ============================================ -->
+<script>
+(function() {
+    'use strict';
+
+    /* ==========================================
+       IntersectionObserver — Reveal on Scroll
+       ========================================== */
+    var revealObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -40px 0px'
+    });
+
+    document.querySelectorAll('.reveal').forEach(function(el) {
+        revealObserver.observe(el);
+    });
+
+    /* ==========================================
+       animateValue — Counter Animation
+       ========================================== */
+    window.animateValue = function(el, start, end, duration, suffix) {
+        suffix = suffix || '';
+        var startTimestamp = null;
+        var step = function(timestamp) {
+            if (!startTimestamp) startTimestamp = timestamp;
+            var progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            var eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+            var current = Math.floor(eased * (end - start) + start);
+            el.textContent = current.toLocaleString() + suffix;
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            }
+        };
+        window.requestAnimationFrame(step);
+    };
+
+    /* ==========================================
+       Chart Entrance Animations
+       ========================================== */
+    var chartObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                animateChart(entry.target);
+                chartObserver.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.2
+    });
+
+    function animateChart(el) {
+        // Bar horizontal
+        el.querySelectorAll('.bar-horizontal-fill[data-width]').forEach(function(bar) {
+            setTimeout(function() {
+                bar.style.width = bar.getAttribute('data-width') + '%';
+            }, 100);
+        });
+
+        // Bar vertical
+        el.querySelectorAll('.bar-vertical-bar[data-height]').forEach(function(bar) {
+            setTimeout(function() {
+                bar.style.height = bar.getAttribute('data-height') + '%';
+            }, 100);
+        });
+
+        // Progress fill
+        el.querySelectorAll('.progress-fill[data-width]').forEach(function(bar) {
+            setTimeout(function() {
+                bar.style.width = bar.getAttribute('data-width') + '%';
+            }, 200);
+        });
+
+        // Donut chart
+        el.querySelectorAll('.donut-fill[data-target]').forEach(function(arc) {
+            var target = parseFloat(arc.getAttribute('data-target'));
+            setTimeout(function() {
+                arc.style.strokeDashoffset = target;
+            }, 300);
+        });
+
+        // Score card rings
+        el.querySelectorAll('.ring-fill[data-target]').forEach(function(arc) {
+            var target = parseFloat(arc.getAttribute('data-target'));
+            setTimeout(function() {
+                arc.style.strokeDashoffset = target;
+            }, 300);
+        });
+
+        // Bullet chart fills
+        el.querySelectorAll('.bullet-chart-fill[data-width]').forEach(function(bar) {
+            setTimeout(function() {
+                bar.style.width = bar.getAttribute('data-width') + '%';
+            }, 200);
+        });
+
+        // Stacked bar segments
+        el.querySelectorAll('.stacked-bar-segment[data-width]').forEach(function(seg) {
+            setTimeout(function() {
+                seg.style.width = seg.getAttribute('data-width') + '%';
+            }, 200);
+        });
+
+        // Waterfall bars
+        el.querySelectorAll('.waterfall-bar[data-height]').forEach(function(bar) {
+            setTimeout(function() {
+                bar.style.height = bar.getAttribute('data-height');
+            }, 150);
+        });
+    }
+
+    // Observe all chart containers
+    document.querySelectorAll('.bar-horizontal, .bar-vertical, .stacked-bar-group, .donut, .progress-group, .bullet-chart-group, .dashboard-grid, .waterfall-chart').forEach(function(el) {
+        chartObserver.observe(el);
+    });
+
+    // Also observe elements that contain charts nested inside
+    document.querySelectorAll('.stat-card, .section, .summary-grid').forEach(function(el) {
+        chartObserver.observe(el);
+    });
+
+})();
+</script>
+</body>
+</html>

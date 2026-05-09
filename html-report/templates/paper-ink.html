@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paper &amp; Ink Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Source+Serif+4:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CSS VARIABLES — Paper & Ink Preset
+   ============================================================ */
+:root {
+    --bg-primary: #faf9f7;
+    --bg-card: #ffffff;
+    --bg-section-alt: #f5f2ed;
+    --text-primary: #1a1a1a;
+    --text-secondary: #4a4a4a;
+    --accent: #c41e3a;
+    --accent-glow: rgba(196, 30, 58, 0.15);
+    --success: #2ed573;
+    --warning: #ffa502;
+    --danger: #ff4757;
+    --info: #3498db;
+    --font-display: 'Cormorant Garamond', 'Noto Serif SC', serif;
+    --font-body: 'Source Serif 4', 'Noto Serif SC', serif;
+    --font-mono: 'Source Code Pro', monospace;
+    --chart-1: var(--accent);
+    --chart-2: var(--info);
+    --chart-3: var(--warning);
+    --chart-4: var(--success);
+    --chart-5: #e056a0;
+    --chart-neutral: var(--bg-card);
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 30px rgba(0,0,0,0.10);
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+}
+
+/* ============================================================
+   RESET
+   ============================================================ */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+body {
+    font-family: var(--font-body);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.7;
+    min-height: 100vh;
+}
+img, svg { max-width: 100%; display: block; }
+a { color: var(--accent); text-decoration: none; transition: color var(--transition-fast); }
+a:hover { color: var(--text-primary); }
+ul, ol { list-style: none; }
+
+/* ============================================================
+   TYPOGRAPHY SCALE — clamp()
+   ============================================================ */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--text-primary);
+}
+h1 { font-size: clamp(2rem, 5vw, 3.5rem); }
+h2 { font-size: clamp(1.5rem, 3.5vw, 2.4rem); }
+h3 { font-size: clamp(1.25rem, 2.5vw, 1.8rem); }
+h4 { font-size: clamp(1.1rem, 2vw, 1.4rem); }
+h5 { font-size: clamp(1rem, 1.5vw, 1.15rem); }
+h6 { font-size: clamp(0.9rem, 1.2vw, 1.05rem); }
+
+p {
+    margin-bottom: 1em;
+    color: var(--text-secondary);
+    font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+}
+
+code {
+    font-family: var(--font-mono);
+    background: var(--bg-section-alt);
+    padding: 0.15em 0.4em;
+    border-radius: var(--radius-sm);
+    font-size: 0.9em;
+    color: var(--accent);
+}
+
+/* ============================================================
+   CONTAINER & SECTION
+   ============================================================ */
+.report-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+.report-section {
+    padding: 4rem 0;
+}
+.report-section:nth-child(even) {
+    background: var(--bg-section-alt);
+}
+.report-section > .report-container {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+/* ============================================================
+   COVER
+   ============================================================ */
+.report-cover {
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(160deg, var(--bg-primary) 0%, #f0ebe3 50%, #ede6da 100%);
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    padding: 4rem 2rem;
+}
+.report-cover::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+        radial-gradient(circle at 20% 30%, var(--accent-glow) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(52,152,219,0.06) 0%, transparent 50%);
+    pointer-events: none;
+}
+.report-cover::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 120px;
+    background: linear-gradient(to top, var(--bg-primary), transparent);
+    pointer-events: none;
+}
+.cover-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 700px;
+}
+.cover-tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 0.3em 1em;
+    border-radius: 2px;
+    margin-bottom: 2rem;
+}
+.cover-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 7vw, 5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+}
+.cover-subtitle {
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    color: var(--text-secondary);
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+}
+.cover-meta {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+    opacity: 0.7;
+}
+.cover-meta span {
+    margin: 0 0.75em;
+}
+.cover-divider {
+    width: 60px;
+    height: 2px;
+    background: var(--accent);
+    margin: 2rem auto;
+}
+
+/* ============================================================
+   SECTION HEADING
+   ============================================================ */
+.section-heading {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(26,26,26,0.1);
+}
+.section-heading h2 {
+    margin-bottom: 0.5rem;
+}
+.section-heading p {
+    color: var(--text-secondary);
+    font-size: clamp(0.9rem, 1.1vw, 1.05rem);
+}
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+.card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: 2rem;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow var(--transition-normal), transform var(--transition-normal);
+    border: 1px solid rgba(26,26,26,0.04);
+}
+.card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+/* ============================================================
+   STAT CARD
+   ============================================================ */
+.stat-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: 1.8rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(26,26,26,0.04);
+    text-align: center;
+    transition: box-shadow var(--transition-normal), transform var(--transition-normal);
+}
+.stat-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+.stat-card .stat-value {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1.2;
+    margin-bottom: 0.3rem;
+}
+.stat-card .stat-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+.stat-card .stat-change {
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    font-family: var(--font-mono);
+}
+.stat-card .stat-change.positive { color: var(--success); }
+.stat-card .stat-change.negative { color: var(--danger); }
+
+/* ============================================================
+   SUMMARY GRID
+   ============================================================ */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+}
+
+/* ============================================================
+   QUOTE BLOCK
+   ============================================================ */
+.quote-block {
+    border-left: 3px solid var(--accent);
+    padding: 1.5rem 2rem;
+    margin: 2rem 0;
+    background: var(--bg-section-alt);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    position: relative;
+}
+.quote-block::before {
+    content: '\201C';
+    position: absolute;
+    top: -0.2rem;
+    left: 0.8rem;
+    font-family: var(--font-display);
+    font-size: 4rem;
+    color: var(--accent);
+    opacity: 0.2;
+    line-height: 1;
+}
+.quote-block p {
+    font-style: italic;
+    font-size: clamp(1rem, 1.3vw, 1.2rem);
+    color: var(--text-primary);
+    margin-bottom: 0.8rem;
+    line-height: 1.8;
+}
+.quote-block cite {
+    display: block;
+    font-style: normal;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+}
+.quote-block cite::before {
+    content: '— ';
+}
+
+/* ============================================================
+   DROP CAP
+   ============================================================ */
+.report-section p:first-of-type::first-letter {
+    float: left;
+    font-size: 3.5em;
+    line-height: 0.8;
+    margin-right: 0.1em;
+    margin-top: 0.05em;
+    color: var(--accent);
+    font-family: var(--font-display);
+    font-weight: 700;
+}
+
+/* ============================================================
+   DECORATIVE HR
+   ============================================================ */
+hr {
+    border: none;
+    text-align: center;
+    margin: 3rem auto;
+    max-width: 400px;
+    overflow: visible;
+}
+hr::before {
+    content: '\25C6';
+    display: inline-block;
+    position: relative;
+    top: 0;
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 1em;
+}
+hr::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; top: 50%;
+    border-top: 1px solid rgba(26,26,26,0.12);
+    z-index: -1;
+}
+
+/* ============================================================
+   STEP FLOW
+   ============================================================ */
+.step-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 2rem 0;
+}
+.step-item {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    position: relative;
+}
+.step-number {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.1rem;
+    position: relative;
+    z-index: 1;
+}
+.step-item:not(:last-child) .step-number::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: calc(100% + 1.5rem);
+    background: rgba(26,26,26,0.12);
+}
+.step-content h4 {
+    margin-bottom: 0.3rem;
+}
+.step-content p {
+    font-size: 0.95rem;
+    margin-bottom: 0;
+}
+
+/* ============================================================
+   COMPARISON TABLE
+   ============================================================ */
+.comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+    font-size: 0.95rem;
+}
+.comparison-table thead th {
+    font-family: var(--font-display);
+    font-weight: 600;
+    text-align: left;
+    padding: 1rem 1.2rem;
+    border-bottom: 2px solid var(--accent);
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+.comparison-table tbody td {
+    padding: 0.85rem 1.2rem;
+    border-bottom: 1px solid rgba(26,26,26,0.06);
+    color: var(--text-secondary);
+    vertical-align: top;
+}
+.comparison-table tbody tr:hover {
+    background: var(--bg-section-alt);
+}
+.comparison-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ============================================================
+   BULLET LIST
+   ============================================================ */
+.bullet-list {
+    margin: 1.5rem 0;
+    padding-left: 0;
+}
+.bullet-list li {
+    position: relative;
+    padding: 0.4rem 0 0.4rem 1.5rem;
+    color: var(--text-secondary);
+    font-size: clamp(0.9rem, 1.1vw, 1rem);
+    line-height: 1.7;
+}
+.bullet-list li::before {
+    content: '\25B8';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 600;
+}
+
+/* ============================================================
+   STATUS BADGE
+   ============================================================ */
+.status-badge {
+    display: inline-block;
+    padding: 0.2em 0.8em;
+    border-radius: 2px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+.status-badge.success {
+    background: rgba(46,213,115,0.12);
+    color: var(--success);
+}
+.status-badge.warning {
+    background: rgba(255,165,2,0.12);
+    color: var(--warning);
+}
+.status-badge.danger {
+    background: rgba(255,71,87,0.12);
+    color: var(--danger);
+}
+.status-badge.info {
+    background: rgba(52,152,219,0.12);
+    color: var(--info);
+}
+
+/* ============================================================
+   CODE BLOCK
+   ============================================================ */
+.code-block {
+    background: #1a1a1a;
+    color: #e0e0e0;
+    padding: 1.5rem 2rem;
+    border-radius: var(--radius-md);
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    font-family: var(--font-mono);
+    font-size: 0.88rem;
+    line-height: 1.7;
+    position: relative;
+}
+.code-block .code-lang {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.8rem;
+    font-size: 0.7rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+/* ============================================================
+   ENDING SECTION
+   ============================================================ */
+.ending-section {
+    text-align: center;
+    padding: 6rem 2rem;
+    background: linear-gradient(160deg, var(--bg-section-alt) 0%, var(--bg-primary) 100%);
+}
+.ending-section .ending-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--accent);
+    opacity: 0.6;
+}
+.ending-section h2 {
+    margin-bottom: 1rem;
+}
+.ending-section p {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* ============================================================
+   GRID SYSTEM
+   ============================================================ */
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+
+/* ============================================================
+   BAR HORIZONTAL
+   ============================================================ */
+.bar-horizontal .bar-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+.bar-horizontal .bar-label {
+    width: 120px;
+    flex-shrink: 0;
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    text-align: right;
+    padding-right: 1rem;
+}
+.bar-horizontal .bar-track {
+    flex: 1;
+    height: 24px;
+    background: var(--bg-section-alt);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+.bar-horizontal .bar-fill {
+    height: 100%;
+    border-radius: var(--radius-sm);
+    background: var(--accent);
+    transition: width 1s ease;
+}
+.bar-horizontal .bar-value {
+    width: 50px;
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    padding-left: 0.8rem;
+}
+
+/* ============================================================
+   BAR VERTICAL
+   ============================================================ */
+.bar-vertical {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+    height: 200px;
+    padding: 0 0 2rem;
+    margin: 2rem 0;
+    border-bottom: 1px solid rgba(26,26,26,0.1);
+}
+.bar-vertical .bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+}
+.bar-vertical .bar-fill {
+    width: 100%;
+    max-width: 48px;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    background: var(--accent);
+    transition: height 1s ease;
+}
+.bar-vertical .bar-label {
+    position: absolute;
+    bottom: 0;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    transform: translateY(100%);
+    padding-top: 0.5rem;
+}
+.bar-vertical .bar-val {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-primary);
+    margin-bottom: 0.3rem;
+}
+
+/* ============================================================
+   STACKED BAR
+   ============================================================ */
+.stacked-bar .stacked-row {
+    margin-bottom: 1.2rem;
+}
+.stacked-bar .stacked-label {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.4rem;
+}
+.stacked-bar .stacked-track {
+    display: flex;
+    height: 28px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: var(--bg-section-alt);
+}
+.stacked-bar .stacked-segment {
+    height: 100%;
+    transition: width 1s ease;
+    position: relative;
+}
+.stacked-bar .stacked-segment[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: -1.8rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+    font-family: var(--font-mono);
+    color: var(--text-primary);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+.stacked-bar .stacked-segment:hover::after {
+    opacity: 1;
+}
+
+/* ============================================================
+   DONUT
+   ============================================================ */
+.donut-chart {
+    position: relative;
+    display: inline-block;
+}
+.donut-chart svg {
+    transform: rotate(-90deg);
+}
+.donut-chart .donut-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+.donut-chart .donut-center .donut-val {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: block;
+}
+.donut-chart .donut-center .donut-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+}
+.donut-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+    justify-content: center;
+}
+.donut-legend .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+}
+.donut-legend .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* ============================================================
+   PROGRESS GROUP
+   ============================================================ */
+.progress-group {
+    margin: 1.5rem 0;
+}
+.progress-item {
+    margin-bottom: 1.2rem;
+}
+.progress-item .progress-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.4rem;
+}
+.progress-item .progress-name {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+.progress-item .progress-pct {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+.progress-item .progress-track {
+    height: 8px;
+    background: var(--bg-section-alt);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+.progress-item .progress-fill {
+    height: 100%;
+    border-radius: var(--radius-sm);
+    transition: width 1s ease;
+}
+
+/* ============================================================
+   SPARKLINE
+   ============================================================ */
+.sparkline {
+    display: inline-block;
+    vertical-align: middle;
+}
+.sparkline svg {
+    overflow: visible;
+}
+.sparkline polyline {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* ============================================================
+   TIMELINE
+   ============================================================ */
+.timeline {
+    position: relative;
+    margin: 2rem 0;
+    padding-left: 2rem;
+}
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(26,26,26,0.12);
+}
+.timeline-item {
+    position: relative;
+    padding-bottom: 2rem;
+    padding-left: 1.5rem;
+}
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -2rem;
+    top: 0.4rem;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg-primary);
+}
+.timeline-item .timeline-date {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.3rem;
+}
+.timeline-item .timeline-title {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.3rem;
+}
+.timeline-item .timeline-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 0;
+}
+
+/* ============================================================
+   HEATMAP
+   ============================================================ */
+.heatmap {
+    display: grid;
+    gap: 3px;
+    margin: 1.5rem 0;
+}
+.heatmap-cell {
+    aspect-ratio: 1;
+    border-radius: 2px;
+    background: var(--bg-section-alt);
+    transition: background var(--transition-fast);
+}
+.heatmap-cell:hover { opacity: 0.8; }
+.heatmap-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+}
+.heatmap-labels span {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+}
+
+/* ============================================================
+   BULLET CHART
+   ============================================================ */
+.bullet-chart {
+    margin: 1.5rem 0;
+}
+.bullet-item {
+    margin-bottom: 1.5rem;
+}
+.bullet-item .bullet-label {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    margin-bottom: 0.4rem;
+}
+.bullet-item .bullet-wrapper {
+    position: relative;
+    height: 28px;
+    background: var(--bg-section-alt);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+.bullet-item .bullet-marker {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--text-primary);
+    z-index: 2;
+}
+.bullet-item .bullet-bar {
+    height: 100%;
+    border-radius: var(--radius-sm);
+    transition: width 1s ease;
+}
+.bullet-item .bullet-range {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-radius: var(--radius-sm);
+    opacity: 0.15;
+    z-index: 0;
+}
+
+/* ============================================================
+   SCORE CARD
+   ============================================================ */
+.score-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(26,26,26,0.04);
+    text-align: center;
+}
+.score-card .score-ring {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 0.8rem;
+}
+.score-card .score-value {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+.score-card .score-title {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.2rem;
+}
+.score-card .score-sub {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+}
+
+/* ============================================================
+   DASHBOARD GRID
+   ============================================================ */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+.dashboard-grid .card {
+    min-height: 180px;
+}
+
+/* ============================================================
+   WATERFALL
+   ============================================================ */
+.waterfall {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+    height: 200px;
+    margin: 2rem 0;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(26,26,26,0.1);
+    position: relative;
+}
+.waterfall .wf-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    position: relative;
+    height: 100%;
+}
+.waterfall .wf-bar {
+    width: 100%;
+    max-width: 40px;
+    border-radius: var(--radius-sm);
+    transition: height 1s ease;
+}
+.waterfall .wf-bar.positive { background: var(--accent); }
+.waterfall .wf-bar.negative { background: var(--info); opacity: 0.7; }
+.waterfall .wf-val {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.3rem;
+}
+.waterfall .wf-label {
+    position: absolute;
+    bottom: 0;
+    font-size: 0.68rem;
+    color: var(--text-secondary);
+    transform: translateY(100%);
+    padding-top: 0.5rem;
+    white-space: nowrap;
+}
+
+/* ============================================================
+   TABLE (generic)
+   ============================================================ */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+}
+table thead th {
+    text-align: left;
+    padding: 0.8rem 1rem;
+    border-bottom: 2px solid rgba(26,26,26,0.1);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+table tbody td {
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid rgba(26,26,26,0.05);
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+}
+table tbody tr:hover {
+    background: var(--bg-section-alt);
+}
+
+/* ============================================================
+   REVEAL ANIMATION
+   ============================================================ */
+.reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ============================================================
+   CHART ENTRANCE
+   ============================================================ */
+.chart-enter {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.chart-enter.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ============================================================
+   RESPONSIVE BREAKPOINTS
+   ============================================================ */
+@media (max-width: 900px) {
+    .grid-3 { grid-template-columns: repeat(2, 1fr); }
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .report-container { padding: 0 1.5rem; }
+    .report-section { padding: 3rem 0; }
+}
+@media (max-width: 600px) {
+    html { font-size: 15px; }
+    .report-container { padding: 0 1rem; }
+    .report-section { padding: 2rem 0; }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .cover-title { font-size: clamp(2rem, 8vw, 3rem); }
+    .bar-horizontal .bar-label { width: 80px; font-size: 0.8rem; }
+    .bar-vertical { gap: 0.5rem; height: 150px; }
+    .waterfall { gap: 0.3rem; height: 150px; }
+    .step-item { gap: 1rem; }
+    .comparison-table { font-size: 0.85rem; }
+    .comparison-table thead th,
+    .comparison-table tbody td { padding: 0.6rem 0.8rem; }
+    .timeline { padding-left: 1.5rem; }
+    .timeline-item { padding-left: 1rem; }
+    .ending-section { padding: 4rem 1rem; }
+}
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    html { scroll-behavior: auto; }
+    .reveal { opacity: 1; transform: none; }
+    .chart-enter { opacity: 1; transform: none; }
+}
+
+/* ============================================================
+   PRINT STYLES
+   ============================================================ */
+@media print {
+    body { background: #fff; color: #000; font-size: 11pt; }
+    .report-cover { min-height: auto; page-break-after: always; }
+    .report-section { page-break-inside: avoid; padding: 1.5rem 0; }
+    .card, .stat-card, .score-card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+    .reveal, .chart-enter { opacity: 1; transform: none; }
+    .no-print { display: none !important; }
+    a { color: #000; }
+    hr::before { color: #666; }
+    .code-block { background: #f0f0f0; color: #000; }
+    @page { margin: 2cm; }
+}
+
+/* ============================================================
+   TOC
+   ============================================================ */
+.toc-list {
+    counter-reset: toc-counter;
+    margin: 1.5rem 0;
+}
+.toc-list li {
+    counter-increment: toc-counter;
+    padding: 0.6rem 0;
+    border-bottom: 1px dotted rgba(26,26,26,0.1);
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+}
+.toc-list li::before {
+    content: counter(toc-counter, decimal-leading-zero);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--accent);
+    min-width: 2em;
+}
+.toc-list li a {
+    color: var(--text-primary);
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 500;
+    transition: color var(--transition-fast);
+}
+.toc-list li a:hover {
+    color: var(--accent);
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     COVER
+     ============================================================ -->
+<div class="report-cover">
+    <div class="cover-inner">
+        <div class="cover-tag">年度研究报告</div>
+        <h1 class="cover-title">纸墨之间</h1>
+        <div class="cover-divider"></div>
+        <p class="cover-subtitle">深入洞察与独立思考的年度总结，以文学视角审视数据背后的叙事</p>
+        <div class="cover-meta">
+            <span>二〇二五年</span>
+            <span>|</span>
+            <span>第三卷</span>
+            <span>|</span>
+            <span>总第二十七期</span>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     TOC
+     ============================================================ -->
+<div class="report-section">
+    <div class="report-container">
+        <div class="section-heading reveal">
+            <h2>目录</h2>
+            <p>本报告共包含以下章节</p>
+        </div>
+        <ol class="toc-list reveal">
+            <li><a href="#section-quote">编者的话</a></li>
+            <li><a href="#section-overview">年度概览</a></li>
+            <li><a href="#section-data">核心数据</a></li>
+            <li><a href="#section-analysis">深度分析</a></li>
+            <li><a href="#section-timeline">重要时间线</a></li>
+            <li><a href="#section-summary">结语与展望</a></li>
+        </ol>
+    </div>
+</div>
+
+<!-- ============================================================
+     SECTION 1: QUOTE
+     ============================================================ -->
+<div class="report-section" id="section-quote">
+    <div class="report-container">
+        <div class="section-heading reveal">
+            <h2>编者的话</h2>
+            <p>在变革的时代中，保持思考的深度</p>
+        </div>
+        <div class="quote-block reveal">
+            <p>文字是时间的琥珀，记录着思想的每一个脉搏。当我们将一年的思考凝聚于纸墨之间，不仅是在回顾过去，更是在为未来书写序章。</p>
+            <cite>主编寄语</cite>
+        </div>
+        <div class="reveal">
+            <p>过去的一年是充满变化的一年。全球格局持续演变，技术进步深刻重塑着每一个行业。在这个充满不确定性的时代，我们始终相信，深入的思考与审慎的观察是理解世界最有力的工具。</p>
+            <p>本报告汇集了过去十二个月的深度研究与独立分析，涵盖经济趋势、技术演进、文化变迁等多个维度。我们力求以文学的视角解读数据，以叙事的方式呈现事实，让每一页都值得反复品读。</p>
+        </div>
+    </div>
+</div>
+
+<hr>
+
+<!-- ============================================================
+     SECTION 2: OVERVIEW (STAT CARDS)
+     ============================================================ -->
+<div class="report-section" id="section-overview">
+    <div class="report-container">
+        <div class="section-heading reveal">
+            <h2>年度概览</h2>
+            <p>关键指标一览</p>
+        </div>
+        <div class="summary-grid reveal">
+            <div class="stat-card">
+                <div class="stat-value" data-target="1247" data-animate="true">0</div>
+                <div class="stat-label">研究报告</div>
+                <div class="stat-change positive">+18.3%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" data-target="89" data-animate="true">0</div>
+                <div class="stat-label">深度访谈</div>
+                <div class="stat-change positive">+12.5%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" data-target="36" data-animate="true">0</div>
+                <div class="stat-label">专题报告</div>
+                <div class="stat-change positive">+6.7%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" data-target="4200" data-animate="true">0</div>
+                <div class="stat-label">阅读人次（万）</div>
+                <div class="stat-change positive">+24.1%</div>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="quote-block reveal">
+            <p>真正的洞察不在于拥有多少数据，而在于能够从纷繁复杂的现象中提炼出有意义的模式与趋势。</p>
+            <cite>研究团队</cite>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     SECTION 3: DATA DEEP DIVE
+     ============================================================ -->
+<div class="report-section" id="section-data">
+    <div class="report-container">
+        <div class="section-heading reveal">
+            <h2>核心数据</h2>
+            <p>以图表呈现年度研究成果</p>
+        </div>
+
+        <!-- Bar Horizontal -->
+        <div class="reveal chart-enter" style="margin-bottom: 3rem;">
+            <h4 style="margin-bottom: 1rem;">各领域报告产出</h4>
+            <div class="bar-horizontal">
+                <div class="bar-row">
+                    <div class="bar-label">科技趋势</div>
+                    <div class="bar-track"><div class="bar-fill" data-width="85" style="width: 0;"></div></div>
+                    <div class="bar-value">326</div>
+                </div>
+                <div class="bar-row">
+                    <div class="bar-label">经济分析</div>
+                    <div class="bar-track"><div class="bar-fill" data-width="72" style="width: 0;"></div></div>
+                    <div class="bar-value">278</div>
+                </div>
+                <div class="bar-row">
+                    <div class="bar-label">文化研究</div>
+                    <div class="bar-track"><div class="bar-fill" data-width="60" style="width: 0;"></div></div>
+                    <div class="bar-value">234</div>
+                </div>
+                <div class="bar-row">
+                    <div class="bar-label">社会观察</div>
+                    <div class="bar-track"><div class="bar-fill" data-width="53" style="width: 0;"></div></div>
+                    <div class="bar-value">203</div>
+                </div>
+                <div class="bar-row">
+                    <div class="bar-label">政策解读</div>
+                    <div class="bar-track"><div class="bar-fill" data-width="48" style="width: 0;"></div></div>
+                    <div class="bar-value">206</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Donut Chart -->
+        <div class="reveal chart-enter" style="text-align: center; margin-bottom: 3rem;">
+            <h4 style="margin-bottom: 1.5rem;">读者群体构成</h4>
+            <div class="donut-chart" id="donut1">
+                <svg width="180" height="180" viewBox="0 0 180 180">
+                    <circle cx="90" cy="90" r="70" fill="none" stroke="#f0f0f0" stroke-width="20"/>
+                    <circle cx="90" cy="90" r="70" fill="none" stroke="var(--chart-1)" stroke-width="20"
+                            stroke-dasharray="175.93 263.89" stroke-dashoffset="0" data-pct="40"/>
+                    <circle cx="90" cy="90" r="70" fill="none" stroke="var(--chart-2)" stroke-width="20"
+                            stroke-dasharray="109.96 329.86" stroke-dashoffset="-175.93" data-pct="25"/>
+                    <circle cx="90" cy="90" r="70" fill="none" stroke="var(--chart-3)" stroke-width="20"
+                            stroke-dasharray="87.96 351.86" stroke-dashoffset="-285.89" data-pct="20"/>
+                    <circle cx="90" cy="90" r="70" fill="none" stroke="var(--chart-4)" stroke-width="20"
+                            stroke-dasharray="65.97 373.85" stroke-dashoffset="-373.85" data-pct="15"/>
+                </svg>
+                <div class="donut-center">
+                    <span class="donut-val">4,200万</span>
+                    <span class="donut-label">总阅读量</span>
+                </div>
+            </div>
+            <div class="donut-legend">
+                <div class="legend-item"><span class="legend-dot" style="background: var(--chart-1);"></span> 独立研究者 40%</div>
+                <div class="legend-item"><span class="legend-dot" style="background: var(--chart-2);"></span> 企业决策层 25%</div>
+                <div class="legend-item"><span class="legend-dot" style="background: var(--chart-3);"></span> 学术机构 20%</div>
+                <div class="legend-item"><span class="legend-dot" style="background: var(--chart-4);"></span> 政策制定者 15%</div>
+            </div>
+        </div>
+
+        <!-- Progress Group -->
+        <div class="reveal chart-enter">
+            <h4 style="margin-bottom: 1rem;">年度目标完成度</h4>
+            <div class="progress-group">
+                <div class="progress-item">
+                    <div class="progress-header">
+                        <span class="progress-name">研究报告发布</span>
+                        <span class="progress-pct">94%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" data-width="94" style="width: 0; background: var(--chart-1);"></div>
+                    </div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-header">
+                        <span class="progress-name">读者增长目标</span>
+                        <span class="progress-pct">87%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" data-width="87" style="width: 0; background: var(--chart-2);"></div>
+                    </div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-header">
+                        <span class="progress-name">国际影响力</span>
+                        <span class="progress-pct">76%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" data-width="76" style="width: 0; background: var(--chart-3);"></div>
+                    </div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-header">
+                        <span class="progress-name">内容质量评分</span>
+                        <span class="progress-pct">92%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" data-width="92" style="width: 0; background: var(--chart-4);"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     SECTION 4: ANALYSIS
+     ============================================================ -->
+<div class="report-section" id="section-analysis">
+    <div class="report-container">
+        <div class="section-heading reveal">
+            <h2>深度分析</h2>
+            <p>回顾与反思</p>
+        </div>
+
+        <!-- Step Flow -->
+        <div class="reveal" style="margin-bottom: 3rem;">
+            <h4 style="margin-bottom: 1.5rem;">研究方法论演进</h4>
+            <div class="step-flow">
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>数据采集与清洗</h4>
+                        <p>建立了全新的多源数据融合管线，覆盖全球 37 个主要数据源，数据处理效率提升 40%。</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>模型构建与验证</h4>
+                        <p>引入因果推断框架，结合传统统计方法与机器学习技术，显著提升了分析的可靠性。</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>叙事呈现与传播</h4>
+                        <p>将复杂的研究成果转化为可读性强的叙事内容，让专业知识触达更广泛的受众。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Table -->
+        <div class="reveal" style="margin-bottom: 3rem;">
+            <h4 style="margin-bottom: 1rem;">年度对比分析</h4>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>指标</th>
+                        <th>2024 年</th>
+                        <th>2025 年</th>
+                        <th>变化</th>
+                        <th>状态</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>报告总数</td>
+                        <td>1,054</td>
+                        <td>1,247</td>
+                        <td>+18.3%</td>
+                        <td><span class="status-badge success">达标</span></td>
+                    </tr>
+                    <tr>
+                        <td>深度访谈</td>
+                        <td>79</td>
+                        <td>89</td>
+                        <td>+12.5%</td>
+                        <td><span class="status-badge success">达标</span></td>
+                    </tr>
+                    <tr>
+                        <td>平均阅读时长</td>
+                        <td>4.2 分钟</td>
+                        <td>5.1 分钟</td>
+                        <td>+21.4%</td>
+                        <td><span class="status-badge success">超标</span></td>
+                    </tr>
+                    <tr>
+                        <td>用户留存率</td>
+                        <td>62%</td>
+                        <td>68%</td>
+                        <td>+6pp</td>
+                        <td><span class="status-badge warning">接近</span></td>
+                    </tr>
+                    <tr>
+                        <td>国际订阅者占比</td>
+                        <td>18%</td>
+                        <td>24%</td>
+                        <td>+6pp</td>
+                        <td><span class="status-badge success">达标</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Bullet List -->
+        <div class="reveal">
+            <h4 style="margin-bottom: 1rem;">关键发现</h4>
+            <ul class="bullet-list">
+                <li>人工智能在科研领域的应用已从辅助工具演变为核心方法论，超过 67% 的研究报告使用了 AI 辅助分析。</li>
+                <li>读者对长篇深度内容的需求同比增长 34%，表明信息碎片化趋势中仍存在对深度思考的强烈需求。</li>
+                <li>跨学科研究项目数量增加 52%，其中科技与人文交叉领域增长最为显著。</li>
+                <li>移动端阅读占比首次突破 70%，但桌面端的平均阅读时长仍高出移动端 48%。</li>
+                <li>付费订阅用户增长 41%，单篇平均收入提升 23%，内容付费模式持续验证可行。</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<hr>
+
+<!-- ============================================================
+     SECTION 5: TIMELINE
+     ============================================================ -->
+<div class="report-section" id="section-timeline">
+    <div class="report-container">
+        <div class="section-heading reveal">
+            <h2>重要时间线</h2>
+            <p>记录年度标志性时刻</p>
+        </div>
+        <div class="timeline reveal">
+            <div class="timeline-item">
+                <div class="timeline-date">二〇二五年一月</div>
+                <div class="timeline-title">年度研究计划发布</div>
+                <div class="timeline-desc">确立了以"技术与人文"为核心的年度研究主题，发布六大研究方向。</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">二〇二五年三月</div>
+                <div class="timeline-title">首份季度报告问世</div>
+                <div class="timeline-desc">发布《全球技术趋势观察》首期报告，首周阅读量突破 200 万。</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">二〇二五年五月</div>
+                <div class="timeline-title">国际合作框架协议</div>
+                <div class="timeline-desc">与欧洲三大研究机构签署合作协议，建立跨区域数据共享机制。</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">二〇二五年八月</div>
+                <div class="timeline-title">年中读者调研</div>
+                <div class="timeline-desc">完成年度读者调研，收集有效反馈 12,000 份，满意度评分 4.6/5。</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">二〇二五年十月</div>
+                <div class="timeline-title">专题报告系列启动</div>
+                <div class="timeline-desc">启动"未来十年"系列专题，涵盖经济、科技、教育、环境四大领域。</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">二〇二五年十二月</div>
+                <div class="timeline-title">年度总结报告</div>
+                <div class="timeline-desc">完成本报告的撰写与编校，回顾全年研究成果与影响。</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     SECTION 6: ENDING
+     ============================================================ -->
+<div class="report-section ending-section" id="section-summary">
+    <div class="report-container">
+        <div class="reveal">
+            <div class="ending-icon">&#9830;</div>
+            <h2>结语与展望</h2>
+            <p>纸墨有尽时，思考无绝期。感谢每一位读者的陪伴与支持，让我们在新的一年继续以深度对抗喧嚣，以思考回应变化。</p>
+            <hr style="margin: 2rem auto;">
+            <div class="cover-meta">
+                <span>纸墨之间 &middot; 年度研究报告</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+(function() {
+    'use strict';
+
+    /* --------------------------------------------------------
+       INTERSECTION OBSERVER — REVEAL ANIMATIONS
+       -------------------------------------------------------- */
+    var revealObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal, .chart-enter').forEach(function(el) {
+        revealObserver.observe(el);
+    });
+
+    /* --------------------------------------------------------
+       ANIMATE VALUE — Count-up for stat cards
+       -------------------------------------------------------- */
+    function animateValue(el, start, end, duration) {
+        var startTimestamp = null;
+        var step = function(timestamp) {
+            if (!startTimestamp) startTimestamp = timestamp;
+            var progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            var eased = 1 - Math.pow(1 - progress, 3);
+            var current = Math.floor(eased * (end - start) + start);
+            el.textContent = current.toLocaleString('zh-CN');
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            } else {
+                el.textContent = end.toLocaleString('zh-CN');
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+
+    /* --------------------------------------------------------
+       CHART ENTRANCE — Animate bars, progress, donut on view
+       -------------------------------------------------------- */
+    var chartObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                var el = entry.target;
+
+                /* Horizontal bars */
+                var hBars = el.querySelectorAll('.bar-horizontal .bar-fill');
+                hBars.forEach(function(bar, i) {
+                    setTimeout(function() {
+                        bar.style.width = bar.getAttribute('data-width') + '%';
+                    }, i * 100);
+                });
+
+                /* Progress fills */
+                var pFills = el.querySelectorAll('.progress-fill');
+                pFills.forEach(function(fill, i) {
+                    setTimeout(function() {
+                        fill.style.width = fill.getAttribute('data-width') + '%';
+                    }, i * 120);
+                });
+
+                /* Donut chart animation */
+                var donut = el.querySelector('.donut-chart svg');
+                if (donut) {
+                    var circles = donut.querySelectorAll('circle[data-pct]');
+                    circles.forEach(function(circle) {
+                        var pct = parseInt(circle.getAttribute('data-pct'), 10);
+                        var circumference = 2 * Math.PI * 70;
+                        var target = (pct / 100) * circumference;
+                        var offset = parseFloat(circle.style.strokeDashoffset) || 0;
+                        circle.style.transition = 'stroke-dasharray 1s ease';
+                        circle.setAttribute('stroke-dasharray', target + ' ' + (circumference - target));
+                    });
+                }
+
+                /* Stat card values */
+                var statVals = el.querySelectorAll('.stat-value[data-animate]');
+                statVals.forEach(function(sv, i) {
+                    var target = parseInt(sv.getAttribute('data-target'), 10);
+                    setTimeout(function() {
+                        animateValue(sv, 0, target, 1200);
+                    }, i * 150);
+                });
+
+                chartObserver.unobserve(el);
+            }
+        });
+    }, { threshold: 0.2 });
+
+    document.querySelectorAll('.chart-enter, .summary-grid').forEach(function(el) {
+        chartObserver.observe(el);
+    });
+
+    /* --------------------------------------------------------
+       TOC smooth scroll
+       -------------------------------------------------------- */
+    document.querySelectorAll('.toc-list a').forEach(function(a) {
+        a.addEventListener('click', function(e) {
+            e.preventDefault();
+            var id = this.getAttribute('href').substring(1);
+            var target = document.getElementById(id);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+
+})();
+</script>
+</body>
+</html>
