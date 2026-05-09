@@ -1,6 +1,6 @@
 # felix-to-skills
 
-面向 LLM 辅助开发与设计的三套技能（Skills）合集——让 AI 写得更克制、排得更高级、设计更有参考系。
+面向 LLM 辅助开发与设计的四套技能（Skills）合集——让 AI 写得更克制、排得更高级、设计更有参考系、复盘更有深度。
 
 ---
 
@@ -11,6 +11,7 @@
 | [Karpathy Guidelines](#1-karpathy-guidelines) | 行为准则 | 让 LLM 写代码时少犯蠢——先想再写、只改该改的、用测试闭环 |
 | [HTML Report](#2-html-report) | 创意生成 | 零依赖、单文件 HTML 汇报页面——排版优先，反 AI-slop |
 | [Design Refs](#3-design-refs) | 设计参考 | 56 个真实产品设计系统——Apple、Tesla、Stripe、Linear……拿来即用 |
+| [Store Review Report](#4-store-review-report) | 业务生成 | 门店经营复盘 Word 报告——数据填入、自动排版、一键生成 .docx |
 
 ---
 
@@ -151,13 +152,76 @@ design-refs/
 
 ---
 
+## 4. Store Review Report
+
+> 数据驱动的门店经营复盘 Word (.docx) 报告生成器。
+
+### 两种模式
+
+| 模式 | 适用场景 | 入口 |
+|------|----------|------|
+| **数据驱动版** | 已有完整数据，自动生成精美报告 | `StoreReviewReport(data).generate(output_path)` |
+| **填空版** | 需要分发给店长手动填写 | `python fill_template.py` |
+
+### 核心特征
+
+| 特征 | 说明 |
+|------|------|
+| Word 原生 | 基于 `python-docx`，输出标准 .docx 文件 |
+| 自动计算 | 达成率、环比变动、费用率、净利润全部自动计算并标色 |
+| 七章结构 | 经营结果 → 销售分析 → 成本利润 → 过程指标 → PDCA → 5 Whys → 下月计划 |
+| 配色体系 | 深靛蓝（表头）+ 翠绿（达标）+ 琥珀（预警）+ 砖红（亏损） |
+
+### 报告章节
+
+1. **经营结果与成本·净利呈现** — GMV/利润概览表 + 成本结构分解
+2. **品类销售深度分析** — 品类达成率/环比，高亮/短板自动标记
+3. **成本结构深度分析** — 费用占比饼图 + 费用/返利比率
+4. **过程指标诊断** — 客流、转化率、连带率、融合订单、新增粉
+5. **PDCA 问题闭环** — 结论 → 亮点 → 短板 → 行动项（含责任人和期限）
+6. **5 Whys 根因分析** — 五层追问，从现象到真因
+7. **下月经营目标** — 基础目标/挑战目标/策略三位一体
+
+### 快速开始
+
+```bash
+pip install python-docx
+```
+
+```python
+from store_review_report import StoreReviewReport
+from store_review_report.examples.sample_data import get_sample_data
+
+data = get_sample_data()
+report = StoreReviewReport(data)
+report.generate("./report.docx")
+```
+
+### 文件结构
+
+```
+store_review_report/
+├── SKILL.md               # 技能入口
+├── AGENTS.md              # AI Agent 操作规范
+├── README.md              # 中文用户文档
+├── __init__.py            # 包导出
+├── report_generator.py    # 核心引擎（数据驱动版）
+├── fill_template.py       # 填空版模板生成器
+├── data_template.py       # 空白数据模板
+└── examples/
+    └── sample_data.py     # 示例数据
+```
+
+---
+
 ## 使用方式
 
-三套技能各自独立，可按需加载：
+四套技能各自独立，可按需加载：
 
 - **写代码更克制** → 加载 `andrej-karpathy-skills/SKILL.md`
 - **生成汇报页面** → 加载 `html-report/SKILL.md`
 - **做 UI/网页设计** → 查阅 `design-refs/` 目录
+- **生成门店复盘报告** → 加载 `store_review_report/SKILL.md`
 
 支持 SkillHub 等技能管理工具，也可直接复制到对应技能目录。
 
@@ -168,3 +232,4 @@ design-refs/
 - Karpathy Guidelines 改编自 [forrestchang/andrej-karpathy-skills](https://github.com/forrestchang/andrej-karpathy-skills)
 - Design Refs 提取自各品牌官网，仅作设计参考
 - HTML Report 为原创技能
+- Store Review Report 为原创技能
