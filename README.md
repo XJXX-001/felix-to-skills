@@ -43,7 +43,7 @@
 ### 文件结构
 
 ```
-andrej-karpathy-skills/
+engineering-discipline/
 ├── SKILL.md                # 核心准则（4 条原则 + Git 执行纪律）
 ├── references/
 │   ├── examples.md         # 详细代码示例（正反对比）
@@ -291,7 +291,7 @@ profit-statement-analysis/
 
 六套技能各自独立，可按需加载：
 
-- **写代码 + Git 纪律** → 加载 `andrej-karpathy-skills/SKILL.md`
+- **写代码 + Git 纪律** → 加载 `engineering-discipline/SKILL.md`
 - **生成汇报页面** → 加载 `html-report/SKILL.md`
 - **做 UI/网页设计** → 查阅 `design-refs/` 目录
 - **生成门店复盘报告** → 加载 `store_review_report/SKILL.md`
@@ -304,7 +304,7 @@ profit-statement-analysis/
 
 ## 致谢
 
-- Karpathy Guidelines 改编自 [forrestchang/andrej-karpathy-skills](https://github.com/forrestchang/andrej-karpathy-skills)
+- Karpathy Guidelines 改编自 [forrestchang/engineering-discipline](https://github.com/forrestchang/engineering-discipline)
 - Design Refs 提取自各品牌官网，仅作设计参考
 - HTML Report 为原创技能
 - Store Review Report 为原创技能
