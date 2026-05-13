@@ -1,6 +1,6 @@
 # felix-to-skills
 
-面向 LLM 辅助开发与设计的四套技能（Skills）合集——让 AI 写得更克制、排得更高级、设计更有参考系、复盘更有深度。
+面向 LLM 辅助开发与设计的五套技能（Skills）合集——让 AI 写得更克制、排得更高级、设计更有参考系、复盘更有深度、提交更干净。
 
 ---
 
@@ -8,33 +8,46 @@
 
 | 技能 | 类型 | 一句话 |
 |------|------|--------|
-| [Karpathy Guidelines](#1-karpathy-guidelines) | 行为准则 | 让 LLM 写代码时少犯蠢——先想再写、只改该改的、用测试闭环 |
+| [Engineering Discipline](#1-engineering-discipline) | 行为准则 | Karpathy 编码原则 + Git 执行纪律——先想再写、原子提交、Save Point 闭环 |
 | [HTML Report](#2-html-report) | 创意生成 | 零依赖、单文件 HTML 汇报页面——排版优先，反 AI-slop |
 | [Design Refs](#3-design-refs) | 设计参考 | 56 个真实产品设计系统——Apple、Tesla、Stripe、Linear……拿来即用 |
 | [Store Review Report](#4-store-review-report) | 业务生成 | 门店经营复盘 Word 报告——数据填入、自动排版、一键生成 .docx |
+| [Frontend UI Engineering](#5-frontend-ui-engineering) | 工程规范 | 构建生产级前端 UI——可访问、响应式、反 AI 审美、设计系统遵循 |
+| [Profit Statement Analysis](#6-profit-statement-analysis) | 业务分析 | Apple APR 授权经销商利润表财务分析——毛利率/费用率/净利率、门店评分、行业对标、HTML 报告 |
 
 ---
 
-## 1. Karpathy Guidelines
+## 1. Engineering Discipline
 
-> 源自 [Andrej Karpathy 对 LLM 编码陷阱的观察](https://x.com/karpathy/status/2015883857489522876)，适配为技能文件。
+> 源自 [Andrej Karpathy 对 LLM 编码陷阱的观察](https://x.com/karpathy/status/2015883857489522876)，融合 Git 工作流纪律，形成完整的工程行为规范。
 
-### 四大原则
+### 四层纪律
 
-| 原则 | 解决问题 |
+| 层级 | 原则 | 解决问题 |
+|------|------|----------|
+| **思维层** | Think Before Coding | 不要假设、不要隐藏困惑、先讲清楚再动手 |
+| **思维层** | Simplicity First | 最小代码解决问题，不过度抽象、不写用不上的扩展 |
+| **思维层** | Surgical Changes | 只改必须改的，不顺手"优化"旁边代码 |
+| **思维层** | Goal-Driven Execution | 定义可验证的成功标准，循环直到通过 |
+| **执行层** | Git Discipline | 原子提交、干净历史、可审查、可回退 |
+
+### 核心映射：每条原则如何在 Git 中落地
+
+| 原则 | Git 映射 |
 |------|----------|
-| **Think Before Coding** | 不要假设、不要隐藏困惑、先讲清楚再动手 |
-| **Simplicity First** | 最小代码解决问题，不过度抽象、不写用不上的扩展 |
-| **Surgical Changes** | 只改必须改的，不顺手"优化"旁边代码 |
-| **Goal-Driven Execution** | 定义可验证的成功标准，循环直到通过 |
+| Think Before Coding | 编码前先规划分支范围、预估 commit 粒度 |
+| Simplicity First | 变更小则提交粒度小，不累积 300+ 未提交行 |
+| Surgical Changes | 格式化/重构/功能分开 commit，附 Change Summary |
+| Goal-Driven Execution | Save Point 模式：测试通过 → commit；失败 → `git reset --hard` |
 
 ### 文件结构
 
 ```
 andrej-karpathy-skills/
-├── SKILL.md                # 核心准则（4 条原则）
+├── SKILL.md                # 核心准则（4 条原则 + Git 执行纪律）
 ├── references/
-│   └── examples.md         # 详细代码示例（正反对比）
+│   ├── examples.md         # 详细代码示例（正反对比）
+│   └── git-workflow.md     # Git 工作流详细参考（commit 格式、Worktree、调试）
 └── README.md               # 安装与使用说明
 ```
 
@@ -43,6 +56,7 @@ andrej-karpathy-skills/
 - Diffs 里只有真正需要的改动，没有顺手"优化"
 - 复杂问题第一版就是简单方案，不用重写
 - 提问发生在实现之前，而不是踩坑之后
+- 每个 commit 都是原子、有描述、可审查的 save point
 
 ---
 
@@ -214,14 +228,75 @@ store_review_report/
 
 ---
 
+## 5. Frontend UI Engineering
+
+> 构建生产级质量的前端用户界面——可访问、响应式、性能优良、视觉精致。
+
+### 核心原则
+
+| 原则 | 说明 |
+|------|------|
+| **反 AI 审美** | 拒绝紫色渐变、全圆角、通用卡片网格——使用项目真实设计系统 |
+| **组合优于配置** | `<Card><CardHeader>...</CardHeader></Card>` 而非 `<Card title="..." headerVariant="..." />` |
+| **数据与展示分离** | Container 处理数据获取，Presentation 处理渲染 |
+| **WCAG 2.1 AA** | 键盘导航、ARIA 标签、焦点管理、有意义的空/错误状态 |
+
+### 文件结构
+
+```
+frontend-ui-engineering/
+└── SKILL.md          # 技能入口（组件架构、状态管理、设计系统、a11y、响应式、加载态）
+```
+
+### 使用方式
+
+直接加载 `frontend-ui-engineering/SKILL.md` 即可。适用于：
+- 新建 UI 组件或页面
+- 修改现有用户界面
+- 实现响应式布局
+- 添加交互或状态管理
+- 修复视觉或 UX 问题
+
+---
+
+## 6. Profit Statement Analysis
+
+> 适用于 Apple APR 授权经销商门店利润表的结构化财务分析技能。
+
+### 分析框架
+
+| 模块 | 内容 |
+|------|------|
+| 收入分析 | 月度趋势 / 各店贡献 / 收入结构诊断 |
+| 盈利能力 | 毛利率排名 / 净利率排名 / 月度利润走势 |
+| 费用结构 | 费用构成（工资/房租/摊销等）/ 费用率对比 / O2O 手续费分析 |
+| 门店诊断 | A-D 级门店评分 / 关键指标汇总 / 专项诊断 |
+| 行业对标 | 9 项 Apple APR 行业基准对比（毛利率/净利率/房租占比/人工占比等） |
+
+### 数据要求
+
+固定结构利润表 Excel，包含 `template` 工作表，前两行为表头，第 3 行起为数据行。
+
+### 文件结构
+
+```
+profit-statement-analysis/
+├── SKILL.md      # 技能入口（完整分析框架 + 行业基准 + 注意事项）
+└── README.md     # 本文件
+```
+
+---
+
 ## 使用方式
 
-四套技能各自独立，可按需加载：
+六套技能各自独立，可按需加载：
 
-- **写代码更克制** → 加载 `andrej-karpathy-skills/SKILL.md`
+- **写代码 + Git 纪律** → 加载 `andrej-karpathy-skills/SKILL.md`
 - **生成汇报页面** → 加载 `html-report/SKILL.md`
 - **做 UI/网页设计** → 查阅 `design-refs/` 目录
 - **生成门店复盘报告** → 加载 `store_review_report/SKILL.md`
+- **构建生产级前端 UI** → 加载 `frontend-ui-engineering/SKILL.md`
+- **利润表财务分析** → 加载 `profit-statement-analysis/SKILL.md`
 
 支持 SkillHub 等技能管理工具，也可直接复制到对应技能目录。
 
