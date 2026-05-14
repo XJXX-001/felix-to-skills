@@ -2,12 +2,14 @@
 
 零依赖、单文件、浏览器即开即用的汇报类 HTML 页面生成器。
 
+> **AI Agent 请读取 [SKILL.md](SKILL.md)** — 包含完整工作流、模板速查、设计约束。
+
 ## 目录结构
 
 ```
 html-report/
-├── SKILL.md                    # 技能入口（Hermes 读取此文件启动工作流）
-├── README.md                   # 本文件 — 项目说明与使用规范
+├── SKILL.md                    # 技能入口（AI 读取此文件启动工作流）
+├── README.md                   # 本文件 — 人类阅读的项目说明
 │
 ├── templates/                  # 预设模板（极速路径，直接复制替换内容）
 │   ├── bold-signal.html        # 深色+橙 · 周例会/提案/摘要
@@ -17,6 +19,7 @@ html-report/
 │   ├── paper-ink.html          # 暖白+红 · 调研报告/文学风
 │   ├── gallery-data.html       # 白底极简 · 数据分析/KPI仪表盘
 │   ├── ledger-slate.html       # 暖白财务 · 财务报表/P&L/资产负债表
+│   ├── sketch-watercolor.html  # 水彩手绘 · 创意报告/艺术风格
 │   ├── full-ppt-test.html      # 全屏PPT · 深色+橙（原始参考）
 │   ├── ppt-bold-signal.html    # 全屏PPT · 深色+橙
 │   ├── ppt-electric-studio.html# 全屏PPT · 深色+蓝
@@ -26,32 +29,26 @@ html-report/
 ├── DESIGN_STANDARDS.md         # 设计规范库：类型→设计映射
 ├── STYLE_PRESETS.md            # 12 套视觉预设完整 CSS
 ├── INFOGRAPHIC_PATTERNS.md     # 图表使用指南 + HTML 示例
-├── animation-patterns.md       # 动画参考（已合并入 html-template.md）
-├── viewport-base.css           # 响应式基座 CSS（已合并入 html-template.md）
 │
-└── extensions/                 # 扩展模块（按需引入）
-    └── INTERACTIVE_PATTERNS.md # 动态图表、交互动画、数据可视化扩展
+├── extensions/                 # 扩展模块（按需引入）
+│   └── INTERACTIVE_PATTERNS.md # 动态图表、交互动画、数据可视化扩展
+│
+└── data-analysis/              # 数据驱动报告子技能
+    ├── SKILL.md                # 子技能入口
+    ├── README.md               # 使用说明
+    ├── scripts/                # Python 脚本
+    │   ├── generate_report.py  # 主脚本：读取数据 → 计算指标 → 生成 HTML
+    │   └── category_mapper.py  # 品类映射引擎
+    ├── tests/                  # 单元测试
+    │   ├── test_category_mapper.py
+    │   └── test_generate_report.py
+    ├── styles/                 # 外置 CSS
+    │   └── base.css
+    └── config/                 # 配置模板
+        └── template.yaml       # 配置模板（修改后使用）
 ```
 
-## 使用规范
-
-### 工作流选择
-
-| 场景 | 推荐路径 | 文件读取 | 速度 |
-|------|----------|----------|------|
-| 用户催促 / demo / 简单报告 | 极速路径 | 读 1 个模板文件 | 最快 |
-| 大多数报告 | 标准路径 | 读 html-template.md | 快 |
-| 数据密集 / 需要图表指导 | 复杂路径 | 读 html-template.md + 按需读其余 | 中 |
-| 需要动态图表/交互 | 扩展路径 | 标准路径 + 读 extensions/ | 按需 |
-
-### 模板使用方式
-
-1. 根据报告类型从 SKILL.md 速查表选模板
-2. 读取模板文件，获取完整 CSS + HTML 结构
-3. 替换占位内容为实际报告内容
-4. 保存为 `{type}-{date-or-topic}.html`
-
-### 自定义方式
+## 自定义方式
 
 - **换色**: 修改 `:root` 中的 `--accent`、`--bg-primary` 等变量
 - **换字体**: 修改 `<link>` 标签中的字体名 + `--font-display`、`--font-body` 变量
@@ -71,6 +68,24 @@ html-report/
 }
 ```
 
+## 数据驱动路径
+
+当有现成的 Excel 数据文件时，使用此路径：
+
+```bash
+# 安装依赖
+pip install pandas openpyxl pyyaml
+
+# 复制并修改配置
+cp data-analysis/config/template.yaml my-config.yaml
+
+# 生成报告
+python3 data-analysis/scripts/generate_report.py --config my-config.yaml
+```
+
+**环境变量支持：**
+- `REPORT_CONFIG`: 配置文件路径（优先级：--config 参数 > 环境变量 > 默认 config.yaml）
+
 ## 扩展机制
 
 本技能预留了扩展空间，详见 `extensions/` 目录：
@@ -85,24 +100,31 @@ html-report/
 - 响应式兼容
 - 尊重 `prefers-reduced-motion`
 
-## 设计约束
+## 开发指南
 
-- 禁止 Inter/Roboto/Arial 作为 display 字体
-- 禁止紫色渐变白底（`#6366f1`）
-- 禁止全内容居中对齐（封面除外）
-- 字号必须 `clamp()`，禁止固定 px
-- 负值必须 `calc(-1 * ...)`，禁止 `-clamp()`
+### 运行测试
 
-## 文件依赖关系
+```bash
+cd data-analysis
+python3 tests/test_category_mapper.py
+python3 tests/test_generate_report.py
+```
+
+### 文件依赖关系
 
 ```
-SKILL.md（入口）
+SKILL.md（AI 入口）
   ├── templates/*.html（极速路径，直接用）
   ├── html-template.md（标准路径，完整 CSS/JS）
-  │     ├── 已内含 viewport-base.css（响应式基座）
-  │     └── 已内含 animation-patterns.md（动画）
   ├── INFOGRAPHIC_PATTERNS.md（图表选型指导）
   ├── STYLE_PRESETS.md（预设详情）
   ├── DESIGN_STANDARDS.md（完整设计规范）
-  └── extensions/INTERACTIVE_PATTERNS.md（扩展：动态图表/交互）
+  ├── extensions/INTERACTIVE_PATTERNS.md（扩展：动态图表/交互）
+  └── data-analysis/（数据驱动路径）
+        ├── SKILL.md（子技能入口）
+        ├── scripts/generate_report.py（主脚本）
+        ├── scripts/category_mapper.py（品类映射引擎）
+        ├── styles/base.css（外置 CSS）
+        ├── tests/（单元测试）
+        └── config/template.yaml（配置模板）
 ```

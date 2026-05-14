@@ -152,7 +152,7 @@
 ```
 **特征**: 可见网格、非对称布局、几何形状
 
-### 8. Notebook Tabs
+### 6. Notebook Tabs
 **氛围**: 编辑感、有条理、有温度
 **适用**: 调研报告、产品文档
 
@@ -175,7 +175,7 @@
 ```
 **特征**: 纸质卡片、彩色侧标签、装订孔装饰
 
-### 9. Paper & Ink
+### 7. Paper & Ink
 **氛围**: 文学感、深度、思考
 **适用**: 调研报告、年度总结
 
@@ -195,7 +195,7 @@
 ```
 **特征**: 首字下沉、引用块、优雅水平线
 
-### 10. Vintage Editorial
+### 8. Vintage Editorial
 **氛围**: 个性、编辑风、有态度
 **适用**: 年度总结、项目提案
 
@@ -219,7 +219,7 @@
 
 ## Specialty Themes
 
-### 11. Terminal Green
+### 9. Terminal Green
 **氛围**: 开发者向、极客风
 **适用**: 技术文档、数据分析
 
@@ -239,7 +239,7 @@
 ```
 **特征**: 扫描线、闪烁光标、代码语法风格
 
-### 12. Creative Voltage
+### 10. Creative Voltage
 **氛围**: 大胆、创意、有活力
 **适用**: 项目提案、创意报告
 
@@ -259,7 +259,7 @@
 ```
 **特征**: 电蓝+霓虹黄对比、半色调纹理、霓虹标签
 
-### 13. Split Pastel
+### 11. Split Pastel
 **氛围**: 活泼、友好、现代
 **适用**: 内部汇报、团队文档
 
@@ -280,7 +280,7 @@
 ```
 **特征**: 双色分屏背景、趣味徽章、网格叠加
 
-### 14. Pastel Geometry
+### 12. Pastel Geometry
 **氛围**: 有条理、友好、现代
 **适用**: 周例会、数据分析（轻量）
 
@@ -301,7 +301,7 @@
 ```
 **特征**: 圆角卡片、垂直侧边 pill、柔和阴影
 
-### 15. Sketch Watercolor
+### 13. Sketch Watercolor
 **氛围**: 手绘、温暖、非正式、亲切
 **适用**: 内部周报、创意提案、团队复盘、手绘风信息图
 
@@ -334,8 +334,6 @@
 |------|---------|------|------|
 | Bold Signal | Archivo Black | Space Grotesk | Google Fonts |
 | Electric Studio | Manrope | Manrope | Google Fonts |
-| Gallery Data | Inter | Lora (数字) | Google Fonts |
-| Ledger Slate | DM Sans | Playfair Display (财务数字) | Google Fonts |
 | Dark Botanical | Cormorant | IBM Plex Sans | Google Fonts |
 | Neon Cyber | Clash Display | Satoshi | Fontshare |
 | Swiss Modern | Archivo | Nunito | Google Fonts |

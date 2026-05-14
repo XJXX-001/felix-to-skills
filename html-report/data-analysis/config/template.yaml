@@ -1,0 +1,73 @@
+# 数据分析报告生成配置
+# 修改此文件即可适配不同的分析场景
+
+report:
+  title: "2026年五一经营复盘报告"
+  subtitle: "Apple零售经营分析 · 两期对比诊断与战略建议"
+  author: "数据分析部 · Electric Studio"
+  period_label: "五一"
+
+data:
+  # 两期数据文件路径（相对项目根目录）
+  period1_file: "data/2025年五一销售明细.xlsx"
+  period2_file: "data/2026年五一销售明细.xlsx"
+  period1_label: "2025"
+  period2_label: "2026"
+
+  # Excel 列名映射（如果列名不同，修改这里）
+  columns:
+    date: "单据日期"
+    store: "分支机构名称"
+    staff: "职员名称"
+    product: "商品名称"
+    quantity: "数量"
+    discounted_amount: "折后金额"
+    cost_amount: "成本金额"
+    gross_margin: "毛利"
+
+  # 数据清洗规则
+  cleaning:
+    sales_formula: "-折后金额"   # 销售额 = -折后金额（因为出库单金额为负）
+    quantity_formula: "abs(数量)" # 销量 = abs(数量)
+
+business_rules:
+  # 排除不参与分析的人员
+  exclude_staff: ["肖琴", "陈宇", "高德逾", "张利峰"]
+  # 排除不参与分析的门店（留空表示不排除）
+  exclude_stores: []
+
+# 品类映射规则（优先级数字越小越优先）
+categories:
+  - name: "服务"
+    keywords: ["维修", "碎屏保", "增值服务", "无忧黑金卡"]
+    match_mode: "contains"
+    priority: 1
+  - name: "Mac"
+    keywords: ["mac", "macbook"]
+    match_mode: "contains_ci"
+    priority: 2
+  - name: "iPad"
+    keywords: ["ipad"]
+    match_mode: "contains_ci"
+    priority: 3
+  - name: "iPhone"
+    keywords: ["iphone"]
+    match_mode: "contains_ci"
+    priority: 4
+  - name: "配件"
+    keywords: ["小天才"]
+    match_mode: "contains"
+    priority: 5
+  - name: "Watch"
+    keywords: ["手表", "watch", "^(25|24)款 S", "SE3"]
+    match_mode: "regex"
+    priority: 6
+  - name: "配件"
+    keywords: []
+    match_mode: "default"
+    priority: 999
+
+output:
+  # 报告输出目录
+  report_dir: "reports/2026-五一"
+  report_filename: "report.html"

@@ -1,6 +1,6 @@
 ---
 name: html-report
-description: Generate typographically rich, structurally sound HTML report pages. Zero-dependency single-file output. For business reports, meeting summaries, data analysis, project proposals, and internal documents. Load this skill whenever the user asks to create a report, meeting summary, data page, or structured HTML document.
+description: Generate typographically rich, structurally sound HTML report pages. Zero-dependency single-file output. Supports both LLM-generated reports and Python-driven data analysis reports. For business reports, meeting summaries, data analysis, project proposals, and internal documents. Load this skill whenever the user asks to create a report, meeting summary, data page, or structured HTML document.
 category: creative
 ---
 
@@ -14,10 +14,23 @@ category: creative
 2. **反 AI-slop** — 禁止 Inter/Roboto/Arial 作 display 字体、紫色渐变白底、全居中布局。
 3. **排版优先** — 字体质量 > 装饰效果。字号必须 `clamp()`，禁止固定 px。
 4. **宁少勿糙** — 精选 4-6 个组件打磨，不要面面俱到但每个平庸。
+5. **数据驱动优先** — 有现成数据时，优先使用 Python 脚本自动生成，确保数据准确性。
 
 ---
 
-## 三级工作流
+## 四级工作流
+
+### 数据驱动路径（有数据时首选）
+
+**适用场景：** 用户有现成的 Excel/CSV 数据文件
+
+1. 加载 [data-analysis/SKILL.md](data-analysis/SKILL.md) 获取使用说明
+2. 复制配置模板 `data-analysis/config/template.yaml`
+3. 修改配置（数据路径、列名、业务规则）
+4. 运行 `python3 data-analysis/scripts/generate_report.py --config my-config.yaml`
+5. 输出零依赖 HTML 报告（内置数据校验，7 个章节自动生成）
+
+**优势：** 全自动、数据准确、支持多项目配置、内置 5 项数据校验
 
 ### 极速路径（最快，推荐）
 
@@ -52,6 +65,7 @@ category: creative
 | R6 调研报告 | 调研、研究、文献 | `paper-ink.html` | toc > section-heading > quote-block > table |
 | R7 执行摘要 | 摘要、一页纸、executive summary | `swiss-modern.html` | big-number > callout > summary-grid > action-items |
 | R8 产品文档 | 文档、手册、指南 | `swiss-modern.html` | step-flow > code-block > screenshot-box > callout-info > table |
+| R9 数据驱动报告 | Excel分析、经营复盘、两期对比、销售分析 | `data-analysis/SKILL.md` | Python 脚本自动生成（7 章节 + 5 项校验） |
 
 ---
 
@@ -201,9 +215,12 @@ print('✅ 全部校验通过')
 
 | 文件 | 用途 | 何时读取 |
 |------|------|----------|
-| `templates/*.html` | 预设模板（11 套风格） | 极速路径（推荐） |
+| `templates/*.html` | 预设模板（12 套风格） | 极速路径（推荐） |
 | [html-template.md](html-template.md) | 完整架构 + 全部组件 CSS + 动画 JS | 标准路径 |
 | [INFOGRAPHIC_PATTERNS.md](INFOGRAPHIC_PATTERNS.md) | 图表使用指南 + HTML 示例 | 需要图表选型时 |
 | [STYLE_PRESETS.md](STYLE_PRESETS.md) | 12 套预设完整 CSS | 用户要风格预览时 |
 | [DESIGN_STANDARDS.md](DESIGN_STANDARDS.md) | 完整设计规范库 | 速查表不够时 |
 | `extensions/INTERACTIVE_PATTERNS.md` | 动态图表、交互动画、数据刷新 | 需要动态/交互功能时 |
+| [data-analysis/SKILL.md](data-analysis/SKILL.md) | 数据驱动报告子技能 | 有 Excel 数据需要分析时 |
+| `data-analysis/scripts/` | Python 脚本（generate_report.py, category_mapper.py） | 执行数据驱动报告生成 |
+| `data-analysis/config/` | 配置模板（template.yaml） | 配置数据源和业务规则 |
