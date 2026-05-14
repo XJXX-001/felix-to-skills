@@ -21,6 +21,7 @@
 | [posthog.md](posthog.md) | 产品分析、多彩、开源友好 | 数据分析、产品运营 |
 | [sanity.md](sanity.md) | 内容管理、结构化、开发者友好 | CMS、内容平台 |
 | [resend.md](resend.md) | 邮件API、简洁、技术感 | 邮件服务、API产品 |
+| [observable.md](observable.md) | 白底极简、数据即色彩、Lora衬线数字 | 数据分析、可视化、学术报告、仪表盘 |
 
 ### AI / 大模型产品
 | 文件 | 核心风格 | 适用场景 |
@@ -88,6 +89,7 @@
 | [revolut.md](revolut.md) | 霓虹渐变、年轻、金融科技 | 数字银行、年轻用户金融 |
 | [wise.md](wise.md) | 蓝绿品牌、简洁、透明感 | 跨境支付、汇款、信任 |
 | [kraken.md](kraken.md) | 深色、紫色、专业交易 | 交易所、专业金融工具 |
+| [mercury.md](mercury.md) | 暖白纸张感、Mercury绿、Playfair衬线财务数字 | 财务报表、银行、会计、P&L、资产负债表 |
 
 ### 企业 / 传统科技
 | 文件 | 核心风格 | 适用场景 |
@@ -105,8 +107,9 @@
 **想要极简留白** → Apple / Tesla / Vercel / x.ai  
 **想要暗色专业** → Linear / Cursor / Stripe / Sentry  
 **想要多彩活泼** → Figma / Airtable / Zapier / PostHog  
-**想要金融信任** → Stripe / Wise / Coinbase  
+**想要金融信任** → Stripe / Wise / Coinbase / Mercury  
+**想要极简留白/数据清晰** → Observable / Vercel / Apple / Tesla  
 
 ---
 
-*共 56 个设计系统参考，总计约 16,000 行设计规范。*
+*共 58 个设计系统参考，总计约 17,500 行设计规范。*

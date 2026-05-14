@@ -15,6 +15,8 @@ html-report/
 │   ├── dark-botanical.html     # 深色+金 · 年度总结/提案
 │   ├── swiss-modern.html       # 白底+红 · 执行摘要/产品文档
 │   ├── paper-ink.html          # 暖白+红 · 调研报告/文学风
+│   ├── gallery-data.html       # 白底极简 · 数据分析/KPI仪表盘
+│   ├── ledger-slate.html       # 暖白财务 · 财务报表/P&L/资产负债表
 │   ├── full-ppt-test.html      # 全屏PPT · 深色+橙（原始参考）
 │   ├── ppt-bold-signal.html    # 全屏PPT · 深色+橙
 │   ├── ppt-electric-studio.html# 全屏PPT · 深色+蓝

@@ -140,6 +140,12 @@
 - **Vibe:** Lovable's website radiates warmth through restraint.
 - **Key traits:** Warm parchment background (#f7f4ed) — not white, not beige, a deliberate cream that feels hand-selected | Camera Plain Variable typeface with humanist warmth and editorial letter-spacing at display sizes | Opacity-driven color system: all grays derived from #1c1c1c at varying transparency levels | Warm neutral border palette: #eceae4 for subtle, rgba(28,28,28,0.4) for interactive elements
 
+## Mercury
+- **File:** `mercury.md`
+- **Mode:** light
+- **Vibe:** Mercury's interface is modern banking rendered as breathing space — warm near-white canvas with pure white cards, where financial data is elevated by editorial serif typography.
+- **Key traits:** Warm Canvas (#fcfcf9) with Card White (#ffffff) surfaces — premium stationery aesthetic | Playfair Display serif exclusively for monetary values — "money speaks in serif" | Mercury Green (#4ade80) as the sole positive accent — fresh, growth-oriented, optimistic | 12px universal border radius — rounded-rectangle consistency | Double-struck totals (2px borders) — accounting convention as design signature | DM Sans for all UI text — clean geometric sans with humanist warmth | Muted red (rgba(239,68,68,0.85)) for negative values — clear but never alarming
+
 ## MiniMax
 - **File:** `minimax.md`
 - **Mode:** light
@@ -199,6 +205,12 @@
 - **Mode:** light
 - **Vibe:** OpenCode's website embodies a terminal-native, monospace-first aesthetic that reflects its identity as an open source AI coding agent.
 - **Key traits:** Berkeley Mono as the sole typeface -- monospace everywhere, no sans-serif or serif voices | Warm near-black primary (#201d1d) with reddish-brown undertone, not pure black | Off-white text (#fdfcfc) with warm tint, not pure white | Minimal 4px border radius throughout -- sharp, utilitarian corners
+
+## Observable
+- **File:** `observable.md`
+- **Mode:** light
+- **Vibe:** Observable's interface is a gallery for data — a luminous white canvas where the UI disappears and data visualizations provide the only color.
+- **Key traits:** Canvas White (#ffffff) with Cool Zone (#f8f9fa) spatial differentiation — pure gallery aesthetic | Lora serif for numeric data callouts — editorial precision that distinguishes figures from UI text | Inter for all UI with weight 400 body, weight 600 headings — understated functional hierarchy | Slate Blue (#4263eb) as a utility accent, never a brand color — color belongs exclusively to the data
 
 ## Pinterest
 - **File:** `pinterest.md`
@@ -367,3 +379,4 @@
 - **Energetic / Bold:** ferrari.md, figma.md, nike.md, zapier.md
 - **Enterprise / Stable:** clickhouse.md, hashicorp.md, ibm.md, mongodb.md
 - **AI / Future:** claude.md, cohere.md, cursor.md, elevenlabs.md, runwayml.md
+- **Data / Financial:** clickhouse.md, mercury.md, observable.md, posthog.md, sentry.md, supabase.md

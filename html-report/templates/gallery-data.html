@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery Data — 数据分析报告</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* ===========================================
+           CSS CUSTOM PROPERTIES — Gallery Data
+           白底极简 · 数据即色彩 · Lora 衬线数字
+           =========================================== */
+        :root {
+            /* 色彩 */
+            --bg-primary: #ffffff;
+            --bg-card: #ffffff;
+            --bg-section-alt: #f8f9fa;
+            --bg-zone: #f8f9fa;
+            --text-primary: #111111;
+            --text-secondary: #4a4a4a;
+            --text-caption: #6b7280;
+            --accent: #4263eb;
+            --accent-hover: #3b5ccc;
+            --accent-glow: rgba(66, 99, 235, 0.08);
+            --success: #2d8a4e;
+            --warning: #c47a1a;
+            --danger: #c0392b;
+            --info: #3b82b6;
+            --border: #e9ecef;
+            --border-strong: #dee2e6;
+            --hover-surface: #f1f3f5;
+
+            /* 排版 */
+            --font-display: 'Inter', 'Noto Sans SC', sans-serif;
+            --font-body: 'Inter', 'Noto Sans SC', sans-serif;
+            --font-data: 'Lora', 'Noto Serif SC', serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            /* 间距体系 */
+            --space-xs: clamp(0.25rem, 0.5vw, 0.5rem);
+            --space-sm: clamp(0.5rem, 1vw, 0.75rem);
+            --space-md: clamp(0.75rem, 1.5vw, 1.25rem);
+            --space-lg: clamp(1rem, 2vw, 2rem);
+            --space-xl: clamp(2rem, 4vw, 4rem);
+            --space-2xl: clamp(3rem, 6vw, 6rem);
+
+            /* 圆角 */
+            --radius-sm: 4px;
+            --radius-md: 6px;
+
+            /* 阴影 */
+            --shadow-card: 0px 1px 3px rgba(0,0,0,0.04);
+            --shadow-elevated: 0px 4px 16px rgba(0,0,0,0.08);
+            --shadow-tooltip: 0px 4px 16px rgba(0,0,0,0.10);
+
+            /* 过渡 */
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --duration-fast: 0.2s;
+            --duration-normal: 0.4s;
+
+            /* 数据图表色 — 柔和宝石调 */
+            --chart-1: #5b7cb5;
+            --chart-2: #c47f5a;
+            --chart-3: #4d9b8c;
+            --chart-4: #d4a24e;
+            --chart-5: #8b6b9e;
+            --chart-6: #b56d7e;
+            --chart-7: #5a7ea0;
+            --chart-8: #9e8b5c;
+            --chart-neutral: #e9ecef;
+        }
+
+        /* ===========================================
+           RESPONSIVE BASE
+           =========================================== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        body { font-family: var(--font-body); background: var(--bg-primary); color: var(--text-primary); line-height: 1.7; min-height: 100vh; }
+
+        /* Content Container */
+        .report-container { max-width: min(90vw, 1200px); margin: 0 auto; }
+        .report-container.reading { max-width: min(90vw, 760px); }
+
+        /* Section Spacing */
+        .report-section { padding: var(--space-2xl) var(--slide-padding); position: relative; }
+        .report-section.alt { background: var(--bg-section-alt); }
+        .report-cover { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; justify-content: center; padding: var(--slide-padding); position: relative; overflow: hidden; }
+
+        /* ===========================================
+           TYPOGRAPHY SCALE — clamp()
+           =========================================== */
+        :root {
+            --title-size: clamp(2rem, 5vw, 3.5rem);
+            --h2-size: clamp(1.25rem, 3vw, 2rem);
+            --h3-size: clamp(1rem, 2vw, 1.5rem);
+            --h4-size: clamp(0.9rem, 1.5vw, 1.125rem);
+            --body-size: clamp(0.85rem, 1.5vw, 1rem);
+            --small-size: clamp(0.7rem, 1vw, 0.875rem);
+            --caption-size: clamp(0.65rem, 0.9vw, 0.75rem);
+            --data-big: clamp(2rem, 5vw, 3.5rem);
+            --data-mid: clamp(1.5rem, 3.5vw, 2.25rem);
+            --slide-padding: clamp(1rem, 4vw, 4rem);
+            --content-gap: clamp(0.75rem, 2vw, 1.5rem);
+            --element-gap: clamp(0.5rem, 1.5vw, 1rem);
+        }
+        h1 { font-family: var(--font-display); font-size: var(--title-size); font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; }
+        h2 { font-family: var(--font-display); font-size: var(--h2-size); font-weight: 600; line-height: 1.25; letter-spacing: -0.01em; }
+        h3 { font-family: var(--font-display); font-size: var(--h3-size); font-weight: 600; line-height: 1.3; }
+        h4 { font-family: var(--font-display); font-size: var(--h4-size); font-weight: 600; line-height: 1.3; }
+        p, li { font-size: var(--body-size); color: var(--text-secondary); line-height: 1.65; }
+
+        /* Card & Container */
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: clamp(1rem, 2vw, 1.5rem); }
+        .card-elevated { box-shadow: var(--shadow-card); }
+
+        /* Images */
+        img, .image-container { max-width: 100%; height: auto; border-radius: var(--radius-sm); }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; font-size: var(--body-size); }
+        th, td { padding: clamp(0.5rem, 1vw, 0.75rem) clamp(0.75rem, 1.5vw, 1rem); text-align: left; border-bottom: 1px solid var(--border); }
+        th { font-family: var(--font-display); font-weight: 600; font-size: var(--caption-size); text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-caption); background: transparent; }
+        tr:hover td { background: var(--hover-surface); }
+        td.num { text-align: right; font-family: var(--font-data); font-variant-numeric: tabular-nums; }
+
+        /* Grid Systems */
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 350px), 1fr)); gap: var(--content-gap); }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: var(--content-gap); }
+        .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: var(--element-gap); }
+
+        /* Lists */
+        .bullet-list { display: flex; flex-direction: column; gap: var(--element-gap); list-style: none; }
+        .bullet-list li { display: flex; align-items: flex-start; gap: 0.75rem; }
+
+        /* Horizontal Rule */
+        hr { border: none; border-top: 1px solid var(--border); margin: var(--content-gap) 0; }
+
+        /* ===========================================
+           RESPONSIVE BREAKPOINTS
+           =========================================== */
+        @media (max-height: 700px) {
+            :root { --slide-padding: clamp(0.75rem, 3vw, 2rem); --content-gap: clamp(0.5rem, 1.5vw, 1rem); --title-size: clamp(1.5rem, 4.5vw, 2.5rem); --h2-size: clamp(1.1rem, 3vw, 1.5rem); }
+        }
+        @media (max-width: 768px) {
+            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+            .report-cover { min-height: 80vh; min-height: 80dvh; }
+        }
+        @media (max-width: 480px) {
+            :root { --slide-padding: clamp(0.75rem, 3vw, 1.25rem); --title-size: clamp(1.5rem, 7vw, 2rem); }
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; }
+            html { scroll-behavior: auto; }
+        }
+
+        /* Print Styles */
+        @media print {
+            :root { --slide-padding: 1.5cm; --title-size: 24pt; --h2-size: 16pt; --body-size: 11pt; }
+            .report-section { page-break-inside: avoid; }
+            .report-cover { min-height: auto; page-break-after: always; }
+            body { background: white !important; color: black !important; }
+            .card { box-shadow: none !important; border: 1px solid #ccc; }
+            .report-section.alt { background: #f5f5f5 !important; }
+        }
+
+        /* ===========================================
+           SCROLL REVEAL ANIMATIONS
+           =========================================== */
+        .reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.5s var(--ease-out-expo), transform 0.5s var(--ease-out-expo); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .reveal:nth-child(1) { transition-delay: 0.05s; }
+        .reveal:nth-child(2) { transition-delay: 0.1s; }
+        .reveal:nth-child(3) { transition-delay: 0.15s; }
+        .reveal:nth-child(4) { transition-delay: 0.2s; }
+        .reveal:nth-child(5) { transition-delay: 0.25s; }
+        .reveal:nth-child(6) { transition-delay: 0.3s; }
+        .reveal:nth-child(7) { transition-delay: 0.35s; }
+        .reveal:nth-child(8) { transition-delay: 0.4s; }
+
+        /* ===========================================
+           COVER SECTION
+           =========================================== */
+        .report-cover {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border);
+        }
+        .cover-eyebrow { font-family: var(--font-mono); font-size: var(--caption-size); color: var(--text-caption); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: var(--space-lg); }
+        .cover-title { font-family: var(--font-display); font-size: var(--title-size); font-weight: 600; margin-bottom: var(--space-md); letter-spacing: -0.03em; }
+        .cover-subtitle { font-size: clamp(1rem, 2vw, 1.25rem); color: var(--text-secondary); margin-bottom: var(--space-xl); max-width: min(90vw, 540px); }
+        .cover-meta { font-size: var(--small-size); color: var(--text-caption); }
+        .cover-accent-line { width: clamp(2rem, 6vw, 4rem); height: 2px; background: var(--accent); margin-bottom: var(--space-lg); border-radius: 1px; }
+
+        /* ===========================================
+           SECTION HEADING
+           =========================================== */
+        .section-heading { margin-bottom: var(--space-xl); }
+        .section-number { font-family: var(--font-mono); font-size: var(--caption-size); color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: var(--space-xs); }
+        .section-heading h2 { margin-bottom: var(--space-sm); }
+        .section-desc { font-size: var(--body-size); color: var(--text-secondary); max-width: min(90vw, 600px); }
+
+        /* ===========================================
+           DATA CALLOUTS — Lora serif numbers
+           =========================================== */
+        .data-callout { text-align: left; }
+        .data-value { font-family: var(--font-data); font-size: var(--data-big); font-weight: 500; color: var(--text-primary); line-height: 1.1; }
+        .data-value-sm { font-family: var(--font-data); font-size: var(--data-mid); font-weight: 500; color: var(--text-primary); line-height: 1.1; }
+        .data-label { font-size: var(--caption-size); color: var(--text-caption); margin-top: var(--space-xs); }
+        .data-trend { font-size: var(--small-size); font-weight: 500; margin-top: var(--space-xs); display: inline-flex; align-items: center; gap: 0.25rem; }
+        .data-trend.up { color: var(--success); }
+        .data-trend.down { color: var(--danger); }
+        .data-trend.neutral { color: var(--text-caption); }
+
+        /* ===========================================
+           METRIC CARDS (KPI Dashboard)
+           =========================================== */
+        .metric-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-lg); display: flex; flex-direction: column; }
+        .metric-card .data-value-sm { margin-bottom: var(--space-xs); }
+        .metric-card .data-label { margin-top: 0; }
+        .metric-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-sm); }
+        .metric-sparkline { margin-top: auto; padding-top: var(--space-md); height: 40px; }
+        .metric-sparkline svg { width: 100%; height: 100%; }
+        .metric-sparkline path { fill: none; stroke: var(--border-strong); stroke-width: 1.5; }
+        .metric-sparkline path.fill { stroke: var(--accent); stroke-opacity: 0.3; fill: url(#sparklineGradient); }
+
+        /* ===========================================
+           STAT CARDS (Compact)
+           =========================================== */
+        .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-md) var(--space-lg); }
+        .stat-value { font-family: var(--font-display); font-size: var(--h3-size); font-weight: 600; color: var(--text-primary); line-height: 1.1; margin-bottom: var(--space-xs); }
+        .stat-label { font-size: var(--caption-size); color: var(--text-caption); }
+        .stat-trend { font-size: var(--caption-size); margin-top: var(--space-xs); }
+        .stat-trend.up { color: var(--success); }
+        .stat-trend.down { color: var(--danger); }
+
+        /* ===========================================
+           CALLOUT BOXES
+           =========================================== */
+        .callout { padding: var(--space-md) var(--space-lg); border-radius: var(--radius-sm); display: flex; align-items: flex-start; gap: var(--space-sm); font-size: var(--body-size); margin-bottom: var(--space-md); }
+        .callout-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.1em; }
+        .callout-danger  { background: rgba(192, 57, 43, 0.06);  border: 1px solid rgba(192, 57, 43, 0.18);  color: var(--danger); }
+        .callout-warning { background: rgba(196, 122, 26, 0.06);  border: 1px solid rgba(196, 122, 26, 0.18);  color: var(--warning); }
+        .callout-info    { background: rgba(59, 130, 182, 0.06);  border: 1px solid rgba(59, 130, 182, 0.18);  color: var(--info); }
+        .callout-success { background: rgba(45, 138, 78, 0.06);  border: 1px solid rgba(45, 138, 78, 0.18);  color: var(--success); }
+
+        /* ===========================================
+           SUMMARY GRID
+           =========================================== */
+        .summary-item { display: flex; align-items: flex-start; gap: var(--space-md); padding: var(--space-md); background: var(--bg-card); border-radius: var(--radius-sm); border: 1px solid var(--border); border-left: 3px solid var(--accent); }
+        .summary-icon { width: 2.2rem; height: 2.2rem; background: var(--accent-glow); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; color: var(--accent); }
+        .summary-text h4 { margin-bottom: var(--space-xs); }
+        .summary-text p { font-size: var(--small-size); }
+
+        /* ===========================================
+           TABLES — Clean, no zebra
+           =========================================== */
+        .clean-table { width: 100%; border-collapse: collapse; font-size: var(--body-size); }
+        .clean-table thead th { font-size: var(--caption-size); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-caption); padding: 10px 16px; border-bottom: 1.5px solid var(--border-strong); text-align: left; background: transparent; }
+        .clean-table thead th.num { text-align: right; }
+        .clean-table tbody td { padding: 10px 16px; border-bottom: 1px solid var(--hover-surface); color: var(--text-primary); }
+        .clean-table tbody td.num { text-align: right; font-family: var(--font-data); font-variant-numeric: tabular-nums; }
+        .clean-table tbody tr:hover td { background: var(--hover-surface); }
+        .clean-table .total-row td { font-weight: 600; border-top: 1.5px solid var(--border-strong); background: var(--bg-section-alt); }
+
+        /* ===========================================
+           QUOTE BLOCK
+           =========================================== */
+        .quote-block { border-left: 2px solid var(--accent); padding: var(--space-md) var(--space-lg); margin: var(--space-lg) 0; font-family: var(--font-data); font-style: italic; font-size: var(--h4-size); color: var(--text-secondary); }
+        .quote-attribution { font-size: var(--small-size); color: var(--text-caption); font-style: normal; font-family: var(--font-body); margin-top: var(--space-sm); }
+
+        /* ===========================================
+           CODE BLOCK
+           =========================================== */
+        .code-block { background: var(--bg-zone); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-md); font-family: var(--font-mono); font-size: var(--small-size); overflow-x: auto; white-space: pre; color: var(--text-secondary); }
+
+        /* ===========================================
+           ENDING SECTION
+           =========================================== */
+        .ending-section { min-height: 50vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: var(--space-2xl) var(--slide-padding); background: var(--bg-section-alt); }
+        .ending-section h2 { margin-bottom: var(--space-md); }
+        .ending-meta { font-size: var(--small-size); color: var(--text-caption); margin-top: var(--space-lg); }
+
+        /* ===========================================
+           CHART: HORIZONTAL BAR
+           =========================================== */
+        .chart-bar-horizontal { display: flex; flex-direction: column; gap: var(--space-sm); }
+        .hbar-item { display: flex; align-items: center; gap: var(--space-sm); }
+        .hbar-label { width: clamp(60px, 12vw, 110px); font-size: var(--small-size); color: var(--text-secondary); text-align: right; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .hbar-track { flex: 1; height: clamp(14px, 2vh, 20px); background: var(--chart-neutral); border-radius: var(--radius-sm); overflow: hidden; }
+        .hbar-fill { height: 100%; background: var(--bar-color, var(--accent)); border-radius: var(--radius-sm); transition: width 0.8s var(--ease-out-expo); min-width: 3px; }
+        .hbar-value { width: 3rem; font-size: var(--small-size); font-weight: 500; color: var(--text-primary); text-align: left; font-family: var(--font-data); }
+
+        /* ===========================================
+           CHART: DONUT
+           =========================================== */
+        .chart-donut { --donut-pct: 0; --donut-size: clamp(100px, 20vw, 160px); --donut-thickness: clamp(8px, 1.5vw, 12px); width: var(--donut-size); height: var(--donut-size); border-radius: 50%; background: conic-gradient(var(--donut-color, var(--accent)) calc(var(--donut-pct) * 1%), var(--chart-neutral) calc(var(--donut-pct) * 1%)); mask: radial-gradient(circle, transparent calc(50% - var(--donut-thickness)), black calc(50% - var(--donut-thickness) + 1px)); -webkit-mask: radial-gradient(circle, transparent calc(50% - var(--donut-thickness)), black calc(50% - var(--donut-thickness) + 1px)); display: flex; align-items: center; justify-content: center; position: relative; }
+        .chart-donut.multi { background: conic-gradient(var(--c1) 0% calc(var(--seg1) * 1%), var(--c2) calc(var(--seg1) * 1%) calc((var(--seg1) + var(--seg2)) * 1%), var(--c3) calc((var(--seg1) + var(--seg2)) * 1%) calc((var(--seg1) + var(--seg2) + var(--seg3)) * 1%), var(--c4) calc((var(--seg1) + var(--seg2) + var(--seg3)) * 1%) 100%); }
+        .donut-center { text-align: center; position: absolute; display: flex; flex-direction: column; align-items: center; }
+        .donut-value { font-family: var(--font-data); font-size: clamp(1.2rem, 3vw, 1.8rem); font-weight: 500; color: var(--text-primary); line-height: 1; }
+        .donut-label { font-size: var(--caption-size); color: var(--text-caption); margin-top: 2px; }
+        .donut-legend { display: flex; flex-wrap: wrap; gap: var(--space-md); margin-top: var(--space-md); }
+        .legend-item { display: flex; align-items: center; gap: var(--space-xs); font-size: var(--small-size); color: var(--text-secondary); }
+        .legend-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--dot-color); flex-shrink: 0; }
+
+        /* ===========================================
+           CHART: PROGRESS GROUP
+           =========================================== */
+        .progress-group { display: flex; flex-direction: column; gap: var(--space-md); }
+        .progress-item { display: flex; flex-direction: column; gap: var(--space-xs); }
+        .progress-header { display: flex; justify-content: space-between; font-size: var(--small-size); }
+        .progress-label { color: var(--text-secondary); }
+        .progress-pct { font-weight: 500; color: var(--text-primary); }
+        .progress-track { height: clamp(6px, 1vh, 10px); background: var(--chart-neutral); border-radius: var(--radius-sm); overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--fill-color, var(--accent)); border-radius: var(--radius-sm); transition: width 0.8s var(--ease-out-expo); }
+
+        /* ===========================================
+           CHART: SPARKLINE
+           =========================================== */
+        .sparkline-wrap { width: 100%; height: 40px; }
+        .sparkline-wrap svg { width: 100%; height: 100%; }
+
+        /* ===========================================
+           CHART: VERTICAL BAR
+           =========================================== */
+        .chart-bar-vertical { display: flex; align-items: flex-end; justify-content: space-around; gap: var(--space-md); height: clamp(180px, 35vh, 280px); padding: var(--space-md) 0; border-bottom: 1px solid var(--border); }
+        .bar-item { flex: 1; max-width: 70px; display: flex; flex-direction: column; align-items: center; gap: var(--space-xs); height: 100%; justify-content: flex-end; }
+        .bar-value { width: 100%; background: var(--bar-color, var(--accent)); border-radius: var(--radius-sm) var(--radius-sm) 0 0; min-height: 3px; transition: height 0.7s var(--ease-out-expo); display: flex; align-items: flex-start; justify-content: center; padding-top: var(--space-xs); font-size: var(--caption-size); font-weight: 500; color: white; }
+        .bar-label { font-size: var(--caption-size); color: var(--text-caption); text-align: center; white-space: nowrap; }
+
+        /* ===========================================
+           STEP FLOW
+           =========================================== */
+        .step-flow { display: flex; flex-direction: column; gap: var(--space-md); }
+        .step { display: flex; align-items: flex-start; gap: var(--space-md); }
+        .step-number { width: clamp(1.8rem, 3vw, 2.2rem); height: clamp(1.8rem, 3vw, 2.2rem); background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 600; font-size: var(--small-size); color: white; flex-shrink: 0; }
+        .step-content h4 { margin-bottom: var(--space-xs); }
+        .step-content p { font-size: var(--small-size); }
+
+        /* ===========================================
+           BULLET LIST (subtle dot)
+           =========================================== */
+        .bullet-list li::before { content: ''; width: 5px; height: 5px; background: var(--accent); border-radius: 50%; margin-top: 0.55em; flex-shrink: 0; opacity: 0.5; }
+    </style>
+</head>
+<body>
+
+    <!-- ===========================================
+         COVER
+         =========================================== -->
+    <section class="report-cover">
+        <div style="max-width: min(90vw, 760px); margin: 0 auto;">
+            <div class="cover-eyebrow reveal">数据分析报告</div>
+            <h1 class="cover-title reveal">2026 年核心指标回顾与<br>趋势洞察</h1>
+            <div class="cover-accent-line reveal"></div>
+            <p class="cover-subtitle reveal">基于 Q1–Q2 业务数据，聚焦关键增长指标、渠道效率与用户行为分析</p>
+            <p class="cover-meta reveal">2026 年 5 月 · 数据分析部 · Gallery Data</p>
+        </div>
+    </section>
+
+    <!-- ===========================================
+         SECTION 01 — KPI Dashboard
+         =========================================== -->
+    <section class="report-section">
+        <div class="report-container">
+            <div class="section-heading reveal">
+                <div class="section-number">01 / 核心指标</div>
+                <h2>关键绩效概览</h2>
+                <p class="section-desc">本季度核心业务指标一览，包括营收、用户、转化与留存。</p>
+            </div>
+            <div class="grid-4">
+                <div class="metric-card reveal">
+                    <div class="data-value-sm">¥ 48.2<span style="font-size: 0.5em;">M</span></div>
+                    <div class="data-label">季度总营收</div>
+                    <div class="data-trend up">▲ 12.5% 环比</div>
+                </div>
+                <div class="metric-card reveal">
+                    <div class="data-value-sm">18,472</div>
+                    <div class="data-label">月活跃用户</div>
+                    <div class="data-trend up">▲ 8.3% 环比</div>
+                </div>
+                <div class="metric-card reveal">
+                    <div class="data-value-sm">7.8<span style="font-size: 0.5em;">%</span></div>
+                    <div class="data-label">付费转化率</div>
+                    <div class="data-trend up">▲ 0.6pp 环比</div>
+                </div>
+                <div class="metric-card reveal">
+                    <div class="data-value-sm">4.6<span style="font-size: 0.5em;">/5</span></div>
+                    <div class="data-label">用户满意度</div>
+                    <div class="data-trend up">▲ 0.3 环比</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===========================================
+         SECTION 02 — Revenue Breakdown + Chart
+         =========================================== -->
+    <section class="report-section alt">
+        <div class="report-container">
+            <div class="section-heading reveal">
+                <div class="section-number">02 / 营收分析</div>
+                <h2>分渠道营收构成</h2>
+                <p class="section-desc">各业务线与获客渠道在本季度的营收贡献分布。</p>
+            </div>
+
+            <div class="grid-2">
+                <!-- Horizontal Bar -->
+                <div class="card reveal" style="padding: var(--space-lg);">
+                    <h4 style="margin-bottom: var(--space-md); font-weight: 500;">渠道营收占比</h4>
+                    <div class="chart-bar-horizontal">
+                        <div class="hbar-item">
+                            <div class="hbar-label">企业直销</div>
+                            <div class="hbar-track"><div class="hbar-fill" style="width: 85%; --bar-color: var(--chart-1);"></div></div>
+                            <div class="hbar-value">85%</div>
+                        </div>
+                        <div class="hbar-item">
+                            <div class="hbar-label">渠道代理</div>
+                            <div class="hbar-track"><div class="hbar-fill" style="width: 68%; --bar-color: var(--chart-2);"></div></div>
+                            <div class="hbar-value">68%</div>
+                        </div>
+                        <div class="hbar-item">
+                            <div class="hbar-label">在线平台</div>
+                            <div class="hbar-track"><div class="hbar-fill" style="width: 54%; --bar-color: var(--chart-3);"></div></div>
+                            <div class="hbar-value">54%</div>
+                        </div>
+                        <div class="hbar-item">
+                            <div class="hbar-label">合作伙伴</div>
+                            <div class="hbar-track"><div class="hbar-fill" style="width: 39%; --bar-color: var(--chart-4);"></div></div>
+                            <div class="hbar-value">39%</div>
+                        </div>
+                        <div class="hbar-item">
+                            <div class="hbar-label">自营电商</div>
+                            <div class="hbar-track"><div class="hbar-fill" style="width: 27%; --bar-color: var(--chart-5);"></div></div>
+                            <div class="hbar-value">27%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Donut + Legend -->
+                <div class="card reveal" style="padding: var(--space-lg); display: flex; flex-direction: column; align-items: center;">
+                    <h4 style="margin-bottom: var(--space-md); font-weight: 500; align-self: flex-start;">用户来源分布</h4>
+                    <div class="chart-donut multi" style="--seg1: 38; --seg2: 28; --seg3: 20; --seg4: 14; --c1: var(--chart-1); --c2: var(--chart-2); --c3: var(--chart-3); --c4: var(--chart-4);">
+                        <div class="donut-center">
+                            <div class="donut-value">18.5k</div>
+                            <div class="donut-label">总用户</div>
+                        </div>
+                    </div>
+                    <div class="donut-legend">
+                        <div class="legend-item"><span class="legend-dot" style="--dot-color: var(--chart-1);"></span>自然搜索 38%</div>
+                        <div class="legend-item"><span class="legend-dot" style="--dot-color: var(--chart-2);"></span>付费广告 28%</div>
+                        <div class="legend-item"><span class="legend-dot" style="--dot-color: var(--chart-3);"></span>社交媒体 20%</div>
+                        <div class="legend-item"><span class="legend-dot" style="--dot-color: var(--chart-4);"></span>邮件营销 14%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="callout callout-info reveal" style="margin-top: var(--space-lg);">
+                <span class="callout-icon">&#9432;</span>
+                <div>企业直销渠道贡献了 42% 的总营收，但获客成本同比上升 8%。建议加大在线平台投放预算，该渠道 ROI 当前最高（4.2x）。</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===========================================
+         SECTION 03 — User Growth + Vertical Bar
+         =========================================== -->
+    <section class="report-section">
+        <div class="report-container">
+            <div class="section-heading reveal">
+                <div class="section-number">03 / 用户增长</div>
+                <h2>月度新增用户趋势</h2>
+                <p class="section-desc">过去 6 个月的新增注册用户数与环比变化。</p>
+            </div>
+
+            <div class="card reveal" style="padding: var(--space-lg);">
+                <div class="chart-bar-vertical">
+                    <div class="bar-item">
+                        <div class="bar-value" style="height: 45%; --bar-color: var(--chart-3);">1.2k</div>
+                        <div class="bar-label">12月</div>
+                    </div>
+                    <div class="bar-item">
+                        <div class="bar-value" style="height: 52%; --bar-color: var(--chart-3);">1.4k</div>
+                        <div class="bar-label">1月</div>
+                    </div>
+                    <div class="bar-item">
+                        <div class="bar-value" style="height: 68%; --bar-color: var(--chart-1);">1.9k</div>
+                        <div class="bar-label">2月</div>
+                    </div>
+                    <div class="bar-item">
+                        <div class="bar-value" style="height: 62%; --bar-color: var(--chart-1);">1.7k</div>
+                        <div class="bar-label">3月</div>
+                    </div>
+                    <div class="bar-item">
+                        <div class="bar-value" style="height: 85%; --bar-color: var(--accent);">2.3k</div>
+                        <div class="bar-label">4月</div>
+                    </div>
+                    <div class="bar-item">
+                        <div class="bar-value" style="height: 100%; --bar-color: var(--accent);">2.8k</div>
+                        <div class="bar-label">5月</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-3" style="margin-top: var(--space-lg);">
+                <div class="stat-card reveal">
+                    <div class="stat-label">月均新增</div>
+                    <div class="stat-value">1,883</div>
+                    <div class="stat-trend up">▲ 18.2% 较上期</div>
+                </div>
+                <div class="stat-card reveal">
+                    <div class="stat-label">最高月</div>
+                    <div class="stat-value">2,847</div>
+                    <div class="stat-trend up">5 月创历史新高</div>
+                </div>
+                <div class="stat-card reveal">
+                    <div class="stat-label">30 日留存</div>
+                    <div class="stat-value">62.3%</div>
+                    <div class="stat-trend up">▲ 3.1pp 环比</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===========================================
+         SECTION 04 — Progress + Data Table
+         =========================================== -->
+    <section class="report-section alt">
+        <div class="report-container">
+            <div class="section-heading reveal">
+                <div class="section-number">04 / 目标达成</div>
+                <h2>季度目标进度</h2>
+                <p class="section-desc">各部门 Q2 OKR 完成情况与关键里程碑。</p>
+            </div>
+
+            <div class="grid-2">
+                <!-- Progress -->
+                <div class="card reveal" style="padding: var(--space-lg);">
+                    <h4 style="margin-bottom: var(--space-md); font-weight: 500;">KPI 完成率</h4>
+                    <div class="progress-group">
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-label">营收目标 (42M / 50M)</span>
+                                <span class="progress-pct">84%</span>
+                            </div>
+                            <div class="progress-track">
+                                <div class="progress-fill" style="width: 84%; --fill-color: var(--success);"></div>
+                            </div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-label">用户增长 (16.2k / 20k)</span>
+                                <span class="progress-pct">81%</span>
+                            </div>
+                            <div class="progress-track">
+                                <div class="progress-fill" style="width: 81%; --fill-color: var(--accent);"></div>
+                            </div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-label">产品上线 (3 / 4 个)</span>
+                                <span class="progress-pct">75%</span>
+                            </div>
+                            <div class="progress-track">
+                                <div class="progress-fill" style="width: 75%; --fill-color: var(--warning);"></div>
+                            </div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-label">客户满意度 (4.6 / 5.0)</span>
+                                <span class="progress-pct">92%</span>
+                            </div>
+                            <div class="progress-track">
+                                <div class="progress-fill" style="width: 92%; --fill-color: var(--success);"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Clean Table -->
+                <div class="card reveal" style="padding: var(--space-lg); overflow-x: auto;">
+                    <h4 style="margin-bottom: var(--space-md); font-weight: 500;">各产品线表现</h4>
+                    <table class="clean-table">
+                        <thead>
+                            <tr>
+                                <th>产品线</th>
+                                <th class="num">营收 (M)</th>
+                                <th class="num">用户数</th>
+                                <th class="num">增速</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>核心平台</td>
+                                <td class="num">22.4</td>
+                                <td class="num">8,210</td>
+                                <td class="num" style="color: var(--success);">+15.2%</td>
+                            </tr>
+                            <tr>
+                                <td>数据服务</td>
+                                <td class="num">14.8</td>
+                                <td class="num">5,430</td>
+                                <td class="num" style="color: var(--success);">+11.8%</td>
+                            </tr>
+                            <tr>
+                                <td>API 接口</td>
+                                <td class="num">6.9</td>
+                                <td class="num">2,980</td>
+                                <td class="num" style="color: var(--success);">+8.4%</td>
+                            </tr>
+                            <tr>
+                                <td>咨询服务</td>
+                                <td class="num">4.1</td>
+                                <td class="num">1,852</td>
+                                <td class="num" style="color: var(--danger);">-2.3%</td>
+                            </tr>
+                            <tr class="total-row">
+                                <td>合计</td>
+                                <td class="num">48.2</td>
+                                <td class="num">18,472</td>
+                                <td class="num" style="color: var(--success);">+12.5%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===========================================
+         SECTION 05 — Summary + Insights
+         =========================================== -->
+    <section class="report-section">
+        <div class="report-container reading">
+            <div class="section-heading reveal">
+                <div class="section-number">05 / 洞察与建议</div>
+                <h2>关键发现</h2>
+                <p class="section-desc">基于本季度数据分析得出的核心结论与行动建议。</p>
+            </div>
+
+            <div class="summary-item reveal" style="margin-bottom: var(--space-md);">
+                <div class="summary-icon">1</div>
+                <div class="summary-text">
+                    <h4>企业直销仍是核心引擎，但成本趋高</h4>
+                    <p>贡献 42% 营收，获客成本同比上升 8%。建议优化销售流程自动化，目标降本 15%。</p>
+                </div>
+            </div>
+            <div class="summary-item reveal" style="margin-bottom: var(--space-md);">
+                <div class="summary-icon">2</div>
+                <div class="summary-text">
+                    <h4>在线平台渠道 ROI 持续领先</h4>
+                    <p>投入产出比 4.2x，远超其他渠道。建议 Q3 追加 30% 投放预算，重点覆盖移动端。</p>
+                </div>
+            </div>
+            <div class="summary-item reveal" style="margin-bottom: var(--space-md);">
+                <div class="summary-icon">3</div>
+                <div class="summary-text">
+                    <h4>用户留存率稳步提升</h4>
+                    <p>30 日留存从 59.2% 提升至 62.3%，表明产品体验优化措施初见成效。</p>
+                </div>
+            </div>
+            <div class="summary-item reveal">
+                <div class="summary-icon">4</div>
+                <div class="summary-text">
+                    <h4>咨询服务线出现增长疲软</h4>
+                    <p>营收环比下降 2.3%，需评估市场需求变化或调整服务定价策略。</p>
+                </div>
+            </div>
+
+            <div class="quote-block reveal" style="margin-top: var(--space-xl);">
+                数据本身不会说话，但当我们把它放在正确的语境中——配合清晰的排版、克制的色彩、和足够的留白——它会讲述一个任何人都能理解的故事。
+                <div class="quote-attribution">— Gallery Data 设计原则</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===========================================
+         ENDING
+         =========================================== -->
+    <section class="ending-section">
+        <h2 class="reveal">感谢阅读</h2>
+        <p class="reveal" style="color: var(--text-caption);">如有疑问或数据需求，欢迎随时沟通</p>
+        <div class="cover-accent-line reveal" style="margin: var(--space-lg) auto;"></div>
+        <div class="ending-meta reveal">Gallery Data 模板 · 报告生成于 2026-05-14</div>
+    </section>
+
+    <!-- ===========================================
+         SCROLL ANIMATION + CHART ENTRANCE
+         =========================================== -->
+    <script>
+        // Scroll reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.12, rootMargin: '0px 0px -20px 0px' });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Chart bar/fill entrance animation
+        document.querySelectorAll('.hbar-fill, .bar-value, .progress-fill').forEach(el => {
+            const w = el.style.width, h = el.style.height;
+            if (w && w !== '100%') { el.style.width = '0'; requestAnimationFrame(() => requestAnimationFrame(() => { el.style.width = w; })); }
+            if (h && h !== '100%') { el.style.height = '0'; requestAnimationFrame(() => requestAnimationFrame(() => { el.style.height = h; })); }
+        });
+    </script>
+</body>
+</html>

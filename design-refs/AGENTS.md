@@ -1,6 +1,6 @@
 # Design References — Usage Guide
 
-This directory contains 56 design system references extracted from real-world product websites. Use them when the user asks for UI, web design, landing pages, or any visual work.
+This directory contains 58 design system references extracted from real-world product websites. Use them when the user asks for UI, web design, landing pages, or any visual work.
 
 ## When to Use
 

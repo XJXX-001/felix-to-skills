@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>门店经营财务报表 — Ledger Slate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #fcfcf9; --bg-card: #ffffff; --bg-section-alt: #f7f6f3;
+            --text-primary: #1a1a1a; --text-secondary: #3d3d3d; --text-caption: #6b6b63;
+            --accent: #4ade80; --accent-deep: #22c55e; --accent-glow: rgba(74,222,128,0.10);
+            --success: #22c55e; --warning: #f59e0b; --danger: rgba(239,68,68,0.85); --info: #3b82b6;
+            --border: #e8e7e2; --border-strong: #d4d3ce;
+            --green-tint: #ecfdf5; --red-tint: #fef2f2; --amber-tint: #fffbeb;
+            --font-display: 'DM Sans', 'Noto Sans SC', sans-serif;
+            --font-body: 'DM Sans', 'Noto Sans SC', sans-serif;
+            --font-finance: 'Playfair Display', 'Noto Serif SC', serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --space-xs: clamp(0.25rem, 0.5vw, 0.5rem); --space-sm: clamp(0.5rem, 1vw, 0.75rem);
+            --space-md: clamp(0.75rem, 1.5vw, 1.25rem); --space-lg: clamp(1rem, 2vw, 2rem);
+            --space-xl: clamp(2rem, 4vw, 3rem); --space-2xl: clamp(3rem, 6vw, 5rem);
+            --radius-sm: 6px; --radius-md: 12px;
+            --shadow-card: 0px 1px 3px rgba(0,0,0,0.04), 0px 1px 2px rgba(0,0,0,0.02);
+            --shadow-elevated: 0px 4px 12px rgba(0,0,0,0.06);
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --chart-1: #4ade80; --chart-2: #3b82b6; --chart-3: #f59e0b; --chart-4: #ef4444;
+            --title-size: clamp(2rem, 5vw, 3.5rem); --h2-size: clamp(1.25rem, 3vw, 1.75rem);
+            --body-size: clamp(0.85rem, 1.5vw, 1rem); --small-size: clamp(0.7rem, 1vw, 0.875rem);
+            --caption-size: clamp(0.65rem, 0.9vw, 0.75rem);
+            --finance-hero: clamp(2.2rem, 5.5vw, 3.8rem);
+            --finance-mid: clamp(1.5rem, 3.5vw, 2.2rem);
+            --finance-sm: clamp(1.1rem, 2.5vw, 1.5rem);
+            --slide-padding: clamp(1rem, 4vw, 3rem);
+            --content-gap: clamp(0.75rem, 2vw, 1.5rem); --element-gap: clamp(0.5rem, 1.5vw, 1rem);
+        }
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+        body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-primary);line-height:1.65;min-height:100vh}
+        .report-container{max-width:min(90vw,1100px);margin:0 auto}
+        .report-container.reading{max-width:min(90vw,760px)}
+        .report-section{padding:var(--space-2xl) 0}
+        .report-section.alt{background:var(--bg-section-alt)}
+        .report-section.alt .report-container{padding:0 var(--slide-padding)}
+        .report-section .report-container{padding:0 var(--slide-padding)}
+
+        .report-cover{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;justify-content:center;padding:var(--slide-padding);background:var(--bg-primary);border-bottom:1px solid var(--border)}
+        .cover-eyebrow{font-family:var(--font-display);font-size:var(--caption-size);color:var(--accent-deep);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:var(--space-lg)}
+        .cover-title{font-family:var(--font-display);font-size:var(--title-size);font-weight:700;line-height:1.12;letter-spacing:-0.04em;margin-bottom:var(--space-md)}
+        .cover-subtitle{font-size:clamp(1rem,2vw,1.25rem);color:var(--text-secondary);margin-bottom:var(--space-xl);max-width:500px}
+        .cover-meta{font-size:var(--small-size);color:var(--text-caption)}
+        .cover-accent-line{width:clamp(2rem,6vw,4rem);height:3px;background:var(--accent);margin-bottom:var(--space-lg);border-radius:2px}
+
+        h1{font-family:var(--font-display);font-size:var(--title-size);font-weight:700;line-height:1.12;letter-spacing:-0.03em}
+        h2{font-family:var(--font-display);font-size:var(--h2-size);font-weight:600;line-height:1.2;letter-spacing:-0.02em}
+        h4{font-family:var(--font-display);font-size:clamp(0.9rem,1.5vw,1.125rem);font-weight:600;line-height:1.3}
+        p,li{font-size:var(--body-size);color:var(--text-secondary);line-height:1.65}
+
+        .section-heading{margin-bottom:var(--space-xl)}
+        .section-number{font-family:var(--font-display);font-size:var(--caption-size);color:var(--accent-deep);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:var(--space-xs)}
+        .section-desc{font-size:var(--body-size);color:var(--text-secondary);max-width:600px}
+
+        .card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:clamp(1rem,2vw,1.5rem);box-shadow:var(--shadow-card)}
+        .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:var(--content-gap)}
+        .grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:var(--content-gap)}
+        .grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:var(--element-gap)}
+        .grid-2-equal{display:grid;grid-template-columns:1fr 1fr;gap:var(--content-gap)}
+
+        .finance-hero{font-family:var(--font-finance);font-size:var(--finance-hero);font-weight:700;color:var(--text-primary);line-height:1.05}
+        .finance-mid{font-family:var(--font-finance);font-size:var(--finance-mid);font-weight:600;color:var(--text-primary);line-height:1.1}
+        .finance-sm{font-family:var(--font-finance);font-size:var(--finance-sm);font-weight:600;color:var(--text-primary);line-height:1.1}
+        .finance-positive{color:var(--accent-deep)}
+        .finance-negative{color:var(--danger)}
+
+        .metric-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:var(--space-lg);box-shadow:var(--shadow-card);display:flex;flex-direction:column}
+        .metric-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:var(--space-sm)}
+        .metric-label{font-size:var(--small-size);color:var(--text-caption);font-weight:500}
+        .metric-trend{font-size:var(--small-size);font-weight:600;display:inline-flex;align-items:center;gap:0.2rem;padding:2px 8px;border-radius:var(--radius-sm)}
+        .metric-trend.up{color:var(--accent-deep);background:var(--green-tint)}
+        .metric-trend.down{color:var(--danger);background:var(--red-tint)}
+        .metric-trend.warn{color:var(--warning);background:var(--amber-tint)}
+
+        .badge{display:inline-flex;align-items:center;gap:0.3rem;padding:3px 10px;border-radius:999px;font-size:var(--caption-size);font-weight:600;text-transform:uppercase;letter-spacing:0.03em}
+        .badge.good{background:var(--green-tint);color:var(--accent-deep)}
+        .badge.warn{background:var(--amber-tint);color:var(--warning)}
+        .badge.bad{background:var(--red-tint);color:var(--danger)}
+
+        .statement-table{width:100%;border-collapse:collapse;font-size:var(--body-size)}
+        .statement-table thead th{font-family:var(--font-display);font-size:var(--caption-size);font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:var(--text-caption);padding:12px 18px;border-bottom:1.5px solid var(--border);text-align:left;background:transparent}
+        .statement-table thead th.num{text-align:right}
+        .statement-table tbody td{padding:11px 18px;border-bottom:1px solid var(--border);color:var(--text-primary)}
+        .statement-table tbody td.label{color:var(--text-secondary)}
+        .statement-table tbody td.num{text-align:right;font-family:var(--font-finance);font-variant-numeric:tabular-nums}
+        .statement-table tbody tr:hover td{background:var(--bg-section-alt)}
+        .statement-table .section-header td{font-family:var(--font-display);font-weight:600;color:var(--text-caption);font-size:var(--caption-size);text-transform:uppercase;letter-spacing:0.06em;padding-top:16px;padding-bottom:6px;border-bottom:none}
+        .statement-table .section-header:hover td{background:transparent}
+        .statement-table .subtotal td{font-weight:600;border-top:1.5px solid var(--border);background:var(--bg-section-alt)}
+        .statement-table .grand-total td{font-weight:700;border-top:2px solid var(--border-strong);border-bottom:2px solid var(--border-strong);background:var(--bg-primary)}
+        .statement-table .grand-total td.num{font-size:1.05em}
+        .row-positive td{background:var(--green-tint)}
+        .row-negative td{background:var(--red-tint)}
+        .row-positive:hover td{background:color-mix(in srgb, var(--green-tint) 85%, var(--bg-section-alt))}
+        .row-negative:hover td{background:color-mix(in srgb, var(--red-tint) 85%, var(--bg-section-alt))}
+
+        .callout{padding:var(--space-md) var(--space-lg);border-radius:var(--radius-sm);display:flex;align-items:flex-start;gap:var(--space-sm);font-size:var(--body-size);margin-bottom:var(--space-md)}
+        .callout-icon{font-size:1.1rem;flex-shrink:0;margin-top:0.1em}
+        .callout-info{background:rgba(59,130,182,0.06);border:1px solid rgba(59,130,182,0.18);color:var(--info)}
+        .callout-warning{background:var(--amber-tint);border:1px solid rgba(245,158,11,0.2);color:var(--warning)}
+        .callout-success{background:var(--green-tint);border:1px solid rgba(34,197,94,0.2);color:var(--accent-deep)}
+        .callout-danger{background:var(--red-tint);border:1px solid rgba(239,68,68,0.2);color:var(--danger)}
+
+        .summary-item{display:flex;align-items:flex-start;gap:var(--space-md);padding:var(--space-md);background:var(--bg-card);border-radius:var(--radius-md);border:1px solid var(--border);border-left:3px solid var(--accent);box-shadow:var(--shadow-card)}
+        .summary-icon{width:2rem;height:2rem;background:var(--accent-glow);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;color:var(--accent-deep);font-weight:600}
+        .summary-text h4{margin-bottom:2px}
+        .summary-text p{font-size:var(--small-size)}
+
+        .progress-group{display:flex;flex-direction:column;gap:var(--space-md)}
+        .progress-item{display:flex;flex-direction:column;gap:var(--space-xs)}
+        .progress-header{display:flex;justify-content:space-between;font-size:var(--small-size)}
+        .progress-label{color:var(--text-secondary)}
+        .progress-pct{font-weight:600;color:var(--text-primary)}
+        .progress-track{height:clamp(6px,1vh,10px);background:var(--border);border-radius:var(--radius-sm);overflow:hidden}
+        .progress-fill{height:100%;background:var(--fill-color,var(--accent));border-radius:var(--radius-sm);transition:width 0.8s var(--ease-out-expo)}
+
+        .waterfall{display:flex;align-items:flex-end;gap:var(--space-md);height:clamp(180px,35vh,280px);padding:var(--space-md) 0;border-bottom:1px solid var(--border)}
+        .wf-item{flex:1;display:flex;flex-direction:column;align-items:center;height:100%}
+        .wf-bar{width:100%;max-width:60px;border-radius:var(--radius-sm) var(--radius-sm) 0 0;display:flex;align-items:center;justify-content:center;font-size:var(--caption-size);font-weight:600;color:white;transition:height 0.8s var(--ease-out-expo)}
+        .wf-bar.green{background:var(--accent)}
+        .wf-bar.red{background:var(--danger)}
+        .wf-bar.dark{background:var(--text-primary)}
+        .wf-label{font-size:var(--caption-size);color:var(--text-caption);margin-top:var(--space-xs);text-align:center}
+        .wf-value{font-size:var(--small-size);font-weight:600;margin-bottom:var(--space-xs);font-family:var(--font-finance)}
+
+        .ending-section{min-height:50vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:var(--space-2xl) var(--slide-padding);background:var(--bg-section-alt)}
+        .ending-meta{font-size:var(--small-size);color:var(--text-caption);margin-top:var(--space-lg)}
+
+        .reveal{opacity:0;transform:translateY(16px);transition:opacity 0.5s var(--ease-out-expo),transform 0.5s var(--ease-out-expo)}
+        .reveal.visible{opacity:1;transform:translateY(0)}
+
+        @media(max-width:768px){.grid-2,.grid-3,.grid-4,.grid-2-equal{grid-template-columns:1fr}.report-cover{min-height:80vh}}
+        @media(max-width:480px){:root{--title-size:clamp(1.5rem,7vw,2rem)}}
+        @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.2s!important}}
+        @media print{.report-section{page-break-inside:avoid}.report-cover{min-height:auto;page-break-after:always}body{background:white!important}.card{box-shadow:none!important;border:1px solid #ccc}}
+    </style>
+</head>
+<body>
+
+<section class="report-cover">
+    <div style="max-width:min(90vw,700px);margin:0 auto;">
+        <div class="cover-eyebrow reveal">Monthly Financial Review</div>
+        <h1 class="cover-title reveal">2026 年 4 月<br>门店经营财务报表</h1>
+        <div class="cover-accent-line reveal"></div>
+        <p class="cover-subtitle reveal">覆盖 6 家门店的经营业绩、KPI 指标达成、考核金额及管理建议</p>
+        <p class="cover-meta reveal">报告周期：2026-04-01 至 2026-04-30 · 财务部 · Ledger Slate</p>
+    </div>
+</section>
+
+<!-- ============================================
+     SECTION 01 — Financial KPI Dashboard
+     ============================================ -->
+<section class="report-section">
+    <div class="report-container">
+        <div class="section-heading reveal">
+            <div class="section-number">01 / 经营摘要</div>
+            <h2>关键经营指标</h2>
+            <p class="section-desc">4 月份门店经营核心数据——销售、考核与进度。</p>
+        </div>
+        <div class="grid-4">
+            <div class="metric-card reveal">
+                <div class="metric-header"><span class="metric-label">总销售业绩</span><span class="metric-trend warn">63.9% 进度</span></div>
+                <div class="finance-sm">¥ 346,213</div>
+                <div style="font-size:var(--caption-size);color:var(--text-caption);margin-top:2px;">目标 ¥542,000</div>
+            </div>
+            <div class="metric-card reveal">
+                <div class="metric-header"><span class="metric-label">手机销售台数</span><span class="metric-trend up">360 台</span></div>
+                <div class="finance-sm">360</div>
+                <div style="font-size:var(--caption-size);color:var(--text-caption);margin-top:2px;">人均 18.9 台</div>
+            </div>
+            <div class="metric-card reveal">
+                <div class="metric-header"><span class="metric-label">考核缺口</span><span class="metric-trend down">-¥2,540</span></div>
+                <div class="finance-sm finance-negative">-¥ 2,540</div>
+                <div style="font-size:var(--caption-size);color:var(--text-caption);margin-top:2px;">ACS + 会员 + 回收</div>
+            </div>
+            <div class="metric-card reveal">
+                <div class="metric-header"><span class="metric-label">回收毛利</span><span class="metric-trend up">¥47,904</span></div>
+                <div class="finance-sm finance-positive">¥ 47,904</div>
+                <div style="font-size:var(--caption-size);color:var(--text-caption);margin-top:2px;">回收 102/207 台</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     SECTION 02 — Store P&L-style Statement
+     ============================================ -->
+<section class="report-section alt">
+    <div class="report-container">
+        <div class="section-heading reveal">
+            <div class="section-number">02 / 门店损益</div>
+            <h2>各门店经营业绩明细</h2>
+            <p class="section-desc">按门店展示销售业绩、KPI 达成与考核金额，单位：元。</p>
+        </div>
+
+        <div class="card reveal" style="padding:0;overflow:hidden;">
+            <table class="statement-table">
+                <thead>
+                    <tr>
+                        <th>门店</th>
+                        <th class="num">目标</th>
+                        <th class="num">达成</th>
+                        <th class="num">进度</th>
+                        <th class="num">差额</th>
+                        <th class="num">考核</th>
+                        <th class="num">状态</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="row-positive">
+                        <td class="label" style="font-weight:500;">九江庐山铜锣湾APR店</td>
+                        <td class="num">60,000</td>
+                        <td class="num">53,280</td>
+                        <td class="num" style="color:var(--accent-deep);">88.8%</td>
+                        <td class="num" style="color:var(--danger);">-6,720</td>
+                        <td class="num">0</td>
+                        <td class="num"><span class="badge good">领先</span></td>
+                    </tr>
+                    <tr class="row-positive">
+                        <td class="label" style="font-weight:500;">天虹APR</td>
+                        <td class="num">130,000</td>
+                        <td class="num">98,425</td>
+                        <td class="num" style="color:var(--info);">75.7%</td>
+                        <td class="num" style="color:var(--danger);">-31,575</td>
+                        <td class="num">0</td>
+                        <td class="num"><span class="badge good">良好</span></td>
+                    </tr>
+                    <tr>
+                        <td class="label" style="font-weight:500;">润达APR</td>
+                        <td class="num">180,000</td>
+                        <td class="num">105,783</td>
+                        <td class="num" style="color:var(--warning);">58.8%</td>
+                        <td class="num" style="color:var(--danger);">-74,217</td>
+                        <td class="num" style="color:var(--danger);">-330</td>
+                        <td class="num"><span class="badge warn">关注</span></td>
+                    </tr>
+                    <tr>
+                        <td class="label" style="font-weight:500;">梦想苹果店</td>
+                        <td class="num">51,000</td>
+                        <td class="num">29,625</td>
+                        <td class="num" style="color:var(--warning);">58.1%</td>
+                        <td class="num" style="color:var(--danger);">-21,375</td>
+                        <td class="num" style="color:var(--danger);">-300</td>
+                        <td class="num"><span class="badge warn">关注</span></td>
+                    </tr>
+                    <tr class="row-negative">
+                        <td class="label" style="font-weight:500;">赣州龙南苹果店</td>
+                        <td class="num">81,000</td>
+                        <td class="num">41,681</td>
+                        <td class="num" style="color:var(--danger);">51.5%</td>
+                        <td class="num" style="color:var(--danger);">-39,319</td>
+                        <td class="num" style="color:var(--danger);">-940</td>
+                        <td class="num"><span class="badge bad">预警</span></td>
+                    </tr>
+                    <tr class="row-negative">
+                        <td class="label" style="font-weight:500;">南百苹果店</td>
+                        <td class="num">40,000</td>
+                        <td class="num">17,419</td>
+                        <td class="num" style="color:var(--danger);">43.5%</td>
+                        <td class="num" style="color:var(--danger);">-22,581</td>
+                        <td class="num" style="color:var(--danger);">-970</td>
+                        <td class="num"><span class="badge bad">预警</span></td>
+                    </tr>
+                    <tr class="grand-total">
+                        <td>合计</td>
+                        <td class="num">542,000</td>
+                        <td class="num">346,213</td>
+                        <td class="num">63.9%</td>
+                        <td class="num" style="color:var(--danger);">-195,787</td>
+                        <td class="num" style="color:var(--danger);">-2,540</td>
+                        <td class="num"><span class="badge warn">需追赶</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="callout callout-warning reveal" style="margin-top:var(--space-lg);">
+            <span class="callout-icon">⚠</span>
+            <div><strong>考核金额合计 -¥2,540：</strong>ACS 差额 -20（考核 -¥600）、会员差额 -213（考核 -¥1,740）、回收差额 -105（考核 -¥200）。会员发展是最大考核失分项，赣州龙南店（-¥940）和南百店（-¥970）是考核重灾区。</div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     SECTION 03 — KPI Waterfall
+     ============================================ -->
+<section class="report-section">
+    <div class="report-container">
+        <div class="section-heading reveal">
+            <div class="section-number">03 / KPI 拆解</div>
+            <h2>三项核心指标达成瀑布</h2>
+            <p class="section-desc">ACS 附加、会员发展、回收三项 KPI 的目标与实际达成对比。</p>
+        </div>
+
+        <div class="grid-3">
+            <!-- ACS -->
+            <div class="card reveal" style="padding:var(--space-lg);text-align:center;">
+                <h4 style="margin-bottom:var(--space-md);font-weight:500;">ACS 附加销售</h4>
+                <div class="waterfall" style="height:200px;">
+                    <div class="wf-item">
+                        <div class="wf-value">80</div>
+                        <div class="wf-bar dark" style="height:100%;">目标</div>
+                        <div class="wf-label">目标</div>
+                    </div>
+                    <div class="wf-item">
+                        <div class="wf-value">60</div>
+                        <div class="wf-bar red" style="height:75%;">达成</div>
+                        <div class="wf-label">达成</div>
+                    </div>
+                    <div class="wf-item">
+                        <div class="wf-value">-20</div>
+                        <div class="wf-bar red" style="height:25%;">缺口</div>
+                        <div class="wf-label">缺口</div>
+                    </div>
+                </div>
+                <div style="font-size:var(--small-size);color:var(--text-caption);margin-top:var(--space-sm);">达成率 75% · 连带率 17%</div>
+            </div>
+
+            <!-- Member -->
+            <div class="card reveal" style="padding:var(--space-lg);text-align:center;">
+                <h4 style="margin-bottom:var(--space-md);font-weight:500;">会员发展</h4>
+                <div class="waterfall" style="height:200px;">
+                    <div class="wf-item">
+                        <div class="wf-value">329</div>
+                        <div class="wf-bar dark" style="height:100%;">目标</div>
+                        <div class="wf-label">目标</div>
+                    </div>
+                    <div class="wf-item">
+                        <div class="wf-value">116</div>
+                        <div class="wf-bar red" style="height:35.3%;">达成</div>
+                        <div class="wf-label">达成</div>
+                    </div>
+                    <div class="wf-item">
+                        <div class="wf-value">-213</div>
+                        <div class="wf-bar red" style="height:64.7%;">缺口</div>
+                        <div class="wf-label">缺口</div>
+                    </div>
+                </div>
+                <div style="font-size:var(--small-size);color:var(--danger);margin-top:var(--space-sm);">达成率 35.3% · 考核 -¥1,740</div>
+            </div>
+
+            <!-- Recycling -->
+            <div class="card reveal" style="padding:var(--space-lg);text-align:center;">
+                <h4 style="margin-bottom:var(--space-md);font-weight:500;">回收</h4>
+                <div class="waterfall" style="height:200px;">
+                    <div class="wf-item">
+                        <div class="wf-value">207</div>
+                        <div class="wf-bar dark" style="height:100%;">目标</div>
+                        <div class="wf-label">目标</div>
+                    </div>
+                    <div class="wf-item">
+                        <div class="wf-value">102</div>
+                        <div class="wf-bar red" style="height:49.3%;">达成</div>
+                        <div class="wf-label">达成</div>
+                    </div>
+                    <div class="wf-item">
+                        <div class="wf-value">-105</div>
+                        <div class="wf-bar red" style="height:50.7%;">缺口</div>
+                        <div class="wf-label">缺口</div>
+                    </div>
+                </div>
+                <div style="font-size:var(--small-size);color:var(--text-caption);margin-top:var(--space-sm);">达成率 49.3% · 毛利 ¥47,904</div>
+            </div>
+        </div>
+
+        <!-- KPI Detail Table -->
+        <div class="card reveal" style="padding:0;overflow:hidden;margin-top:var(--space-lg);">
+            <table class="statement-table">
+                <thead>
+                    <tr>
+                        <th>考核项</th>
+                        <th class="num">目标</th>
+                        <th class="num">达成</th>
+                        <th class="num">差额</th>
+                        <th class="num">达成率</th>
+                        <th class="num">连带率</th>
+                        <th class="num">考核金额</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="label">ACS 附加</td><td class="num">80</td><td class="num">60</td><td class="num" style="color:var(--danger);">-20</td><td class="num">75.0%</td><td class="num">17%</td><td class="num" style="color:var(--danger);">-¥600</td></tr>
+                    <tr class="row-negative"><td class="label">会员发展</td><td class="num">329</td><td class="num">116</td><td class="num" style="color:var(--danger);">-213</td><td class="num" style="color:var(--danger);">35.3%</td><td class="num">32%</td><td class="num" style="color:var(--danger);">-¥1,740</td></tr>
+                    <tr><td class="label">回收</td><td class="num">207</td><td class="num">102</td><td class="num" style="color:var(--danger);">-105</td><td class="num">49.3%</td><td class="num">28%</td><td class="num" style="color:var(--danger);">-¥200</td></tr>
+                    <tr class="subtotal"><td class="label">手机销售</td><td class="num">—</td><td class="num">360</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td></tr>
+                    <tr class="grand-total"><td>考核合计</td><td class="num"></td><td class="num"></td><td class="num"></td><td class="num"></td><td class="num"></td><td class="num" style="color:var(--danger);">-¥2,540</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     SECTION 04 — Store KPI Breakdown
+     ============================================ -->
+<section class="report-section alt">
+    <div class="report-container">
+        <div class="section-heading reveal">
+            <div class="section-number">04 / 门店考核</div>
+            <h2>各门店考核明细</h2>
+            <p class="section-desc">ACS、会员、回收三项 KPI 分门店达成与考核金额。</p>
+        </div>
+
+        <div class="card reveal" style="padding:0;overflow:hidden;">
+            <table class="statement-table">
+                <thead>
+                    <tr>
+                        <th>门店</th>
+                        <th class="num">ACS<br>达成/目标</th>
+                        <th class="num">会员<br>达成/目标</th>
+                        <th class="num">回收<br>达成/目标</th>
+                        <th class="num">ACS 考核</th>
+                        <th class="num">会员考核</th>
+                        <th class="num">回收考核</th>
+                        <th class="num">考核合计</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="row-positive">
+                        <td class="label" style="font-weight:500;">九江庐山铜锣湾APR店</td>
+                        <td class="num">7 / 12</td><td class="num">23 / 54</td><td class="num">15 / 30</td>
+                        <td class="num" style="color:var(--danger);">0</td><td class="num" style="color:var(--danger);">0</td><td class="num" style="color:var(--danger);">0</td>
+                        <td class="num" style="color:var(--accent-deep);">¥0</td>
+                    </tr>
+                    <tr class="row-positive">
+                        <td class="label" style="font-weight:500;">天虹APR</td>
+                        <td class="num">22 / 20</td><td class="num">32 / 75</td><td class="num">35 / 50</td>
+                        <td class="num">0</td><td class="num" style="color:var(--danger);">0</td><td class="num" style="color:var(--danger);">0</td>
+                        <td class="num" style="color:var(--accent-deep);">¥0</td>
+                    </tr>
+                    <tr>
+                        <td class="label" style="font-weight:500;">梦想苹果店</td>
+                        <td class="num">3 / 9</td><td class="num">12 / 33</td><td class="num">8 / 24</td>
+                        <td class="num" style="color:var(--danger);">-60</td><td class="num" style="color:var(--danger);">-140</td><td class="num" style="color:var(--danger);">-100</td>
+                        <td class="num" style="color:var(--danger);">-¥300</td>
+                    </tr>
+                    <tr>
+                        <td class="label" style="font-weight:500;">润达APR</td>
+                        <td class="num">21 / 24</td><td class="num">33 / 104</td><td class="num">27 / 64</td>
+                        <td class="num">-30</td><td class="num" style="color:var(--danger);">0</td><td class="num" style="color:var(--danger);">-300</td>
+                        <td class="num" style="color:var(--danger);">-¥330</td>
+                    </tr>
+                    <tr class="row-negative">
+                        <td class="label" style="font-weight:500;">赣州龙南苹果店</td>
+                        <td class="num">4 / 9</td><td class="num">13 / 36</td><td class="num">12 / 24</td>
+                        <td class="num" style="color:var(--danger);">-450</td><td class="num" style="color:var(--danger);">-410</td><td class="num" style="color:var(--danger);">-80</td>
+                        <td class="num" style="color:var(--danger);">-¥940</td>
+                    </tr>
+                    <tr class="row-negative">
+                        <td class="label" style="font-weight:500;">南百苹果店</td>
+                        <td class="num">3 / 6</td><td class="num">3 / 27</td><td class="num">5 / 15</td>
+                        <td class="num" style="color:var(--danger);">-60</td><td class="num" style="color:var(--danger);">-890</td><td class="num" style="color:var(--danger);">-20</td>
+                        <td class="num" style="color:var(--danger);">-¥970</td>
+                    </tr>
+                    <tr class="grand-total">
+                        <td>合计</td>
+                        <td class="num">60 / 80</td><td class="num">116 / 329</td><td class="num">102 / 207</td>
+                        <td class="num" style="color:var(--danger);">-600</td><td class="num" style="color:var(--danger);">-1,740</td><td class="num" style="color:var(--danger);">-200</td>
+                        <td class="num" style="color:var(--danger);">-¥2,540</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     SECTION 05 — Management Recommendations
+     ============================================ -->
+<section class="report-section">
+    <div class="report-container reading">
+        <div class="section-heading reveal">
+            <div class="section-number">05 / 管理建议</div>
+            <h2>关键发现与行动项</h2>
+            <p class="section-desc">基于经营数据的四项核心结论与下月重点方向。</p>
+        </div>
+
+        <div class="summary-item reveal" style="margin-bottom:var(--space-md);">
+            <div class="summary-icon">1</div>
+            <div class="summary-text">
+                <h4>会员发展是最大短板——全部门店无一达标</h4>
+                <p>目标 329 人、达成 116 人（35.3%），6 家门店全部低于 50%。连带率 32%（116/360 台手机），每卖 3 台手机才发展 1 个会员。建议设置「每台手机必推会员」流程、增加会员专属权益吸引注册。</p>
+            </div>
+        </div>
+        <div class="summary-item reveal" style="margin-bottom:var(--space-md);">
+            <div class="summary-icon">2</div>
+            <div class="summary-text">
+                <h4>赣州龙南 + 南百两店考核失分严重</h4>
+                <p>两店合计考核 -¥1,910，占全部门店考核缺口的 75%。其中南百店会员达成率仅 11%（3/27），需立即安排专项辅导。</p>
+            </div>
+        </div>
+        <div class="summary-item reveal" style="margin-bottom:var(--space-md);">
+            <div class="summary-icon">3</div>
+            <div class="summary-text">
+                <h4>九江店零考核扣分——提炼可复制经验</h4>
+                <p>唯一在 ACS、会员、回收三项均无考核扣分的门店。其「老客带新」会员发展模式和「购机即推 ACS」销售流程值得全区域推广。</p>
+            </div>
+        </div>
+        <div class="summary-item reveal">
+            <div class="summary-icon">4</div>
+            <div class="summary-text">
+                <h4>回收毛利 ¥47,904——可持续优化的利润池</h4>
+                <p>虽回收达成率 49.3%，但已完成回收贡献 ¥47,904 毛利（提成预估 ¥9,581）。提升回收连带率（当前 28%）至 40%，可额外增加约 ¥8,000 毛利。</p>
+            </div>
+        </div>
+
+        <div class="callout callout-info reveal" style="margin-top:var(--space-lg);">
+            <span class="callout-icon">→</span>
+            <div><strong>下月行动计划：</strong>① 全部门店推行「一机一会」（每台手机必推会员注册）；② 赣州龙南、南百两店安排区域经理驻店 3 天；③ 九江店录制经验分享视频，全区域培训；④ 设立会员发展周度红黑榜，跟踪到人。</div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     ENDING
+     ============================================ -->
+<section class="ending-section">
+    <h2 class="reveal">报告完毕</h2>
+    <p class="reveal" style="color:var(--text-caption);">数据截止 2026-05-04 · 仅供内部经营决策参考</p>
+    <div class="cover-accent-line reveal" style="margin:var(--space-lg) auto;"></div>
+    <div class="ending-meta reveal">Ledger Slate · 财务部 · 2026-05-14</div>
+</section>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+}, { threshold: 0.12, rootMargin: '0px 0px -20px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+document.querySelectorAll('.wf-bar,.progress-fill').forEach(el => {
+    const h = el.style.height;
+    if (h && h !== '100%') { el.style.height = '0'; requestAnimationFrame(() => requestAnimationFrame(() => { el.style.height = h; })); }
+});
+</script>
+</body>
+</html>

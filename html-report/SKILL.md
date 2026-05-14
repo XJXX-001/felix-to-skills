@@ -44,7 +44,8 @@ category: creative
 | 类型 | 触发词 | 模板文件 | 组件优先级 |
 |------|--------|----------|------------|
 | R1 周例会 | 周报、例会、月会、同步 | `bold-signal.html` | status-badge > callout > step-flow > summary-grid > table |
-| R2 数据分析 | 数据、分析、KPI、趋势、指标 | `electric-studio.html` | stat-card > table > trend-indicator > chart > summary |
+| R2 数据分析 | 数据、分析、KPI、趋势、指标 | `gallery-data.html` | stat-card > table > trend-indicator > chart > summary |
+| R2b 财务分析 | 财务、利润表、资产负债表、现金流、P&L | `ledger-slate.html` | statement-table > metric-card > waterfall > summary > callout |
 | R3 项目提案 | 提案、立项、方案、计划 | `dark-botanical.html` | hero-cover > stat-card > step-flow > callout > table |
 | R4 年度总结 | 年度、年终、总结、回顾 | `dark-botanical.html` | stat-card > timeline > image-showcase > summary-grid > table |
 | R5 竞品分析 | 竞品、对比、竞对 | `swiss-modern.html` | comparison-table > score-card > summary > callout |
@@ -54,12 +55,14 @@ category: creative
 
 ---
 
-## 预设速查（5 套常用）
+## 预设速查（7 套常用）
 
 | 预设 | 氛围 | Display 字体 | Body 字体 | 色调 |
 |------|------|-------------|-----------|------|
 | Bold Signal | 自信高冲击 | Archivo Black | Space Grotesk | 深色 + 橙 #FF5722 |
 | Electric Studio | 干净专业 | Manrope | Manrope | 深色 + 蓝 #4361ee |
+| Gallery Data | 白底极简数据画廊 | Inter | Lora (数字) | 白底 + 石板蓝 #4263eb |
+| Ledger Slate | 暖白财务纸张 | DM Sans | Playfair Display (财务数字) | 暖白 + 水星绿 #4ade80 |
 | Dark Botanical | 优雅精致 | Cormorant | IBM Plex Sans | 深色 + 暖金 #d4a574 |
 | Swiss Modern | 极简包豪斯 | Archivo | Nunito | 白底 + 红 #ff3300 |
 | Paper & Ink | 文学深度 | Cormorant Garamond | Source Serif 4 | 暖白 + 深红 #c41e3a |
@@ -198,7 +201,7 @@ print('✅ 全部校验通过')
 
 | 文件 | 用途 | 何时读取 |
 |------|------|----------|
-| `templates/*.html` | 预设模板（9 套风格） | 极速路径（推荐） |
+| `templates/*.html` | 预设模板（11 套风格） | 极速路径（推荐） |
 | [html-template.md](html-template.md) | 完整架构 + 全部组件 CSS + 动画 JS | 标准路径 |
 | [INFOGRAPHIC_PATTERNS.md](INFOGRAPHIC_PATTERNS.md) | 图表使用指南 + HTML 示例 | 需要图表选型时 |
 | [STYLE_PRESETS.md](STYLE_PRESETS.md) | 12 套预设完整 CSS | 用户要风格预览时 |

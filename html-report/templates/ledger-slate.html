@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ledger Slate — 财务报表</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* ===========================================
+           CSS CUSTOM PROPERTIES — Ledger Slate
+           暖白纸张 · Mercury 绿 · Playfair 衬线财务数字
+           =========================================== */
+        :root {
+            /* 色彩 */
+            --bg-primary: #fcfcf9;
+            --bg-card: #ffffff;
+            --bg-section-alt: #f7f6f3;
+            --text-primary: #1a1a1a;
+            --text-secondary: #3d3d3d;
+            --text-caption: #6b6b63;
+            --accent: #4ade80;
+            --accent-deep: #22c55e;
+            --accent-glow: rgba(74, 222, 128, 0.10);
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: rgba(239, 68, 68, 0.85);
+            --info: #3b82b6;
+            --border: #e8e7e2;
+            --border-strong: #d4d3ce;
+            --green-tint: #ecfdf5;
+            --red-tint: #fef2f2;
+            --amber-tint: #fffbeb;
+
+            /* 排版 */
+            --font-display: 'DM Sans', 'Noto Sans SC', sans-serif;
+            --font-body: 'DM Sans', 'Noto Sans SC', sans-serif;
+            --font-finance: 'Playfair Display', 'Noto Serif SC', serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            /* 间距体系 */
+            --space-xs: clamp(0.25rem, 0.5vw, 0.5rem);
+            --space-sm: clamp(0.5rem, 1vw, 0.75rem);
+            --space-md: clamp(0.75rem, 1.5vw, 1.25rem);
+            --space-lg: clamp(1rem, 2vw, 2rem);
+            --space-xl: clamp(2rem, 4vw, 4rem);
+            --space-2xl: clamp(3rem, 6vw, 6rem);
+
+            /* 圆角 */
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+
+            /* 阴影 */
+            --shadow-card: 0px 1px 3px rgba(0,0,0,0.04), 0px 1px 2px rgba(0,0,0,0.02);
+            --shadow-elevated: 0px 4px 12px rgba(0,0,0,0.06);
+            --shadow-tooltip: 0px 4px 16px rgba(0,0,0,0.08);
+
+            /* 过渡 */
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --duration-fast: 0.2s;
+            --duration-normal: 0.4s;
+
+            /* 图表色 */
+            --chart-1: var(--accent);
+            --chart-2: var(--info);
+            --chart-3: var(--warning);
+            --chart-4: var(--danger);
+            --chart-neutral: var(--border);
+        }
+
+        /* ===========================================
+           RESPONSIVE BASE
+           =========================================== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        body { font-family: var(--font-body); background: var(--bg-primary); color: var(--text-primary); line-height: 1.65; min-height: 100vh; }
+
+        /* Content Container */
+        .report-container { max-width: min(90vw, 1160px); margin: 0 auto; }
+        .report-container.reading { max-width: min(90vw, 760px); }
+
+        /* Section Spacing */
+        .report-section { padding: var(--space-2xl) var(--slide-padding); position: relative; }
+        .report-section.alt { background: var(--bg-section-alt); }
+        .report-cover { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; justify-content: center; padding: var(--slide-padding); position: relative; overflow: hidden; }
+
+        /* ===========================================
+           TYPOGRAPHY SCALE — clamp()
+           =========================================== */
+        :root {
+            --title-size: clamp(2rem, 5vw, 3.5rem);
+            --h2-size: clamp(1.25rem, 3vw, 2rem);
+            --h3-size: clamp(1rem, 2vw, 1.5rem);
+            --h4-size: clamp(0.9rem, 1.5vw, 1.125rem);
+            --body-size: clamp(0.85rem, 1.5vw, 1rem);
+            --small-size: clamp(0.7rem, 1vw, 0.875rem);
+            --caption-size: clamp(0.65rem, 0.9vw, 0.75rem);
+            --finance-hero: clamp(2.2rem, 5.5vw, 3.8rem);
+            --finance-mid: clamp(1.5rem, 3.5vw, 2.5rem);
+            --finance-sm: clamp(1.1rem, 2.5vw, 1.6rem);
+            --slide-padding: clamp(1rem, 4vw, 3rem);
+            --content-gap: clamp(0.75rem, 2vw, 1.5rem);
+            --element-gap: clamp(0.5rem, 1.5vw, 1rem);
+        }
+        h1 { font-family: var(--font-display); font-size: var(--title-size); font-weight: 700; line-height: 1.15; letter-spacing: -0.03em; }
+        h2 { font-family: var(--font-display); font-size: var(--h2-size); font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; }
+        h3 { font-family: var(--font-display); font-size: var(--h3-size); font-weight: 600; line-height: 1.3; }
+        h4 { font-family: var(--font-display); font-size: var(--h4-size); font-weight: 600; line-height: 1.3; }
+        p, li { font-size: var(--body-size); color: var(--text-secondary); line-height: 1.65; }
+
+        /* Card & Container */
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: clamp(1rem, 2vw, 1.5rem); box-shadow: var(--shadow-card); }
+        .card-elevated { box-shadow: var(--shadow-elevated); }
+
+        /* Images */
+        img, .image-container { max-width: 100%; height: auto; border-radius: var(--radius-sm); }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; font-size: var(--body-size); }
+        th, td { padding: clamp(0.5rem, 1vw, 0.75rem) clamp(0.75rem, 1.5vw, 1rem); text-align: left; border-bottom: 1px solid var(--border); }
+        th { font-family: var(--font-display); font-weight: 600; font-size: var(--caption-size); text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-caption); background: transparent; }
+        tr:hover td { background: var(--bg-section-alt); }
+        td.num { text-align: right; font-family: var(--font-finance); font-variant-numeric: tabular-nums; }
+
+        /* Grid Systems */
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: var(--content-gap); }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: var(--content-gap); }
+        .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: var(--element-gap); }
+        .grid-2-equal { display: grid; grid-template-columns: 1fr 1fr; gap: var(--content-gap); }
+
+        /* Lists */
+        .bullet-list { display: flex; flex-direction: column; gap: var(--element-gap); list-style: none; }
+        .bullet-list li { display: flex; align-items: flex-start; gap: 0.75rem; }
+
+        /* Horizontal Rule */
+        hr { border: none; border-top: 1px solid var(--border); margin: var(--content-gap) 0; }
+
+        /* ===========================================
+           RESPONSIVE BREAKPOINTS
+           =========================================== */
+        @media (max-height: 700px) {
+            :root { --slide-padding: clamp(0.75rem, 3vw, 2rem); --content-gap: clamp(0.5rem, 1.5vw, 1rem); --title-size: clamp(1.5rem, 4.5vw, 2.5rem); --h2-size: clamp(1.1rem, 3vw, 1.5rem); }
+        }
+        @media (max-width: 768px) {
+            .grid-2, .grid-3, .grid-4, .grid-2-equal { grid-template-columns: 1fr; }
+            .report-cover { min-height: 80vh; min-height: 80dvh; }
+        }
+        @media (max-width: 480px) {
+            :root { --slide-padding: clamp(0.75rem, 3vw, 1.25rem); --title-size: clamp(1.5rem, 7vw, 2rem); }
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; }
+            html { scroll-behavior: auto; }
+        }
+
+        /* Print Styles */
+        @media print {
+            :root { --slide-padding: 1.5cm; --title-size: 24pt; --h2-size: 16pt; --body-size: 11pt; }
+            .report-section { page-break-inside: avoid; }
+            .report-cover { min-height: auto; page-break-after: always; }
+            body { background: white !important; color: black !important; }
+            .card { box-shadow: none !important; border: 1px solid #ccc; }
+            .report-section.alt { background: #f7f6f3 !important; }
+        }
+
+        /* ===========================================
+           SCROLL REVEAL ANIMATIONS
+           =========================================== */
+        .reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.5s var(--ease-out-expo), transform 0.5s var(--ease-out-expo); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .reveal:nth-child(1) { transition-delay: 0.05s; }
+        .reveal:nth-child(2) { transition-delay: 0.1s; }
+        .reveal:nth-child(3) { transition-delay: 0.15s; }
+        .reveal:nth-child(4) { transition-delay: 0.2s; }
+        .reveal:nth-child(5) { transition-delay: 0.25s; }
+        .reveal:nth-child(6) { transition-delay: 0.3s; }
+        .reveal:nth-child(7) { transition-delay: 0.35s; }
+        .reveal:nth-child(8) { transition-delay: 0.4s; }
+
+        /* ===========================================
+           COVER SECTION
+           =========================================== */
+        .report-cover {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border);
+        }
+        .cover-eyebrow { font-family: var(--font-display); font-size: var(--caption-size); color: var(--accent-deep); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: var(--space-lg); }
+        .cover-title { font-family: var(--font-display); font-size: var(--title-size); font-weight: 700; margin-bottom: var(--space-md); letter-spacing: -0.04em; }
+        .cover-subtitle { font-size: clamp(1rem, 2vw, 1.25rem); color: var(--text-secondary); margin-bottom: var(--space-xl); max-width: min(90vw, 500px); }
+        .cover-meta { font-size: var(--small-size); color: var(--text-caption); }
+        .cover-accent-line { width: clamp(2rem, 6vw, 4rem); height: 3px; background: var(--accent); margin-bottom: var(--space-lg); border-radius: 2px; }
+
+        /* ===========================================
+           SECTION HEADING
+           =========================================== */
+        .section-heading { margin-bottom: var(--space-xl); }
+        .section-number { font-family: var(--font-display); font-size: var(--caption-size); color: var(--accent-deep); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: var(--space-xs); }
+        .section-heading h2 { margin-bottom: var(--space-sm); }
+        .section-desc { font-size: var(--body-size); color: var(--text-secondary); max-width: min(90vw, 600px); }
+
+        /* ===========================================
+           FINANCIAL FIGURES — Playfair Display serif
+           =========================================== */
+        .finance-hero { font-family: var(--font-finance); font-size: var(--finance-hero); font-weight: 700; color: var(--text-primary); line-height: 1.05; }
+        .finance-mid { font-family: var(--font-finance); font-size: var(--finance-mid); font-weight: 600; color: var(--text-primary); line-height: 1.1; }
+        .finance-sm { font-family: var(--font-finance); font-size: var(--finance-sm); font-weight: 600; color: var(--text-primary); line-height: 1.1; }
+        .finance-positive { color: var(--accent-deep); }
+        .finance-negative { color: var(--danger); }
+        .finance-label { font-size: var(--caption-size); color: var(--text-caption); margin-top: var(--space-xs); }
+
+        /* ===========================================
+           METRIC CARDS (KPI)
+           =========================================== */
+        .metric-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-lg); box-shadow: var(--shadow-card); display: flex; flex-direction: column; }
+        .metric-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-sm); }
+        .metric-label { font-size: var(--small-size); color: var(--text-caption); font-weight: 500; }
+        .metric-trend { font-size: var(--small-size); font-weight: 600; display: inline-flex; align-items: center; gap: 0.2rem; padding: 2px 8px; border-radius: var(--radius-sm); }
+        .metric-trend.up { color: var(--accent-deep); background: var(--green-tint); }
+        .metric-trend.down { color: var(--danger); background: var(--red-tint); }
+        .metric-trend.neutral { color: var(--text-caption); background: var(--bg-section-alt); }
+
+        /* ===========================================
+           FINANCIAL STATEMENT TABLE
+           =========================================== */
+        .statement-table { width: 100%; border-collapse: collapse; font-size: var(--body-size); }
+        .statement-table thead th { font-family: var(--font-display); font-size: var(--caption-size); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-caption); padding: 12px 20px; border-bottom: 1.5px solid var(--border); text-align: left; background: transparent; }
+        .statement-table thead th.num { text-align: right; }
+        .statement-table tbody td { padding: 12px 20px; border-bottom: 1px solid var(--border); color: var(--text-primary); }
+        .statement-table tbody td.label { color: var(--text-secondary); }
+        .statement-table tbody td.num { text-align: right; font-family: var(--font-finance); font-variant-numeric: tabular-nums; }
+        .statement-table tbody tr:hover td { background: var(--bg-section-alt); }
+        .statement-table .section-header td { font-family: var(--font-display); font-weight: 600; color: var(--text-caption); font-size: var(--caption-size); text-transform: uppercase; letter-spacing: 0.06em; padding-top: 20px; padding-bottom: 8px; border-bottom: none; }
+        .statement-table .section-header:hover td { background: transparent; }
+        .statement-table .subtotal td { font-weight: 600; border-top: 1.5px solid var(--border); background: var(--bg-section-alt); font-family: var(--font-display); }
+        .statement-table .subtotal td.num { font-family: var(--font-finance); }
+        .statement-table .grand-total td { font-weight: 700; border-top: 2px solid var(--border-strong); border-bottom: 2px solid var(--border-strong); background: var(--bg-primary); font-family: var(--font-display); }
+        .statement-table .grand-total td.num { font-family: var(--font-finance); font-weight: 700; font-size: 1.05em; }
+        .statement-table .positive td.num { color: var(--accent-deep); }
+        .statement-table .negative td.num { color: var(--danger); }
+
+        /* Row tinting for financial statements */
+        .row-positive td { background: var(--green-tint); }
+        .row-negative td { background: var(--red-tint); }
+        .row-positive:hover td { background: color-mix(in srgb, var(--green-tint) 85%, var(--bg-section-alt)); }
+        .row-negative:hover td { background: color-mix(in srgb, var(--red-tint) 85%, var(--bg-section-alt)); }
+
+        /* ===========================================
+           TWO-COLUMN LEDGER (Balance Sheet)
+           =========================================== */
+        .ledger-columns { display: grid; grid-template-columns: 1fr 1fr; gap: var(--content-gap); }
+        .ledger-columns .column-header { font-family: var(--font-display); font-size: var(--small-size); font-weight: 600; color: var(--text-caption); text-transform: uppercase; letter-spacing: 0.04em; padding: 0 20px 12px; border-bottom: 1.5px solid var(--border); text-align: center; }
+
+        /* ===========================================
+           APPROVAL / STATUS BADGE
+           =========================================== */
+        .badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 3px 10px; border-radius: 999px; font-size: var(--caption-size); font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+        .badge.approved { background: var(--green-tint); color: var(--accent-deep); }
+        .badge.pending { background: var(--amber-tint); color: var(--warning); }
+        .badge.rejected { background: var(--red-tint); color: var(--danger); }
+
+        /* ===========================================
+           SUMMARY GRID
+           =========================================== */
+        .summary-item { display: flex; align-items: flex-start; gap: var(--space-md); padding: var(--space-md); background: var(--bg-card); border-radius: var(--radius-md); border: 1px solid var(--border); border-left: 3px solid var(--accent); box-shadow: var(--shadow-card); }
+        .summary-icon { width: 2.2rem; height: 2.2rem; background: var(--accent-glow); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; color: var(--accent-deep); font-weight: 600; }
+        .summary-text h4 { margin-bottom: var(--space-xs); }
+        .summary-text p { font-size: var(--small-size); }
+
+        /* ===========================================
+           CALLOUT BOXES
+           =========================================== */
+        .callout { padding: var(--space-md) var(--space-lg); border-radius: var(--radius-sm); display: flex; align-items: flex-start; gap: var(--space-sm); font-size: var(--body-size); margin-bottom: var(--space-md); }
+        .callout-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.1em; }
+        .callout-danger  { background: var(--red-tint);    border: 1px solid rgba(239, 68, 68, 0.2);  color: var(--danger); }
+        .callout-warning { background: var(--amber-tint);  border: 1px solid rgba(245, 158, 11, 0.2);  color: var(--warning); }
+        .callout-info    { background: rgba(59, 130, 182, 0.06); border: 1px solid rgba(59, 130, 182, 0.18); color: var(--info); }
+        .callout-success { background: var(--green-tint);  border: 1px solid rgba(34, 197, 94, 0.2);  color: var(--accent-deep); }
+
+        /* ===========================================
+           ENDING SECTION
+           =========================================== */
+        .ending-section { min-height: 50vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: var(--space-2xl) var(--slide-padding); background: var(--bg-section-alt); }
+        .ending-section h2 { margin-bottom: var(--space-md); }
+        .ending-meta { font-size: var(--small-size); color: var(--text-caption); margin-top: var(--space-lg); }
+
+        /* ===========================================
+           PROGRESS GROUP
+           =========================================== */
+        .progress-group { display: flex; flex-direction: column; gap: var(--space-md); }
+        .progress-item { display: flex; flex-direction: column; gap: var(--space-xs); }
+        .progress-header { display: flex; justify-content: space-between; font-size: var(--small-size); }
+        .progress-label { color: var(--text-secondary); }
+        .progress-pct { font-weight: 600; color: var(--text-primary); }
+        .progress-track { height: clamp(6px, 1vh, 10px); background: var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--fill-color, var(--accent)); border-radius: var(--radius-sm); transition: width 0.8s var(--ease-out-expo); }
+
+        /* ===========================================
+           WATERFALL CHART
+           =========================================== */
+        .waterfall { display: flex; align-items: flex-end; gap: var(--space-md); height: clamp(180px, 35vh, 280px); padding: var(--space-md) 0; border-bottom: 1px solid var(--border); }
+        .wf-item { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; }
+        .wf-bar { width: 100%; max-width: 60px; border-radius: var(--radius-sm) var(--radius-sm) 0 0; display: flex; align-items: center; justify-content: center; font-size: var(--caption-size); font-weight: 600; color: white; transition: height 0.8s var(--ease-out-expo); }
+        .wf-bar.positive { background: var(--accent); }
+        .wf-bar.negative { background: var(--danger); }
+        .wf-bar.total { background: var(--text-primary); }
+        .wf-label { font-size: var(--caption-size); color: var(--text-caption); margin-top: var(--space-xs); }
+        .wf-value { font-size: var(--small-size); font-weight: 600; margin-bottom: var(--space-xs); }
+
+        /* ===========================================
+           BULLET LIST (accent dot)
+           =========================================== */
+        .bullet-list li::before { content: ''; width: 5px; height: 5px; background: var(--accent); border-radius: 50%; margin-top: 0.55em; flex-shrink: 0; opacity: 0.6; }
+    </style>
+</head>
+<body>
+
+    <!-- ===========================================
+         COVER
+         =========================================== -->
+    <section class="report-cover">
+        <div style="max-width: min(90vw, 700px); margin: 0 auto;">
+            <div class="cover-eyebrow reveal">季度财务报告</div>
+            <h1 class="cover-title reveal">2026 Q1 财务简报<br>与经营分析</h1>
+            <div class="cover-accent-line reveal"></div>
+            <p class="cover-subtitle reveal">涵盖利润表、资产负债表、现金流摘要及关键财务指标分析</p>
+            <p class="cover-meta reveal">报告周期：2026-01-01 至 2026-03-31 · 财务部 · Ledger Slate</p>
+        </div>
+    </section>
+
+    <!-- ===========================================
+         SECTION 01 — Financial KPI Dashboard
+         =========================================== -->
+    <section class="report-section">
+        <div class="report-container">
+            <div class="section-heading reveal">
+                <div class="section-number">01 / 财务摘要</div>
+                <h2>关键财务指标</h2>
+                <p class="section-desc">本季度核心财务状况概览——营收、利润、现金流与毛利率。</p>
+            </div>
+            <div class="grid-4">
+                <div class="metric-card reveal">
+                    <div class="metric-header">
+                        <span class="metric-label">季度营收</span>
+                        <span class="metric-trend up">▲ 18.3%</span>
+                    </div>
+                    <div class="finance-sm">¥ 847.2<span style="font-size: 0.5em;">M</span></div>
+                </div>
+                <div class="metric-card reveal">
+                    <div class="metric-header">
+                        <span class="metric-label">净利润</span>
+                        <span class="metric-trend up">▲ 22.1%</span>
+                    </div>
+                    <div class="finance-sm finance-positive">¥ 156.8<span style="font-size: 0.5em;">M</span></div>
+                </div>
+                <div class="metric-card reveal">
+                    <div class="metric-header">
+                        <span class="metric-label">毛利率</span>
+                        <span class="metric-trend up">▲ 2.1pp</span>
+                    </div>
+                    <div class="finance-sm">58.4<span style="font-size: 0.5em;">%</span></div>
+                </div>
+                <div class="metric-card reveal">
+                    <div class="metric-header">
+                        <span class="metric-label">自由现金流</span>
+                        <span class="metric-trend up">▲ 15.7%</span>
+                    </div>
+                    <div class="finance-sm finance-positive">¥ 94.3<span style="font-size: 0.5em;">M</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===========================================
+         SECTION 02 — Profit & Loss Statement
+         =========================================== -->
+    <section class="report-section alt">
+        <div class="report-container">
+            <div class="section-heading reveal">
+                <div class="section-number">02 / 利润表</div>
+                <h2>损益汇总 (P&L)</h2>
+                <p class="section-desc">2026 年第一季度合并利润表，单位：百万元人民币。</p>
+            </div>
+
+            <div class="card reveal" style="padding: 0; overflow: hidden;">
+                <table class="statement-table">
+                    <thead>
+                        <tr>
+                            <th>项目</th>
+                            <th class="num">本季度</th>
+                            <th class="num">环比</th>
+                            <th class="num">同比</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="section-header"><td colspan="4">营业收入</td></tr>
+                        <tr>
+                            <td class="label">主营业务收入</td>
+                            <td class="num">847.2</td>
+                            <td class="num positive">+18.3%</td>
+                            <td class="num positive">+35.6%</td>
+                        </tr>
+                        <tr>
+                            <td class="label">其他业务收入</td>
+                            <td class="num">28.5</td>
+                            <td class="num positive">+5.2%</td>
+                            <td class="num negative">-2.1%</td>
+                        </tr>
+                        <tr class="subtotal">
+                            <td>营业收入合计</td>
+                            <td class="num">875.7</td>
+                            <td class="num positive">+17.8%</td>
+                            <td class="num positive">+33.1%</td>
+                        </tr>
+
+                        <tr class="section-header"><td colspan="4">营业成本与费用</td></tr>
+                        <tr>
+                            <td class="label">营业成本</td>
+                            <td class="num">364.1</td>
+                            <td class="num negative">+14.2%</td>
+                            <td class="num negative">+28.6%</td>
+                        </tr>
+                        <tr>
+                            <td class="label">销售费用</td>
+                            <td class="num">142.8</td>
+                            <td class="num negative">+9.5%</td>
+                            <td class="num negative">+18.3%</td>
+                        </tr>
+                        <tr>
+                            <td class="label">管理费用</td>
+                            <td class="num">95.6</td>
+                            <td class="num positive">+3.1%</td>
+                            <td class="num positive">+7.8%</td>
+                        </tr>
+                        <tr>
+                            <td class="label">研发费用</td>
+                            <td class="num">116.4</td>
+                            <td class="num positive">+22.4%</td>
+                            <td class="num positive">+41.2%</td>
+                        </tr>
+                        <tr class="subtotal">
+                            <td>成本与费用合计</td>
+                            <td class="num">718.9</td>
+                            <td class="num negative">+14.8%</td>
+                            <td class="num negative">+25.9%</td>
+                        </tr>
+
+                        <tr class="grand-total row-positive">
+                            <td>净利润</td>
+                            <td class="num">156.8</td>
+                            <td class="num positive">+22.1%</td>
+                            <td class="num positive">+48.3%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="callout callout-success reveal" style="margin-top: var(--space-lg);">
+                <span class="callout-icon">✓</span>
+                <div>净利润同比增长 48.3%，主要受益于主营业务收入强劲增长（+35.6% YoY）及毛利率改善。研发费用增幅较大（+41.2% YoY），反映公司对技术投入的持续加码。</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===========================================
+         SECTION 03 — Balance Sheet (Two Columns)
+         =========================================== -->
+    <section class="report-section">
+        <div class="report-container">
+            <div class="section-heading reveal">
+                <div class="section-number">03 / 资产负债表</div>
+                <h2>财务状况</h2>
+                <p class="section-desc">截至 2026 年 3 月 31 日，单位：百万元人民币。</p>
+            </div>
+
+            <div class="card reveal" style="padding: 0; overflow: hidden;">
+                <div class="ledger-columns" style="padding: 0;">
+                    <!-- Assets Column -->
+                    <div style="border-right: 1px solid var(--border);">
+                        <div class="column-header">资产</div>
+                        <table class="statement-table" style="border: none;">
+                            <tbody>
+                                <tr class="section-header"><td colspan="2">流动资产</td></tr>
+                                <tr><td class="label">货币资金</td><td class="num">384.2</td></tr>
+                                <tr><td class="label">应收账款</td><td class="num">215.6</td></tr>
+                                <tr><td class="label">存货</td><td class="num">128.4</td></tr>
+                                <tr><td class="label">其他流动资产</td><td class="num">46.8</td></tr>
+                                <tr class="subtotal"><td>流动资产合计</td><td class="num">775.0</td></tr>
+
+                                <tr class="section-header"><td colspan="2">非流动资产</td></tr>
+                                <tr><td class="label">固定资产</td><td class="num">312.5</td></tr>
+                                <tr><td class="label">无形资产</td><td class="num">89.3</td></tr>
+                                <tr><td class="label">长期投资</td><td class="num">156.0</td></tr>
+                                <tr class="subtotal"><td>非流动资产合计</td><td class="num">557.8</td></tr>
+
+                                <tr class="grand-total"><td>资产总计</td><td class="num">1,332.8</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Liabilities + Equity Column -->
+                    <div>
+                        <div class="column-header">负债与所有者权益</div>
+                        <table class="statement-table" style="border: none;">
+                            <tbody>
+                                <tr class="section-header"><td colspan="2">流动负债</td></tr>
+                                <tr><td class="label">应付账款</td><td class="num">168.3</td></tr>
+                                <tr><td class="label">短期借款</td><td class="num">85.0</td></tr>
+                                <tr><td class="label">其他流动负债</td><td class="num">52.7</td></tr>
+                                <tr class="subtotal"><td>流动负债合计</td><td class="num">306.0</td></tr>
+
+                                <tr class="section-header"><td colspan="2">非流动负债</td></tr>
+                                <tr><td class="label">长期借款</td><td class="num">210.0</td></tr>
+                                <tr class="subtotal"><td>非流动负债合计</td><td class="num">210.0</td></tr>
+
+                                <tr class="section-header"><td colspan="2">所有者权益</td></tr>
+                                <tr><td class="label">实收资本</td><td class="num">500.0</td></tr>
+                                <tr><td class="label">未分配利润</td><td class="num">316.8</td></tr>
+                                <tr class="subtotal"><td>所有者权益合计</td><td class="num">816.8</td></tr>
+
+                                <tr class="grand-total"><td>负债与权益总计</td><td class="num">1,332.8</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-3" style="margin-top: var(--space-lg);">
+                <div class="metric-card reveal">
+                    <div class="metric-label">资产负债率</div>
+                    <div class="finance-mid">38.7<span style="font-size: 0.5em;">%</span></div>
+                    <div class="metric-trend up" style="margin-top: var(--space-xs); display: inline-flex;">▼ 2.4pp 健康</div>
+                </div>
+                <div class="metric-card reveal">
+                    <div class="metric-label">流动比率</div>
+                    <div class="finance-mid">2.53</div>
+                    <div class="metric-trend up" style="margin-top: var(--space-xs); display: inline-flex;">▲ 0.18</div>
+                </div>
+                <div class="metric-card reveal">
+                    <div class="metric-label">净资产</div>
+                    <div class="finance-mid finance-positive">816.8<span style="font-size: 0.5em;">M</span></div>
+                    <div class="metric-trend up" style="margin-top: var(--space-xs); display: inline-flex;">▲ 18.7% YoY</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===========================================
+         SECTION 04 — Cash Flow + Waterfall
+         =========================================== -->
+    <section class="report-section alt">
+        <div class="report-container">
+            <div class="section-heading reveal">
+                <div class="section-number">04 / 现金流</div>
+                <h2>现金流量摘要</h2>
+                <p class="section-desc">本季度现金变动来源与去向分析，单位：百万元人民币。</p>
+            </div>
+
+            <div class="card reveal" style="padding: var(--space-lg); margin-bottom: var(--space-lg);">
+                <h4 style="margin-bottom: var(--space-md); font-weight: 500;">现金流瀑布图</h4>
+                <div class="waterfall">
+                    <div class="wf-item">
+                        <div class="wf-value">384.2</div>
+                        <div class="wf-bar positive" style="height: 100%;">期初</div>
+                        <div class="wf-label">期初现金</div>
+                    </div>
+                    <div class="wf-item">
+                        <div class="wf-value">+156.8</div>
+                        <div class="wf-bar positive" style="height: 65%;">经营</div>
+                        <div class="wf-label">经营活动</div>
+                    </div>
+                    <div class="wf-item">
+                        <div class="wf-line" style="position: absolute;"></div>
+                        <div class="wf-value negative">-72.4</div>
+                        <div class="wf-bar negative" style="height: 38%;">投资</div>
+                        <div class="wf-label">投资活动</div>
+                    </div>
+                    <div class="wf-item">
+                        <div class="wf-value negative">-45.3</div>
+                        <div class="wf-bar negative" style="height: 28%;">筹资</div>
+                        <div class="wf-label">筹资活动</div>
+                    </div>
+                    <div class="wf-item">
+                        <div class="wf-value">423.3</div>
+                        <div class="wf-bar total" style="height: 100%;">期末</div>
+                        <div class="wf-label">期末现金</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card reveal" style="padding: 0; overflow: hidden;">
+                <table class="statement-table">
+                    <thead>
+                        <tr>
+                            <th>项目</th>
+                            <th class="num">金额</th>
+                            <th class="num">占比</th>
+                            <th class="num">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="section-header"><td colspan="4">经营活动现金流</td></tr>
+                        <tr class="row-positive">
+                            <td class="label">销售商品收到的现金</td>
+                            <td class="num">892.4</td>
+                            <td class="num">—</td>
+                            <td class="num"><span class="badge approved">正常</span></td>
+                        </tr>
+                        <tr class="row-positive">
+                            <td class="label">经营活动现金流入小计</td>
+                            <td class="num positive">892.4</td>
+                            <td class="num">—</td>
+                            <td class="num"></td>
+                        </tr>
+                        <tr class="row-negative">
+                            <td class="label">购买商品支付的现金</td>
+                            <td class="num">-385.2</td>
+                            <td class="num">43.2%</td>
+                            <td class="num"><span class="badge pending">关注</span></td>
+                        </tr>
+                        <tr class="row-negative">
+                            <td class="label">支付给职工的现金</td>
+                            <td class="num">-218.6</td>
+                            <td class="num">24.5%</td>
+                            <td class="num"><span class="badge approved">正常</span></td>
+                        </tr>
+                        <tr class="row-negative">
+                            <td class="label">支付的各项税费</td>
+                            <td class="num">-131.8</td>
+                            <td class="num">14.8%</td>
+                            <td class="num"><span class="badge approved">正常</span></td>
+                        </tr>
+                        <tr class="subtotal row-positive">
+                            <td>经营活动净现金流</td>
+                            <td class="num positive">156.8</td>
+                            <td class="num">—</td>
+                            <td class="num"><span class="badge approved">健康</span></td>
+                        </tr>
+
+                        <tr class="section-header"><td colspan="4">投资与筹资活动</td></tr>
+                        <tr class="row-negative">
+                            <td class="label">投资活动净现金流</td>
+                            <td class="num negative">-72.4</td>
+                            <td class="num">—</td>
+                            <td class="num"><span class="badge pending">计划内</span></td>
+                        </tr>
+                        <tr class="row-negative">
+                            <td class="label">筹资活动净现金流</td>
+                            <td class="num negative">-45.3</td>
+                            <td class="num">—</td>
+                            <td class="num"><span class="badge pending">计划内</span></td>
+                        </tr>
+
+                        <tr class="grand-total row-positive">
+                            <td>现金净增加额</td>
+                            <td class="num positive">39.1</td>
+                            <td class="num">—</td>
+                            <td class="num"><span class="badge approved">良好</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===========================================
+         SECTION 05 — Key Observations
+         =========================================== -->
+    <section class="report-section">
+        <div class="report-container reading">
+            <div class="section-heading reveal">
+                <div class="section-number">05 / 管理建议</div>
+                <h2>关键发现与行动项</h2>
+                <p class="section-desc">基于本季度财务数据的核心结论与下季度重点方向。</p>
+            </div>
+
+            <div class="summary-item reveal" style="margin-bottom: var(--space-md);">
+                <div class="summary-icon">1</div>
+                <div class="summary-text">
+                    <h4>营收增长强劲，毛利率持续改善</h4>
+                    <p>主营业务收入同比增长 35.6%，毛利率从 56.3% 提升至 58.4%，规模效应逐步显现。建议维持当前增长策略，重点关注高毛利产品线。</p>
+                </div>
+            </div>
+            <div class="summary-item reveal" style="margin-bottom: var(--space-md);">
+                <div class="summary-icon">2</div>
+                <div class="summary-text">
+                    <h4>应收账款周转天数需关注</h4>
+                    <p>应收账款余额 215.6M，周转天数从 72 天升至 84 天。建议加强账期管理，对超 90 天账款启动催收流程。</p>
+                </div>
+            </div>
+            <div class="summary-item reveal" style="margin-bottom: var(--space-md);">
+                <div class="summary-icon">3</div>
+                <div class="summary-text">
+                    <h4>研发投入持续加大</h4>
+                    <p>研发费用同比增 41.2%，占营收比升至 13.7%。结合营收增速（+35.6% YoY），投入产出比处于健康区间。</p>
+                </div>
+            </div>
+            <div class="summary-item reveal">
+                <div class="summary-icon">4</div>
+                <div class="summary-text">
+                    <h4>现金流充裕，具备投资弹性</h4>
+                    <p>经营活动净现金流 156.8M，现金储备 384.2M。公司有充足弹药支持 Q2 战略投资与市场扩张计划。</p>
+                </div>
+            </div>
+
+            <div class="callout callout-warning reveal" style="margin-top: var(--space-lg);">
+                <span class="callout-icon">⚠</span>
+                <div><strong>风险提示：</strong>销售费用增速（+9.5%）低于营收增速（+18.3%），短期利好利润但需警惕市场投入不足导致增长放缓。建议 Q2 适当追加品牌投放预算。</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===========================================
+         ENDING
+         =========================================== -->
+    <section class="ending-section">
+        <h2 class="reveal">报告完毕</h2>
+        <p class="reveal" style="color: var(--text-caption);">本报告仅供内部参考，如需详细数据请联系财务部</p>
+        <div class="cover-accent-line reveal" style="margin: var(--space-lg) auto;"></div>
+        <div class="ending-meta reveal">Ledger Slate 模板 · 财务部 · 2026-05-14</div>
+    </section>
+
+    <!-- ===========================================
+         SCROLL ANIMATION + CHART ENTRANCE
+         =========================================== -->
+    <script>
+        // Scroll reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.12, rootMargin: '0px 0px -20px 0px' });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Chart bar/fill entrance animation
+        document.querySelectorAll('.wf-bar, .progress-fill').forEach(el => {
+            const h = el.style.height;
+            if (h && h !== '100%') { el.style.height = '0'; requestAnimationFrame(() => requestAnimationFrame(() => { el.style.height = h; })); }
+        });
+    </script>
+</body>
+</html>
