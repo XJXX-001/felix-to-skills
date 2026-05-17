@@ -2,6 +2,8 @@
 
 Complete git workflow patterns for AI agents and engineering teams.
 
+Part of the [Felix-Agent](../SKILL.md) skill — Coding Execution layer.
+
 ---
 
 ## Commit Message Format

@@ -1,6 +1,6 @@
-# Karpathy Guidelines — Detailed Examples
+# Felix-Agent — Detailed Examples
 
-Real-world code examples demonstrating the four principles. Each example shows what LLMs commonly do wrong and how to fix it.
+Real-world code examples demonstrating the three layers of discipline. Each example shows what LLMs commonly do wrong and how to fix it.
 
 ---
 
@@ -139,6 +139,132 @@ If the issue is "users stay logged in after password change":
 
 ---
 
+## 5. Agent Execution Discipline
+
+### Example: Manual Steps vs. Deterministic Scripts
+
+**User Request:** "Rename all 50 component files from `.jsx` to `.tsx`"
+
+**❌ What LLMs Do (Manual Line-by-Line)**
+
+```
+I'll rename each file one by one...
+- src/components/Button.jsx → Button.tsx
+- src/components/Card.jsx → Card.tsx
+... (48 more lines)
+```
+
+**Problems:** Tedious, error-prone, not reproducible, no audit trail.
+
+**✅ What Should Happen (Script First)**
+
+```bash
+find src/components -name "*.jsx" -exec bash -c 'mv "$1" "${1%.jsx}.tsx"' _ {} \;
+# Verify: find src/components -name "*.tsx" | wc -l → 50
+git add -A && git commit -m "refactor: migrate all components to .tsx"
+```
+
+> **Rule of thumb**: If it repeats 10+ times, script it.
+
+---
+
+### Example: Missing State Persistence
+
+**User Request:** "Process this 10,000-row CSV and generate reports"
+
+**❌ What LLMs Do (All in Memory)**
+
+Process all 10,000 rows in one go. If interrupted or context-compacted, start from scratch. No record of which rows were already processed.
+
+**✅ What Should Happen (Persist, Resume, Audit)**
+
+```python
+import json, os
+
+STATE_FILE = ".state.processing"
+
+def load_state():
+    if os.path.exists(STATE_FILE):
+        return json.load(open(STATE_FILE))
+    return {"processed": 0, "failed": [], "outputs": []}
+
+def save_state(state):
+    json.dump(state, open(STATE_FILE, "w"), indent=2)
+
+state = load_state()
+for i, row in enumerate(csv_rows[state["processed"]:], start=state["processed"]):
+    try:
+        result = process(row)
+        state["outputs"].append(result)
+        state["processed"] += 1
+        if i % 100 == 0:
+            save_state(state)  # Checkpoint every 100 rows
+    except Exception as e:
+        state["failed"].append({"row": i, "error": str(e)})
+        save_state(state)
+
+# On next run: checks .state, resumes from last checkpoint
+```
+
+---
+
+### Example: Complex Task Without Decomposition
+
+**User Request:** "Set up a new microservice with auth, database, and API"
+
+**❌ What LLMs Do (Monolithic Execution)**
+
+Attempts to create all files, configure everything, and wire them together in one shot. When something fails, rolls back everything or leaves the project in a broken state.
+
+**✅ What Should Happen (Decompose, Gate, Flow)**
+
+```
+Execution Plan:
+1. [Scaffold project] → Output: project/ directory with package.json, tsconfig.json
+   Gate: `npm install` succeeds with zero errors
+
+2. [Add database layer] → Input: project/, Output: src/db/schema.ts, src/db/client.ts
+   Gate: `npx prisma migrate dev` succeeds; test connection returns `pong`
+
+3. [Add auth middleware] → Input: project/ + db layer, Output: src/middleware/auth.ts
+   Gate: Unit test: valid token → 200, invalid token → 401
+
+4. [Add API routes] → Input: project/ + db + auth, Output: src/routes/*.ts
+   Gate: Integration test: full request round-trip succeeds
+
+5. [Wire together] → Input: all above, Output: src/app.ts
+   Gate: `npm run dev` starts without errors; health check endpoint returns 200
+```
+
+Each step has a clear input, output, and gate. If step 3 fails, steps 1-2 are still valid and don't need re-execution.
+
+---
+
+### Example: Reinventing Existing Tools
+
+**User Request:** "Parse this JSON config file and validate the schema"
+
+**❌ What LLMs Do (Hand-rolled Parser)**
+
+Write a custom regex-based JSON parser with manual field validation — 80+ lines, brittle, untested.
+
+**✅ What Should Happen (Discover Before Inventing)**
+
+```python
+import json
+from pydantic import BaseModel, ValidationError
+
+class Config(BaseModel):
+    host: str
+    port: int
+    debug: bool = False
+
+# One-liner parsing + validation
+config = Config(**json.load(open("config.json")))
+```
+
+Check environment first: `jq`, `python -m json.tool`, Pydantic, Zod — use what exists.
+
 ## Anti-Patterns Summary
 
 | Principle | Anti-Pattern | Fix |
@@ -147,5 +273,9 @@ If the issue is "users stay logged in after password change":
 | Simplicity First | Strategy pattern for single calculation | One function until complexity is actually needed |
 | Surgical Changes | Reformats quotes, adds type hints while fixing bug | Only change lines that fix the reported issue |
 | Goal-Driven | "I'll review and improve the code" | "Write test for bug X → make it pass → verify no regressions" |
+| Deterministic Operations | Manual line-by-line for batch tasks | Script it: `find`, `sed`, `jq`, Python — anything repeatable |
+| State Management | All-in-memory processing | Write `.state` checkpoints; design for `--resume` |
+| Task Decomposition | Monolithic "do everything at once" | Atomic steps with explicit gates and data flow |
+| Reuse & Extend | Hand-rolling parsers/validators | Check existing tools/skills first; use Pydantic/Zod/jq |
 
-**Key Insight:** The "overcomplicated" examples are not obviously wrong — they follow design patterns. The problem is **timing**: adding complexity before it's needed. Good code solves today's problem simply, not tomorrow's problem prematurely.
+**Key Insight:** The "overcomplicated" examples are not obviously wrong — they follow design patterns. The problem is **timing**: adding complexity before it's needed. Good code solves today's problem simply, not tomorrow's problem prematurely. Good execution uses tools before muscle, checkpoints before memory, and decomposition before monoliths.

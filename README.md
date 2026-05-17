@@ -8,7 +8,7 @@
 
 | 技能 | 类型 | 一句话 |
 |------|------|--------|
-| [Engineering Discipline](#1-engineering-discipline) | 行为准则 | Karpathy 编码原则 + Git 执行纪律——先想再写、原子提交、Save Point 闭环 |
+| [Felix-Agent](#1-felix-agent) | 行为准则 | Karpathy 编码原则 + Agent 执行纪律——先想再写、工具优先、状态持久、原子提交 |
 | [HTML Report](#2-html-report) | 创意生成 | 零依赖、单文件 HTML 汇报页面——排版优先，反 AI-slop |
 | [Design Refs](#3-design-refs) | 设计参考 | 56 个真实产品设计系统——Apple、Tesla、Stripe、Linear……拿来即用 |
 | [Store Review Report](#4-store-review-report) | 业务生成 | 门店经营复盘 Word 报告——数据填入、自动排版、一键生成 .docx |
@@ -17,11 +17,11 @@
 
 ---
 
-## 1. Engineering Discipline
+## 1. Felix-Agent
 
-> 源自 [Andrej Karpathy 对 LLM 编码陷阱的观察](https://x.com/karpathy/status/2015883857489522876)，融合 Git 工作流纪律，形成完整的工程行为规范。
+> 源自 [Andrej Karpathy 对 LLM 编码陷阱的观察](https://x.com/karpathy/status/2015883857489522876)，融合 Git 工作流纪律与 Agent 执行工程化，形成完整的三层行为规范。
 
-### 四层纪律
+### 三层纪律
 
 | 层级 | 原则 | 解决问题 |
 |------|------|----------|
@@ -29,9 +29,12 @@
 | **思维层** | Simplicity First | 最小代码解决问题，不过度抽象、不写用不上的扩展 |
 | **思维层** | Surgical Changes | 只改必须改的，不顺手"优化"旁边代码 |
 | **思维层** | Goal-Driven Execution | 定义可验证的成功标准，循环直到通过 |
-| **执行层** | Git Discipline | 原子提交、干净历史、可审查、可回退 |
+| **编码执行层** | Git Discipline | 原子提交、干净历史、可审查、可回退 |
+| **Agent 执行层** | Agent Execution Discipline | 工具优先、任务拆解、状态持久、复用发现 |
 
-### 核心映射：每条原则如何在 Git 中落地
+### 核心映射
+
+**原则 → Git 映射：**
 
 | 原则 | Git 映射 |
 |------|----------|
@@ -40,11 +43,20 @@
 | Surgical Changes | 格式化/重构/功能分开 commit，附 Change Summary |
 | Goal-Driven Execution | Save Point 模式：测试通过 → commit；失败 → `git reset --hard` |
 
+**Agent 执行映射：**
+
+| 原则 | 执行映射 |
+|------|----------|
+| Deterministic Operations | 批量操作写脚本，API 调用输出结构化指令，失败时解析错误码 |
+| Decompose, Gate, and Flow | 复杂任务拆原子步骤，每步定义完成标准，数据显式传递 |
+| Persist, Resume, and Audit | 跨会话任务写入 `.state` 文件，支持断点续跑，保留操作日志 |
+| Discover Before Inventing | 执行前先搜现有工具/skill，复用流程固化为模板，批量生成用元编程 |
+
 ### 文件结构
 
 ```
-engineering-discipline/
-├── SKILL.md                # 核心准则（4 条原则 + Git 执行纪律）
+Felix-Agent/
+├── SKILL.md                # 核心准则（4 条原则 + Agent 执行纪律 + Git 执行纪律）
 ├── references/
 │   ├── examples.md         # 详细代码示例（正反对比）
 │   └── git-workflow.md     # Git 工作流详细参考（commit 格式、Worktree、调试）
@@ -57,6 +69,8 @@ engineering-discipline/
 - 复杂问题第一版就是简单方案，不用重写
 - 提问发生在实现之前，而不是踩坑之后
 - 每个 commit 都是原子、有描述、可审查的 save point
+- 批量操作优先用脚本/工具，不手动逐行执行
+- 跨会话任务能从 `.state` 断点恢复，不丢失进度
 
 ---
 
@@ -291,7 +305,7 @@ profit-statement-analysis/
 
 六套技能各自独立，可按需加载：
 
-- **写代码 + Git 纪律** → 加载 `engineering-discipline/SKILL.md`
+- **写代码 + Git 纪律 + Agent 执行** → 加载 `Felix-Agent/SKILL.md`
 - **生成汇报页面** → 加载 `html-report/SKILL.md`
 - **做 UI/网页设计** → 查阅 `design-refs/` 目录
 - **生成门店复盘报告** → 加载 `store_review_report/SKILL.md`
