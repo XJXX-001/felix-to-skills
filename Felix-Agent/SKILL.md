@@ -1,13 +1,15 @@
 ---
-name: engineering-discipline
+name: Felix-Agent
 description: |
-  Behavioral guidelines to reduce common LLM coding mistakes, derived from Andrej Karpathy's observations,
-  combined with disciplined git workflow practices. Use when writing, reviewing, refactoring, or debugging code —
+  Behavioral guidelines to reduce common LLM coding and execution mistakes, derived from Andrej Karpathy's observations,
+  combined with disciplined git workflow and agent execution practices. Use when writing, reviewing, refactoring, or debugging code,
+  or when designing multi-step agent workflows, CLI integrations, and stateful task execution —
   to avoid overcomplication, make surgical changes, surface assumptions before implementing,
-  define verifiable success criteria, and keep every change manageable through version control.
+  define verifiable success criteria, prefer deterministic tooling over manual steps, and keep every change manageable.
   Triggers: coding best practices, code review, simplify code, surgical edit, think before coding,
   goal-driven development, avoid overengineering, Karpathy guidelines, LLM coding pitfalls,
-  git workflow, commit discipline, branching strategy, atomic commits.
+  git workflow, commit discipline, branching strategy, atomic commits, agent workflow, CLI tool,
+  state management, resume task, deterministic execution, batch operation, tool discovery.
 category: engineering
 ---
 
@@ -17,9 +19,10 @@ Behavioral guidelines to reduce common LLM coding mistakes, derived from [Andrej
 
 **Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
 
-Engineering discipline has two layers:
+Engineering discipline has three layers:
 - **Mindset** (how to think) — the four Karpathy principles
-- **Execution** (how to act) — git workflow that makes every change reviewable, reversible, and verifiable
+- **Coding Execution** (how to code) — git workflow that makes every change reviewable, reversible, and verifiable
+- **Agent Execution** (how to run) — deterministic tooling, workflow design, and state management that make multi-step tasks reliable and resumable
 
 ---
 
@@ -151,7 +154,74 @@ npm test && npm run lint && npx tsc --noEmit
 
 ---
 
-## 5. Git Execution Discipline
+## 5. Agent Execution Discipline
+
+As an Agent, you are not just a code author — you are a task executor. These guidelines ensure reliability and reproducibility in complex, multi-step, and cross-session tasks.
+
+### 5.1 Deterministic Operations: Prefer Tools and Scripts
+
+**Never substitute manual steps where a deterministic tool exists.**
+
+When a task involves automatable, deterministic operations:
+- **Call scripts/tools first**, not manual line-by-line execution. Batch file operations → write a bash script. Batch data transformation → use Python. Avoid modifying files one by one.
+- **Emit structured instructions; consume structured responses.** When calling external APIs, construct explicit request bodies. When parsing results, extract structured data rather than relying on fuzzy matching.
+- **Standardize errors.** On tool failure, parse error codes and messages. Classify the response (retry, degrade, abort). Never silently ignore or vaguely summarize.
+
+> **Rule of thumb**: If an operation repeats 10+ times or involves precise format validation, script it. Do not "just do it manually step by step."
+
+### 5.2 Complex Tasks: Decompose, Gate, and Flow
+
+**Multi-step tasks must have clear workflow and data flow.**
+
+When facing complex tasks:
+
+1. **Decompose**: Break into atomic steps. Each step has a single responsibility.
+2. **Gate**: Define explicit completion criteria per step (output schema, validation rules, pass/fail condition).
+3. **Flow**: Pass data between steps via explicit mechanisms (files, variables, structured output). Do not rely on implicit context.
+
+```
+Execution Plan Example:
+1. [Gather info] → Output: info.json (with schema validation)
+   Gate: info.json exists and all required fields are present
+2. [Create resource] → Input: info.json, Output: result.json
+   Gate: API returns status=success
+3. [Configure linkage] → Input: result.json
+   Gate: Linkage query verifies success
+```
+
+### 5.3 State Management: Persist, Resume, and Audit
+
+**Long tasks must leave traces.**
+
+For tasks that may span sessions or take significant time:
+- **Persist progress**: Write current step, intermediate results, and key variables to a `.state` file or project state directory.
+- **Resume from break**: Design tasks with `--resume` capability — check existing state, continue from the breakpoint, never restart from scratch blindly.
+- **Audit**: Keep an operation log (timestamp, input, output, error) for future debugging.
+
+> **Cross-session rule**: If a task is expected to need multiple interactions, persist progress to a file before ending the first interaction. On the next start, read state first, then decide where to resume.
+
+### 5.4 Reuse and Extend: Discover Before Inventing
+
+**Do not reinvent wheels.**
+
+- **Hot discovery**: Before executing a new task, check if existing tools, scripts, skills, or templates are already available in the environment.
+- **Workflows as files**: If a process recurs, solidify it as a reusable script/template/config in a project convention location (e.g., `scripts/`, `workflows/`).
+- **Meta-programming**: When you need "another one of these," write a generator instead of manual copying. E.g., generate form validation code from a schema rather than hand-writing each instance.
+
+### 5.5 Interaction and Execution Pitfalls
+
+**Control complexity; defend against failure.**
+
+| Principle | Execution Standard |
+|-----------|-------------------|
+| **Nesting limit** | Logic nesting does not exceed 3 levels. Beyond that, extract sub-functions or sub-steps. |
+| **Timeout & retry** | Automated operations (network requests, script execution) must include timeout and retry. Never assume one-shot success. |
+| **Field control** | When requesting info from the user or emitting intermediate results, keep 3-5 core fields. Split into batches if more. |
+| **Explicit failure** | On failure, return explicit error details. Never silently ignore or return "something seems wrong." |
+
+---
+
+## 6. Git Execution Discipline
 
 ### Trunk-Based Development (Recommended)
 
@@ -252,6 +322,9 @@ git blame src/services/task.ts
 | "I'll commit when the feature is done" | One giant commit is impossible to review, debug, or revert. |
 | "I'll split this change later" | Large changes are harder to review and riskier. Split before submitting. |
 | "The AI aesthetic is fine for now" | It signals low quality. Use the project's actual design system from the start. |
+| "Doing it manually is faster this time" | Manual steps are not reproducible and accumulate error. Script anything that repeats. |
+| "The state is in my context window" | Context windows are lost on restart. Persist state to files for cross-session reliability. |
+| "I'll just copy-paste and tweak" | Copy-paste creates drift. Use generators or templates for recurring patterns. |
 
 ## Red Flags
 
@@ -265,6 +338,12 @@ git blame src/services/task.ts
 - Long-lived branches diverging from main
 - Force-pushing to shared branches
 - Color as the sole indicator of state (red/green without text or icons)
+- Repeated manual file edits when a script could do it
+- No `.state` or progress file for multi-step tasks
+- Silent swallowing of tool/CLI errors
+- Logic nesting beyond 3 levels without extraction
+- One-shot network/API calls without timeout/retry
+- Re-inventing a utility that already exists in the project
 
 ## Verification
 
@@ -280,6 +359,12 @@ After building UI or making any code change:
 - [ ] No secrets in the diff
 - [ ] No formatting-only changes mixed with behavior changes
 - [ ] `.gitignore` covers standard exclusions
+- [ ] Deterministic operations use scripts/tools, not manual steps
+- [ ] Multi-step tasks have explicit plan with per-step gates
+- [ ] Progress persisted to file for long or cross-session tasks
+- [ ] Tool/CLI errors are parsed and handled explicitly, not silently ignored
+- [ ] Recurring patterns use generators/templates rather than copy-paste
+- [ ] Network/API calls have timeout and retry
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, clarifying questions come before implementation, and every commit is a clean, reviewable save point.
 
