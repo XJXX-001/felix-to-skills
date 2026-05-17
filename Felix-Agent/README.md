@@ -1,8 +1,10 @@
-# Felix-Agent (OpenClaw Skill)
+# Felix-Agent
 
 Behavioral guidelines to reduce common LLM coding and execution mistakes, derived from [Andrej Karpathy's observations](https://x.com/karpathy/status/2015883857489522876) on LLM coding pitfalls, combined with disciplined git workflow and agent execution practices.
 
-Adapted from [forrestchang/andrej-karpathy-skills](https://github.com/forrestchang/andrej-karpathy-skills) for **OpenClaw**, expanded with Agent Execution Discipline.
+Adapted from [forrestchang/andrej-karpathy-skills](https://github.com/forrestchang/andrej-karpathy-skills), expanded with Agent Execution Discipline.
+
+**Compatible with:** Claude Code, Kimi Code, OpenCode, OpenClaw, Hermes Agent, and other CLI-based AI coding agents.
 
 ## Three Layers of Discipline
 
@@ -17,18 +19,23 @@ Adapted from [forrestchang/andrej-karpathy-skills](https://github.com/forrestcha
 
 ## Install
 
-### SkillHub (recommended)
+### SkillHub / CLI Agent (recommended)
 
 ```bash
 skillhub install Felix-Agent
 ```
 
-### Manual
-
-Copy the entire `Felix-Agent` folder to your skills directory:
+Or copy the entire `Felix-Agent` folder to your agent's skills directory:
 
 ```bash
+# Kimi Code / OpenCode / Generic
+mkdir -p ~/.config/agents/skills && cp -r Felix-Agent ~/.config/agents/skills/
+
+# OpenClaw / qclaw
 cp -r Felix-Agent ~/.qclaw/skills/
+
+# Hermes
+cp -r Felix-Agent ~/.hermes/skills/
 ```
 
 ## Structure
